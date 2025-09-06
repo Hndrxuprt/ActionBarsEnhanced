@@ -1,0 +1,633 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+	<CheckButton name="ActionButtonFXTemplate" virtual="true">
+		<Frames>
+			<Frame parentKey="InterruptDisplay" useParentLevel="true" inherits="ActionButtonInterruptTemplate" setAllPoints="true" hidden="true">
+				<Scripts>
+					<OnShow/>
+					<OnHide/>
+				</Scripts>
+			</Frame>
+			<Frame parentKey="SpellCastAnimFrame" useParentLevel="true" inherits="ActionButtonCastingAnimFrameTemplate" hidden="true">
+				<Scripts>
+					<OnShow/>
+					<OnHide/>
+				</Scripts>
+			</Frame>
+			<Frame parentKey="TargetReticleAnimFrame" useParentLevel="true" inherits="ActionButtonTargetReticleFrameTemplate" hidden="true">
+				<Scripts>
+					<OnShow/>
+					<OnHide/>
+				</Scripts>
+			</Frame>
+			<Frame parentKey="CooldownFlash" inherits="ActionButtonCooldownFlashTemplate" hidden="true">
+				<Scripts>
+					<OnShow/>
+					<OnHide/>
+				</Scripts>
+			</Frame>
+		</Frames>
+	</CheckButton>
+	<CheckButton name="OptionsButtonPreviewTemplate" inherits="ActionButtonFXTemplate" mixin="ActionBarEnhancedButtonPreviewMixin" virtual="true">
+		<Size x="50" y="50"/>
+		<Frames>
+			<Frame parentKey="Title" hidden="false" scale="0.7">
+				<Size x="80" y="15"/>
+				<Anchors>
+					<Anchor point="BOTTOM" x="0" y="0" relativeKey="$parent" relativePoint="TOP"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture parentKey="TitleBg" atlas="Rewards-Shadow" useAtlasSize="false" alpha="0.4">
+							<Size x="80" y="15"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+					<Layer level="ARTWORK">
+						<FontString parentKey="TitleText" inherits="GameFontDisableSmall" justifyH="MIDDLE" maxLines="1" text="Preview">
+							<Size x="80"/>
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="0" relativeKey="$parent.TitleBg" relativePoint="CENTER"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="icon" atlas="classicon-warlock">
+					<Size x="45" y="45"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeKey="$parent"/>
+					</Anchors>
+				</Texture>
+				<MaskTexture parentKey="IconMask" atlas="UI-Frame-IconMask" hWrapMode="CLAMPTOBLACKADDITIVE" vWrapMode="CLAMPTOBLACKADDITIVE" useAtlasSize="false">
+					<Size x="45" y="45"/>
+					<Anchors>
+						<Anchor point="CENTER" relativeKey="$parent.icon"/>
+					</Anchors>
+					<MaskedTextures>
+						<MaskedTexture childKey="icon"/>
+					</MaskedTextures>
+				</MaskTexture>
+				<Texture parentKey="SlotBackground" atlas="UI-HUD-ActionBar-IconFrame-Background" setAllPoints="true"/>
+			</Layer>
+		</Layers>
+		<NormalTexture parentKey="NormalTexture" atlas="UI-HUD-ActionBar-IconFrame">
+			<Size x="45" y="45"/>
+			<Anchors>
+				<Anchor point="CENTER" x="1.5" y="-1"/>
+			</Anchors>
+		</NormalTexture>
+		<PushedTexture atlas="UI-HUD-ActionBar-IconFrame-Down" parentKey="PushedTexture">
+			<Size x="45" y="45"/>
+			<Anchors>
+				<Anchor point="CENTER" x="1.5" y="-1"/>
+			</Anchors>
+		</PushedTexture>
+		<HighlightTexture atlas="UI-HUD-ActionBar-IconFrame-Mouseover" parentKey="HighlightTexture">
+			<Size x="45" y="45"/>
+			<Anchors>
+				<Anchor point="CENTER" x="1.5" y="-1"/>
+			</Anchors>
+		</HighlightTexture>
+		<CheckedTexture atlas="UI-HUD-ActionBar-IconFrame-Mouseover" parentKey="CheckedTexture">
+			<Size x="45" y="45"/>
+			<Anchors>
+				<Anchor point="CENTER" x="1.5" y="-1"/>
+			</Anchors>
+		</CheckedTexture>
+		<Scripts>
+			<OnLeave>
+				self:SetChecked(false)
+			</OnLeave>
+		</Scripts>
+	</CheckButton>
+	<CheckButton name="OptionsButtonTextPreviewTemplate" inherits="OptionsButtonPreviewTemplate" mixin="ActionBarEnhancedButtonPreviewMixin" virtual="true">
+		<Frames>
+			<Frame parentKey="TextOverlayContainer" mixin="ActionButtonTextOverlayContainerMixin" setAllPoints="true" hidden="false">
+				<Layers>
+					<Layer level="OVERLAY">
+						<FontString parentKey="HotKey" inherits="NumberFontNormalSmallGray" justifyH="RIGHT">
+							<Size x="32" y="10"/>
+							<Anchors>
+								<Anchor point="TOPRIGHT" x="-5" y="-5"/>
+							</Anchors>
+						</FontString>
+						<FontString parentKey="Count" inherits="NumberFontNormal"  justifyH="RIGHT">
+							<Anchors>
+								<Anchor point="BOTTOMRIGHT" x="-5" y="5"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+	</CheckButton>
+	<Frame name="OptionsContainerTemplate" mixin="ActionBarEnhancedContainerMixin" virtual="true">
+		<Size x="720" y="100"/>
+		<Anchors>
+			<Anchor point="TOP"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND" textureSubLevel="1">
+				<Texture parentKey="HeaderBG" atlas="pvpscoreboard-header-glow" useAtlasSize="False" alpha="0.4">
+					<Size x="700" y="40"/>
+					<Anchors>
+						<Anchor point="TOP" x="0" y="24" relativeKey="$parent" relativePoint="TOP"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="BACKGROUND" textureSubLevel="2">
+				<Texture parentKey="Header" atlas="evergreen-weeklyrewards-header" useAtlasSize="False">
+					<Size x="720" y="13"/>
+					<Anchors>
+						<Anchor point="TOP" x="0" y="0" relativeKey="$parent" relativePoint="TOP"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Title" inherits="Fancy32Font" justifyH="MIDDLE" maxLines="1">
+					<Size x="600"/>
+					<Shadow x="1" y="-1">
+						<Color r="0" g="0" b="0"/>
+					</Shadow>
+					<Anchors>
+						<Anchor point="BOTTOM" x="0" y="4" relativeKey="$parent.Header" relativePoint="TOP"/>
+					</Anchors>
+				</FontString>
+				<FontString parentKey="Desc" inherits="GameFontHighlightMedium" justifyH="MIDDLE" maxLines="2" >
+					<Size x="600"/>
+					<Shadow x="1" y="-1">
+						<Color r="0" g="0" b="0"/>
+					</Shadow>
+					<Anchors>
+						<Anchor point="TOP" x="0" y="-4" relativeKey="$parent.Header" relativePoint="BOTTOM"/>
+					</Anchors>
+					<Color color="LIGHTERBLUE_FONT_COLOR"/>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+	<Frame name="OptionsDropdownTemplate" mixin="ActionBarEnhancedDropdownMixin" virtual="true">
+		<Size y="26"/>
+		<Anchors>
+			<Anchor point="TOPRIGHT"/>
+		</Anchors>
+		<Layers>
+			<Layer>
+				<FontString parentKey="Text" inherits="GameFontNormal" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="LEFT" x="40"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="Control" inherits="Metal2DropdownWithSteppersAndLabelTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="CENTER" x="-40"/>
+				</Anchors>
+			</Frame>
+			<Frame parentKey="NewFeature" inherits="NewFeatureLabelTemplate" frameStrata="HIGH" scale=".8" frameLevel="100" hidden="true">
+				<Size x="1" y="1"/>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" x="16" y="-10" relativeKey="$parent.Text" relativePoint="LEFT"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+	</Frame>
+	<Frame name="OptionsCheckboxTemplate" mixin="ActionBarEnhancedCheckboxMixin" virtual="true">
+		<Size y="26"/>
+		<Anchors>
+			<Anchor point="TOPRIGHT"/>
+		</Anchors>
+		<Layers>
+			<Layer>
+				<FontString parentKey="Text" inherits="GameFontNormal" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="LEFT" x="40"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<CheckButton parentKey="Checkbox" inherits="UICheckButtonTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="CENTER" x="-80" y="0"/>
+				</Anchors>
+				<NormalTexture atlas="checkbox-minimal" useAtlasSize="true"/>
+				<PushedTexture atlas="checkbox-minimal" useAtlasSize="true"/>
+				<CheckedTexture atlas="checkmark-minimal" useAtlasSize="true"/>
+				<DisabledCheckedTexture atlas="checkmark-minimal-disabled" useAtlasSize="true"/>
+			</CheckButton>
+		</Frames>
+	</Frame>
+	<Frame name="OptionsCheckboxSliderTemplate" mixin="ActionBarEnhancedCheckboxSliderMixin" virtual="true">
+		<Size y="26"/>
+		<Anchors>
+			<Anchor point="TOPRIGHT"/>
+		</Anchors>
+		<Layers>
+			<Layer>
+				<FontString parentKey="Text" inherits="GameFontNormal" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="LEFT" x="40"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<CheckButton parentKey="Checkbox" inherits="UICheckButtonTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="CENTER" x="-80" y="0"/>
+				</Anchors>
+				<NormalTexture atlas="checkbox-minimal" useAtlasSize="true"/>
+				<PushedTexture atlas="checkbox-minimal" useAtlasSize="true"/>
+				<CheckedTexture atlas="checkmark-minimal" useAtlasSize="true"/>
+				<DisabledCheckedTexture atlas="checkmark-minimal-disabled" useAtlasSize="true"/>
+			</CheckButton>
+			<Frame parentKey="SliderWithSteppers" inherits="MinimalSliderWithSteppersTemplate">
+				<Size x="300" y="26"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.Checkbox" x="2" relativePoint="RIGHT" y="0"/>
+				</Anchors>
+			</Frame>
+		</Frames>
+	</Frame>
+	<Frame name="OptionsColorOverrideTemplate" mixin="ActionBarColorMixin" virtual="true">
+		<Size x="720" y="26"/>
+		<Layers>
+			<Layer>
+				<FontString parentKey="Text" inherits="GameFontNormal" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="LEFT" x="40"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<CheckButton parentKey="Checkbox1" inherits="UICheckButtonTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="LEFT" relativePoint="CENTER" x="-80" y="0"/>
+				</Anchors>
+				<NormalTexture atlas="checkbox-minimal" useAtlasSize="true"/>
+				<PushedTexture atlas="checkbox-minimal" useAtlasSize="true"/>
+				<CheckedTexture atlas="checkmark-minimal" useAtlasSize="true"/>
+				<DisabledCheckedTexture atlas="checkmark-minimal-disabled" useAtlasSize="true"/>
+			</CheckButton>
+			<Button parentKey="ColorSwatch" inherits="ColorSwatchTemplate">
+				<Size x="22" y="22"/>
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.Checkbox1" relativePoint="RIGHT" x="8" y="0"/>
+				</Anchors>
+				<Scripts>
+					<OnShow>
+						PixelUtil.SetSize(self.SwatchBg, 22, 22);
+						PixelUtil.SetSize(self.InnerBorder, 20, 20);
+						PixelUtil.SetSize(self.Color, 18, 18);
+					</OnShow>
+					<OnEnter method="OnEnter"/>
+					<OnLeave method="OnLeave"/>
+				</Scripts>
+			</Button>
+			<CheckButton parentKey="Checkbox2" inherits="UICheckButtonTemplate" hidden="true">
+				<Anchors>
+					<Anchor point="LEFT" relativeKey="$parent.ColorSwatch" relativePoint="RIGHT" x="8" y="0"/>
+				</Anchors>
+				<NormalTexture atlas="checkbox-minimal" useAtlasSize="true"/>
+				<PushedTexture atlas="checkbox-minimal" useAtlasSize="true"/>
+				<CheckedTexture atlas="checkmark-minimal" useAtlasSize="true"/>
+				<DisabledCheckedTexture atlas="checkmark-minimal-disabled" useAtlasSize="true"/>
+			</CheckButton>
+		</Frames>
+	</Frame>
+	<Frame name="ActionBarEnhancedOptionsContent" mixin="ActionBarEnhancedMixin" virtual="true">
+		<Size x="720" y="900"/>
+		<Anchors>
+			<Anchor point="TOP" relativePoint="TOP" x="0" y="0"/>
+		</Anchors>
+		<Frames>
+			<Frame parentKey="GlowOptionsContainer" inherits="OptionsContainerTemplate" hidden="false">
+				<Size x="720" y="180"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent" x="0" y="-50"/>
+				</Anchors>
+				<Frames>
+					<Frame parentKey="GlowOptions" inherits="OptionsDropdownTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Desc" x="0" relativePoint="BOTTOM" y="-10"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="CustomColorGlow" inherits="OptionsColorOverrideTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.GlowOptions" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+			</Frame>
+			<Frame parentKey="ProcOptionsContainer" inherits="OptionsContainerTemplate" hidden="false">
+				<Size x="720" y="210"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.GlowOptionsContainer" relativePoint="BOTTOM" x="0" y="0"/>
+				</Anchors>
+				<Frames>
+					<Frame parentKey="HideProc" inherits="OptionsCheckboxTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Desc" relativePoint="BOTTOM" y="-10"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="ProcOptions" inherits="OptionsDropdownTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.HideProc" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="CustomColorProc" inherits="OptionsColorOverrideTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.ProcOptions" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+			</Frame>
+
+			<Frame parentKey="FadeOptionsContainer" inherits="OptionsContainerTemplate" hidden="false">
+				<Size x="720" y="260"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.ProcOptionsContainer" relativePoint="BOTTOM" x="0" y="0"/>
+				</Anchors>
+				<Frames>
+					<Frame parentKey="FadeOutBars" inherits="OptionsCheckboxSliderTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Desc" relativePoint="BOTTOM" y="-10"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="FadeInOnCombat" inherits="OptionsCheckboxTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.FadeOutBars" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="FadeInOnTarget" inherits="OptionsCheckboxTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.FadeInOnCombat" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="FadeInOnCasting" inherits="OptionsCheckboxTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.FadeInOnTarget" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="FadeInOnHover" inherits="OptionsCheckboxTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.FadeInOnCasting" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+			</Frame>
+
+			<Frame parentKey="PushedOptionsContainer" inherits="OptionsContainerTemplate" hidden="false">
+				<Size x="720" y="180"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.FadeOptionsContainer" relativePoint="BOTTOM" x="0" y="0"/>
+				</Anchors>
+				<Frames>
+					<Frame parentKey="PushedTextureOptions" inherits="OptionsDropdownTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Desc" relativePoint="BOTTOM" y="-10"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="CustomColorPushed" inherits="OptionsColorOverrideTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.PushedTextureOptions" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+					<CheckButton parentKey="PreviewPushed" inherits="OptionsButtonPreviewTemplate" hidden="false" scale="1.8">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeKey="$parent.PushedTextureOptions" relativePoint="CENTER" x="150" y="0"/>
+						</Anchors>
+					</CheckButton>
+
+				</Frames>	
+			</Frame>
+
+			<Frame parentKey="HighlightOptionsContainer" inherits="OptionsContainerTemplate" hidden="false">
+				<Size x="720" y="180"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.PushedOptionsContainer" relativePoint="BOTTOM" x="0" y="0"/>
+				</Anchors>
+				<Frames>
+					<Frame parentKey="HighlightTextureOptions" inherits="OptionsDropdownTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Desc" relativePoint="BOTTOM" y="-10"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="CustomColorHighlight" inherits="OptionsColorOverrideTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.HighlightTextureOptions" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+					<CheckButton parentKey="PreviewHighlight" inherits="OptionsButtonPreviewTemplate" hidden="false" scale="1.8">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeKey="$parent.HighlightTextureOptions" relativePoint="CENTER" x="150" y="0"/>
+						</Anchors>
+					</CheckButton>
+				</Frames>
+			</Frame>
+
+			<Frame parentKey="CheckedOptionsContainer" inherits="OptionsContainerTemplate" hidden="false">
+				<Size x="720" y="180"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.HighlightOptionsContainer" relativePoint="BOTTOM" x="0" y="0"/>
+				</Anchors>
+				<Frames>
+					<Frame parentKey="CheckedTextureOptions" inherits="OptionsDropdownTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Desc" relativePoint="BOTTOM" y="-10"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="CustomColorChecked" inherits="OptionsColorOverrideTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.CheckedTextureOptions" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+					<CheckButton parentKey="PreviewChecked" inherits="OptionsButtonPreviewTemplate" hidden="false" scale="1.8">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeKey="$parent.CheckedTextureOptions" relativePoint="CENTER" x="150" y="0"/>
+						</Anchors>
+					</CheckButton>
+				</Frames>
+			</Frame>
+
+			<Frame parentKey="ColorOverrideOptionsContainer" inherits="OptionsContainerTemplate" hidden="false">
+				<Size x="720" y="210"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.CheckedOptionsContainer" relativePoint="BOTTOM" x="0" y="0"/>
+				</Anchors>
+				<Frames>
+					<Frame parentKey="CustomColorCooldown" inherits="OptionsColorOverrideTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Desc" relativePoint="BOTTOM" y="-10"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="CustomColorOOR" inherits="OptionsColorOverrideTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.CustomColorCooldown" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="CustomColorOOM" inherits="OptionsColorOverrideTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.CustomColorOOR" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="CustomColorNotUsable" inherits="OptionsColorOverrideTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.CustomColorOOM" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+			</Frame>
+
+			<Frame parentKey="HideFramesOptionsContainer" inherits="OptionsContainerTemplate" hidden="false">
+				<Size x="720" y="240"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.ColorOverrideOptionsContainer" relativePoint="BOTTOM" x="0" y="0"/>
+				</Anchors>
+				<Frames>
+					<Frame parentKey="HideBagBars" inherits="OptionsCheckboxTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Desc" relativePoint="BOTTOM" y="-10"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="HideMicroMenu" inherits="OptionsCheckboxTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.HideBagBars" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="HideInterrupt" inherits="OptionsCheckboxTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.HideMicroMenu" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="HideCasting" inherits="OptionsCheckboxTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.HideInterrupt" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="HideReticle" inherits="OptionsCheckboxTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.HideCasting" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+					<CheckButton parentKey="PreviewInterrupt" inherits="OptionsButtonPreviewTemplate" hidden="false" scale="1.4">
+						<Anchors>
+							<Anchor point="BOTTOM" relativeKey="$parent" relativePoint="BOTTOM" x="50" y="43"/>
+						</Anchors>
+					</CheckButton>
+					<CheckButton parentKey="PreviewCasting" inherits="OptionsButtonPreviewTemplate" hidden="false" scale="1.4">
+						<Anchors>
+							<Anchor point="LEFT" relativeKey="$parent.PreviewInterrupt" relativePoint="RIGHT" x="0" y="0"/>
+						</Anchors>
+					</CheckButton>
+					<CheckButton parentKey="PreviewReticle" inherits="OptionsButtonPreviewTemplate" hidden="false" scale="1.4">
+						<Anchors>
+							<Anchor point="LEFT" relativeKey="$parent.PreviewCasting" relativePoint="RIGHT" x="0" y="0"/>
+						</Anchors>
+					</CheckButton>
+				</Frames>
+			</Frame>
+
+			<Frame parentKey="FontOptionsContainer" inherits="OptionsContainerTemplate" hidden="false">
+				<Size x="720" y="280"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.HideFramesOptionsContainer" relativePoint="BOTTOM" x="0" y="0"/>
+				</Anchors>
+				<Frames>
+					<Frame parentKey="HotkeyScale" inherits="OptionsCheckboxSliderTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Desc" relativePoint="BOTTOM" y="-10"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="StacksScale" inherits="OptionsCheckboxSliderTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.HotkeyScale" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="NameScale" inherits="OptionsCheckboxSliderTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.StacksScale" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+					<CheckButton parentKey="PreviewFont05" inherits="OptionsButtonTextPreviewTemplate" hidden="false" scale="0.5">
+						<Anchors>
+							<Anchor point="BOTTOM" relativeKey="$parent" relativePoint="BOTTOM" x="-250" y="43"/>
+						</Anchors>
+					</CheckButton>
+					<CheckButton parentKey="PreviewFont075" inherits="OptionsButtonTextPreviewTemplate" hidden="false" scale="0.75">
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" relativeKey="$parent.PreviewFont05" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+						</Anchors>
+					</CheckButton>
+					<CheckButton parentKey="PreviewFont1" inherits="OptionsButtonTextPreviewTemplate" hidden="false" scale="1.0">
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" relativeKey="$parent.PreviewFont075" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+						</Anchors>
+					</CheckButton>
+					<CheckButton parentKey="PreviewFont15" inherits="OptionsButtonTextPreviewTemplate" hidden="false" scale="1.5">
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" relativeKey="$parent.PreviewFont1" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+						</Anchors>
+					</CheckButton>
+					<CheckButton parentKey="PreviewFont2" inherits="OptionsButtonTextPreviewTemplate" hidden="false" scale="2.0">
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" relativeKey="$parent.PreviewFont15" relativePoint="BOTTOMRIGHT" x="0" y="0"/>
+						</Anchors>
+					</CheckButton>
+				</Frames>
+			</Frame>
+		</Frames>
+	</Frame>
+    <Frame name="ActionBarEnhancedOptionsFrameTemplate" mixin="ActionBarEnhancedMixin" parent="UIParent" virtual="true" hidden="false" toplevel="true" enableMouse="true" inherits="ButtonFrameTemplate">
+		<Size x="780" y="800"/>
+		<Frames>
+			<ScrollFrame parentKey="ScrollFrame" inherits="ScrollFrameTemplate" frameLevel="600">
+            <Size x="750" y="700"/>
+            <Anchors>
+                <Anchor point="TOPLEFT" x="10" y="-65"/>
+                <Anchor point="BOTTOMRIGHT" x="-30" y="30"/>
+            </Anchors>
+			<Layers>
+				<Layer level="BACKGROUND">
+					<Texture parentKey="stars" atlas="wowlabs-stars-fixed-multicolor-128" useAtlasSize="true" alpha="0.3">
+						<Anchors>
+							<Anchor point="BOTTOM" relativeKey="$parent" x="0" relativePoint="BOTTOM" y="0"/>
+						</Anchors>
+					</Texture>
+				</Layer>
+			</Layers>
+            <Scripts>
+                <OnMouseWheel>
+                    ActionBarEnhanced_UpdateScrollFrame(self, delta)
+                </OnMouseWheel>
+				<OnShow>
+					ActionBarEnhanced_UpdateScrollFrame(self, 1)
+				</OnShow>
+				<OnLoad>
+					ScrollFrame_OnLoad(self);
+				</OnLoad>
+            </Scripts>
+            <ScrollChild>
+                <Frame parentKey="ScrollChild" inherits="ActionBarEnhancedOptionsContent" frameLevel="610" hidden="false">
+					<Size x="720" y="900"/>
+                    <Anchors>
+                        <Anchor point="TOP" relativeKey="$parent" relativePoint="TOP" x="0" y="0"/>
+                    </Anchors>
+                </Frame>
+            </ScrollChild>
+        </ScrollFrame>
+		</Frames>
+		<Scripts>
+			<OnLoad method="OnLoad"/>
+		</Scripts>
+	</Frame>
+</Ui>

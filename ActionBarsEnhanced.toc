@@ -1,0 +1,19 @@
+## Interface: 110200
+## Title: |cFF30D1FFActionBars Enhanced|r (Retail)
+## IconTexture: Interface\AddOns\ActionBarsEnhanced\assets\icon
+## Version: 1.0
+## SavedVariables: ABDB
+## Notes: Enhance Blizzard Action Bars
+## Notes-ruRU: Улучшение стандартный панелей заклинаний
+## DefaultState: Enabled
+## Author: Hndrxuprt
+
+## X-Contributors: Hndrxuprt
+## X-eMail: hndrxuprt@gmail.com
+
+Locales/LoadLocales.xml
+
+constants.lua
+frames\ActionBarsEnhanced.xml
+ActionBarsEnhanced_Options.lua
+ActionBarsEnhanced.lua
