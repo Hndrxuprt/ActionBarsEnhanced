@@ -17,6 +17,12 @@ L.ProcStartDesc = "Choose or hide the start of proc animation"
 L.HideProcAnim = "Hide Start Proc Animation"
 L.StartProcType = "Start Proc Animation Type"
 
+L.AssistTitle = "Assisted Highlight Glow"
+L.AssistDesc = "Choose the Combat Assisted Highlight animation"
+L.AssistType = "Assisted Highlight type"
+L.AssistAltType = "Assisted secondary Highlight type"
+
+
 L.FadeTitle = "Fade Bars"
 L.FadeDesc = "Enable fade out for bars and configure when they fade in.\n|cffff2020/reload required to enable/disable|r"
 L.FadeOutBars = "Enable FadeIn/FadeOut for bars"

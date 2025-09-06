@@ -352,10 +352,40 @@
 				</Frames>
 			</Frame>
 
+			<Frame parentKey="AssistLoopOptionsContainer" inherits="OptionsContainerTemplate" hidden="false">
+				<Size x="720" y="230"/>
+				<Anchors>
+					<Anchor point="TOP" relativeKey="$parent.ProcOptionsContainer" relativePoint="BOTTOM" x="0" y="0"/>
+				</Anchors>
+				<Frames>
+					<Frame parentKey="AssistLoopType" inherits="OptionsDropdownTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.Desc" relativePoint="BOTTOM" y="-10"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="CustomColorAssistLoop" inherits="OptionsColorOverrideTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.AssistLoopType" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+
+					<Frame parentKey="AssistAltGlowType" inherits="OptionsDropdownTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.CustomColorAssistLoop" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+					<Frame parentKey="CustomColorAltGlow" inherits="OptionsColorOverrideTemplate">
+						<Anchors>
+							<Anchor point="TOP" relativeKey="$parent.AssistAltGlowType" relativePoint="BOTTOM" y="-2"/>
+						</Anchors>
+					</Frame>
+				</Frames>
+			</Frame>
+
 			<Frame parentKey="FadeOptionsContainer" inherits="OptionsContainerTemplate" hidden="false">
 				<Size x="720" y="260"/>
 				<Anchors>
-					<Anchor point="TOP" relativeKey="$parent.ProcOptionsContainer" relativePoint="BOTTOM" x="0" y="0"/>
+					<Anchor point="TOP" relativeKey="$parent.AssistLoopOptionsContainer" relativePoint="BOTTOM" x="0" y="0"/>
 				</Anchors>
 				<Frames>
 					<Frame parentKey="FadeOutBars" inherits="OptionsCheckboxSliderTemplate">
@@ -613,6 +643,7 @@
 					ActionBarEnhanced_UpdateScrollFrame(self, 1)
 				</OnShow>
 				<OnLoad>
+					tinsert(UISpecialFrames, self:GetName());
 					ScrollFrame_OnLoad(self);
 				</OnLoad>
             </Scripts>

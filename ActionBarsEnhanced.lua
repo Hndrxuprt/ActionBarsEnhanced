@@ -3,29 +3,73 @@ local AddonName, Addon = ...
 local C = Addon.Options
 local T = Addon.Templates
 
+local function GetFlipBook(...)
+    local Animations = {...}
+
+    for _, Animation in ipairs(Animations) do
+        if Animation:GetObjectType() == "FlipBook" then
+            Animation:SetParentKey("FlipAnim")
+            return Animation
+        end
+    end
+end
+
+function Addon:UpdateAssistFlipbook(region)
+
+    local loopAnim = T.LoopGlow[C.CurrentAssistType] or nil
+
+    local flipAnim = GetFlipBook(region.Anim:GetAnimations())
+
+    if loopAnim.atlas then
+        region:SetAtlas(loopAnim.atlas)  
+    elseif loopAnim.texture then
+        region:SetTexture(loopAnim.texture)
+    end
+
+   if loopAnim then
+        region:ClearAllPoints()
+        region:SetSize(region:GetSize())
+        region:SetPoint("CENTER", region:GetParent(), "CENTER", -1.5, 1)
+        flipAnim:SetFlipBookRows(loopAnim.rows or 6)
+        flipAnim:SetFlipBookColumns(loopAnim.columns or 5)
+        flipAnim:SetFlipBookFrames(loopAnim.frames or 30)
+        flipAnim:SetDuration(loopAnim.duration or 1.0)
+        flipAnim:SetFlipBookFrameWidth(loopAnim.frameW or 0.0)
+        flipAnim:SetFlipBookFrameHeight(loopAnim.frameH or 0.0)
+        region:SetScale(loopAnim.scale or 1)
+    end
+    --region.ProcLoopFlipbook:SetTexCoords(333, 400, 0.412598, 0.575195, 0.393555, 0.78418, false, false)
+    region:SetDesaturated(C.DesaturateAssist)
+    if C.UseAssistGlowColor then
+        region:SetVertexColor(Addon:GetRGB("LoopGlowColor"))
+    else
+        region:SetVertexColor(1.0, 1.0, 1.0)
+    end
+	region.Anim:Stop()
+    region.Anim:Play()
+end
+
 function Addon:UpdateFlipbook(Button)
     if not Button:IsVisible() then return end
+    
 	local region = Button.SpellActivationAlert
 
 	if (not region) or (not region.ProcStartAnim) then return end
 
-    -- Returns the FlipBook animation from an animation group and sets the parent key.
-    local function GetFlipBook(...)
-        local Animations = {...}
-
-        for _, Animation in ipairs(Animations) do
-            if Animation:GetObjectType() == "FlipBook" then
-                Animation:SetParentKey("FlipAnim")
-                return Animation
-            end
-        end
-    end
-
     local loopAnim = T.LoopGlow[C.CurrentLoopGlow] or nil
     local procAnim = T.ProcGlow[C.CurrentProcGlow] or nil
+    local altGlowAtlas = T.PushedTextures[C.CurrentAssistAltType] or nil
+
+    if altGlowAtlas then
+        region.ProcAltGlow:SetAtlas(altGlowAtlas.atlas)
+    end
+    region.ProcAltGlow:SetDesaturated(C.DesaturateAssistAlt)
+    if C.UseAssistAltColor then
+        region.ProcAltGlow:SetVertexColor(Addon:GetRGBA("AssistAltColor"))
+    end
 
     local startProc = region.ProcStartAnim.FlipAnim or GetFlipBook(region.ProcStartAnim:GetAnimations())
-
+    
     if startProc then
         
         if C.HideProc then
@@ -206,7 +250,6 @@ local function IsFrameFocused(frame)
     local focusedFrame
     if focusedFrames then
         if focusedFrames[1] then
-            --print(focusedFrames[1]:GetParent())
             if focusedFrames[1]:GetParent() and focusedFrames[1]:GetParent():GetParent() then
                 focusedFrame = focusedFrames[1]:GetParent():GetParent()
             end
@@ -295,6 +338,7 @@ local function Hook_UpdateButton(button)
     if C.UsePushedColor then
         button.PushedTexture:SetVertexColor(Addon:GetRGBA("PushedColor"))
     end
+
     --button.PushedTexture:SetDesaturated(true)
     --button.PushedTexture:SetVertexColor(r, g, b)
 
@@ -433,8 +477,19 @@ local function Hook_UpdateCooldown(self)
     
 end
 
+local function Hook_Assist(self, actionButton, shown)
+    local highlightFrame = actionButton.AssistedCombatHighlightFrame
+    if highlightFrame and highlightFrame:IsVisible() then
+        if shown then
+            Addon:UpdateAssistFlipbook(highlightFrame.Flipbook)
+        end
+    end
+end
+
 hooksecurefunc(ActionButtonSpellAlertManager, "ShowAlert", Hook_UpdateFlipbook)
 hooksecurefunc("ActionButton_UpdateCooldown", Hook_UpdateCooldown)
+
+hooksecurefunc(AssistedCombatManager, "SetAssistedHighlightFrameShown", Hook_Assist)
 
 local function InitializeSavedVariables()
     ABDB = ABDB or {}
@@ -453,7 +508,7 @@ end
 local function ProcessEvent(self, event, ...)
     if event == "PLAYER_LOGIN" then
         InitializeSavedVariables()
-
+        
         for _, barName in pairs(bars) do
             local frame = _G[barName]
             if frame then

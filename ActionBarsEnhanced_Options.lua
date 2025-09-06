@@ -339,6 +339,43 @@ function ActionBarEnhancedMixin:InitOptions()
     )
 
     ---------------------------------------------
+    ----------------ASSIST OPTIONS---------------
+    ---------------------------------------------
+    optionsFrame.ScrollFrame.ScrollChild.AssistLoopOptionsContainer.Title:SetText(L.AssistTitle)
+    optionsFrame.ScrollFrame.ScrollChild.AssistLoopOptionsContainer.Desc:SetText(L.AssistDesc)
+    ActionBarEnhancedDropdownMixin:SetupDropdown(
+        optionsFrame.ScrollFrame.ScrollChild.AssistLoopOptionsContainer.AssistLoopType,
+        T.LoopGlow,
+        L.AssistType,
+        function(id) return id == C.CurrentAssistType end,
+        function(id)
+            Addon:SaveSetting("CurrentAssistType", id)
+        end
+    )
+    ActionBarEnhancedDropdownMixin:SetupColorSwatch(
+        optionsFrame.ScrollFrame.ScrollChild.AssistLoopOptionsContainer.CustomColorAssistLoop,
+        L.UseCustomColor,
+        "AssistGlowColor",
+        {"UseAssistGlowColor", "DesaturateAssist"}
+    )
+    ActionBarEnhancedDropdownMixin:SetupDropdown(
+        optionsFrame.ScrollFrame.ScrollChild.AssistLoopOptionsContainer.AssistAltGlowType,
+        T.PushedTextures,
+        L.AssistAltType,
+        function(id) return id == C.CurrentAssistAltType end,
+        function(id)
+            Addon:SaveSetting("CurrentAssistAltType", id)
+        end
+    )
+    ActionBarEnhancedDropdownMixin:SetupColorSwatch(
+        optionsFrame.ScrollFrame.ScrollChild.AssistLoopOptionsContainer.CustomColorAltGlow,
+        L.UseCustomColor,
+        "AssistAltColor",
+        {"UseAssistAltColor", "DesaturateAssistAlt"},
+        true
+    )
+
+    ---------------------------------------------
     -----------------FADE OPTIONS----------------
     ---------------------------------------------
     optionsFrame.ScrollFrame.ScrollChild.FadeOptionsContainer.Title:SetText(L.FadeTitle)

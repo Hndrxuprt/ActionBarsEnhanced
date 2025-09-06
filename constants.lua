@@ -19,6 +19,15 @@ Addon.Defaults = {
     UseProcColor = false,
     ProcColor = { r=1.0, g=1.0, b=1.0, a=1.0 },
 
+    CurrentAssistType = 2,
+    DesaturateAssist = false,
+    UseAssistGlowColor = false,
+    AssistGlowColor = { r=1.0, g=1.0, b=1.0, a=1.0 },
+    CurrentAssistAltType = 2,
+    DesaturateAssistAlt = false,
+    UseAssistAltColor = false,
+    AssistAltColor = { r=1.0, g=1.0, b=1.0, a=1.0 },
+
     FadeBars = true,
     FadeBarsAlpha = 0.45,
     FadeInOnCombat = true,
@@ -271,89 +280,95 @@ Addon.Templates = {
             point = "TOPLEFT",
         }, --4
         {
+            name = "Proc Alert",
+            atlas = "UI-HUD-RotationHelper-ProcAltGlow",
+            size = {48,48},
+            point = "CENTER",
+        }, --5
+        {
             name = "Talents Border",
             atlas = "talents-node-choiceflyout-square-yellow",
             point = "CENTER",
             size = {43,43},
-        }, --5
+        }, --6
         {
             name = "Talents Border 2",
             atlas = "talents-node-choiceflyout-square-ghost",
             point = "CENTER",
             size = {48,48},
-        }, --6
+        }, --7
         {
             name = "Talents Border 3",
             atlas = "talents-node-square-ghost",
             point = "TOPLEFT",
             coords = {0.91, 0, 0.91, 0},
             size = {49,49},
-        }, --7
+        }, --8
         {
             name = "Transmog",
             atlas = "transmog-frame-pink",
             point = "CENTER",
             size = {48,48},
-        }, --8
+        }, --9
         {
             name = "Click cast",
             atlas = "ClickCast-Highlight-Binding",
             point = "CENTER",
             size = {45,45},
-        }, --9
+        }, --10
         {
             name = "Kyrian",
             atlas = "CovenantSanctum-Upgrade-Icon-Border-Kyrian",
             point = "TOPLEFT",
             coords = {0.96, 0, 0.96, 0},
             size = {46,46},
-        }, --10
+        }, --11
         {
             name = "Professions grey",
             atlas = "Professions-ChoiceReagent-Frame",
             point = "TOPLEFT",
             coords = {0.94, 0, 0.94, 0},
             size = {48,48},
-        }, --11
+        }, --12
         {
             name = "Professions gold",
             atlas = "Professions-Recrafting-Frame-Item",
             point = "TOPLEFT",
             coords = {0.94, 0, 0.94, 0},
             size = {48,48},
-        }, --12
+        }, --13
         {
             name = "Professions slot white",
             atlas = "professions-slot-frame-white",
             point = "CENTER",
             size = {45,45},
-        }, --13
+        }, --14
         {
             name = "Professions Gear Enchant",
             atlas = "GearEnchant_IconBorder",
             point = "CENTER",
             size = {48,48},
-        }, --14
+        }, --15
         {
             name = "Runecarving",
             atlas = "runecarving-icon-center-selected",
             point = "TOPLEFT",
             coords = {0.88, 0.10, 0.88, 0.10},
             size = {45,45},
-        }, --15
+        }, --16
         {
             name = "Runecarving 2",
             atlas = "runecarving-icon-reagent-border",
             point = "CENTER",
             size = {57,57},
-        }, --16
+        }, --17
         {
             name = "Spellbook",
             atlas = "spellbook-item-unassigned-glow",
             point = "TOPLEFT",
             coords = {0.92, 0.08, 0.92, 0.08},
             size = {45,45},
-        }, --17
+        }, --18
     },
     HighlightTextures = {
         {
