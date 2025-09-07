@@ -16,7 +16,10 @@ ActionBarEnhancedCheckboxSliderMixin = {}
 function ActionBarEnhancedMixin:OnLoad()
 
 end
-
+function Addon:Welcome()
+    print(L.welcomeMessage1)
+    print(L.welcomeMessage2..Addon.shortCommand)
+end
 function ActionBarEnhanced_UpdateScrollFrame(self, delta)
     local newValue = self:GetVerticalScroll() - (delta * 20);
 
@@ -66,6 +69,11 @@ function Addon:HideBars(barName)
         else
             bar:Show()
         end
+    end
+end
+function ActionBarEnhancedMixin:Reset()
+    if ABDB then
+        wipe(ABDB)
     end
 end
 
@@ -683,4 +691,4 @@ function ActionBarEnhancedMixin:InitOptions()
     optionsFrame.ScrollFrame.ScrollChild:SetWidth(optionsFrame.ScrollFrame:GetWidth())
 end
 
-RegisterNewSlashCommand(ActionBarEnhancedMixin.InitOptions, "ActionBarsEnhanced", "abe")
+RegisterNewSlashCommand(ActionBarEnhancedMixin.InitOptions, Addon.command, Addon.shortCommand)

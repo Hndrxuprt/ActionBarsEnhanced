@@ -65,9 +65,11 @@ function Addon:UpdateFlipbook(Button)
     end
     region.ProcAltGlow:SetDesaturated(C.DesaturateAssistAlt)
     if C.UseAssistAltColor then
-        region.ProcAltGlow:SetVertexColor(Addon:GetRGBA("AssistAltColor"))
+        region.ProcAltGlow:SetVertexColor(Addon:GetRGB("AssistAltColor"))
+    else
+        region.ProcAltGlow:SetVertexColor(1.0, 1.0, 1.0)
     end
-
+        
     local startProc = region.ProcStartAnim.FlipAnim or GetFlipBook(region.ProcStartAnim:GetAnimations())
     
     if startProc then
@@ -506,6 +508,9 @@ end
 
 
 local function ProcessEvent(self, event, ...)
+    if event == "PLAYER_ENTERING_WORLD" then
+        Addon:Welcome()
+    end
     if event == "PLAYER_LOGIN" then
         InitializeSavedVariables()
         
@@ -560,3 +565,4 @@ eventHandlerFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
 eventHandlerFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
 eventHandlerFrame:RegisterEvent('UNIT_SPELLCAST_START')
 eventHandlerFrame:RegisterEvent('UNIT_SPELLCAST_STOP')
+eventHandlerFrame:RegisterEvent('PLAYER_ENTERING_WORLD')

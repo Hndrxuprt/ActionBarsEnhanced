@@ -22,7 +22,6 @@ L.AssistDesc = "Choose the Combat Assisted Highlight animation"
 L.AssistType = "Assisted Highlight type"
 L.AssistAltType = "Assisted secondary Highlight type"
 
-
 L.FadeTitle = "Fade Bars"
 L.FadeDesc = "Enable fade out for bars and configure when they fade in.\n|cffff2020/reload required to enable/disable|r"
 L.FadeOutBars = "Enable FadeIn/FadeOut for bars"
@@ -44,14 +43,14 @@ L.CheckedDesc = "Texture that appears when you successfully use a skill or it's 
 L.CheckedTextureType = "Checked Texture Type"
 
 L.ColorOverrideTitle = "Button Status Color Override"
-L.ColorOverrideDesc = "Customize colors for different button states"
+L.ColorOverrideDesc = "Customize colors for different button states.\n|cffff2020/reload required|r"
 L.CustomColorCooldownSwipe = "Use custom color for Cooldown Swipe"
 L.CustomColorOOR = "Custom color for Out Of Range"
 L.CustomColorOOM = "Custom color for Out Of Mana"
 L.CustomColorNoUse = "Custom color for Not Usable spells"
 
 L.HideFrameTitle = "Hide Frames and Animations"
-L.HideFrameDesc = "Hide various frames and annoying animations on the Action Bar"
+L.HideFrameDesc = "Hide various frames and annoying animations on the Action Bar.\n|cffff2020/reload required|r"
 L.HideBagsBar = "Hide Bags Bar"
 L.HideMicroMenuBar = "Hide MicroMenu Bar"
 L.HideInterrupt = "Hide Interrupt Animation on buttons"
@@ -59,7 +58,10 @@ L.HideCasting = "Hide Casting Animation on buttons"
 L.HideReticle = "Hide AoE Targeting Animation on buttons"
 
 L.FontTitle = "Font Options"
-L.FontDesc = "Choose scale of Fonts on small Buttons. Will only affect buttons with scale <100%"
+L.FontDesc = "Choose scale of Fonts on small Buttons. Will only affect buttons with scale <100%\n|cffff2020/reload required|r"
 L.FontHotKeyScale = "Modify scale of HotKey font"
 L.FontStacksScale = "Modify scale of Stacks font"
 L.FontNameScale = "Modify scale of Name font"
+
+L.welcomeMessage1 = "Thank you for using |cff1df2a8ActionBars Enhanced|r"
+L.welcomeMessage2 = "You may access options by using |cff1df2a8/"
