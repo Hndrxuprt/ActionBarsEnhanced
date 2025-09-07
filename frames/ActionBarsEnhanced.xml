@@ -643,7 +643,6 @@
 					ActionBarEnhanced_UpdateScrollFrame(self, 1)
 				</OnShow>
 				<OnLoad>
-					tinsert(UISpecialFrames, self:GetName());
 					ScrollFrame_OnLoad(self);
 				</OnLoad>
             </Scripts>
@@ -658,7 +657,9 @@
         </ScrollFrame>
 		</Frames>
 		<Scripts>
-			<OnLoad method="OnLoad"/>
+			<OnLoad>
+				tinsert(UISpecialFrames, self:GetName());
+			</OnLoad>
 		</Scripts>
 	</Frame>
 </Ui>

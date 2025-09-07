@@ -13,9 +13,6 @@ ActionBarEnhancedContainerMixin = {}
 ActionBarEnhancedOptionsContentMixin = {}
 ActionBarEnhancedCheckboxSliderMixin = {}
 
-function ActionBarEnhancedMixin:OnLoad()
-
-end
 function Addon:Welcome()
     print(L.welcomeMessage1)
     print(L.welcomeMessage2..Addon.shortCommand)
