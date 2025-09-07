@@ -5,7 +5,7 @@
 ## Version: 1.15
 ## SavedVariables: ABDB
 ## Notes: Enhance Blizzard Action Bars
-## Notes-ruRU: Улучшение стандартной панелей заклинаний
+## Notes-ruRU: Улучшение стандартных панелей заклинаний
 ## DefaultState: Enabled
 ## Author: Hndrxuprt
 
