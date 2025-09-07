@@ -2,7 +2,7 @@
 ## Title: |cFF30D1FFActionBars Enhanced|r (Retail)
 ## IconTexture: Interface\AddOns\ActionBarsEnhanced\assets\icon
 ## Category: Action Bars
-## Version: 1.16
+## Version: 1.0.0
 ## SavedVariables: ABDB
 ## Notes: Enhance Blizzard Action Bars
 ## Notes-ruRU: Улучшение стандартных панелей заклинаний
