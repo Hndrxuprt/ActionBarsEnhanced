@@ -31,7 +31,7 @@
 3. Ensure the addon folder is named exactly `ActionBarsEnhanced` (remove any suffixes like `-main`).
 4. Launch the game and configure the addon to your liking using the command `/abe`.
 
-<br><br><br><br>
+<br><br>
 
 # [RU]: ActionBarsEnhanced ✨
 
