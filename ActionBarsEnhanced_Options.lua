@@ -81,7 +81,7 @@ function ActionBarEnhancedMixin:InitOptions()
     end
     local optionsFrame = CreateFrame("Frame", "ActionBarEnhancedOptionsFrame", UIParent, "ActionBarEnhancedOptionsFrameTemplate")
     optionsFrame:SetParent(UIParent)
-    optionsFrame:SetPoint("LEFT", UIParent, "LEFT", 10, -150)
+    optionsFrame:SetPoint("LEFT", UIParent, "LEFT", 0, 0)
     optionsFrame:SetMovable(true)
     optionsFrame:EnableMouse(true)
     optionsFrame:EnableMouseWheel(true)
@@ -100,6 +100,10 @@ function ActionBarEnhancedMixin:InitOptions()
     optionsFrame.Inset.Bg:SetVertTile(false)
     optionsFrame.Inset.Bg:SetAllPoints()
     ActionBarEnhancedOptionsFramePortrait:SetTexture("interface/AddOns/ActionBarsEnhanced/assets/icon2.tga")
+
+    optionsFrame.CloseButton:SetScript("OnClick", function()
+        optionsFrame:Hide()
+    end)
     
 
     local defaultSizes = {}

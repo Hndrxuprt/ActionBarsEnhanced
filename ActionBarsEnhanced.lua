@@ -508,9 +508,6 @@ end
 
 
 local function ProcessEvent(self, event, ...)
-    if event == "PLAYER_ENTERING_WORLD" then
-        Addon:Welcome()
-    end
     if event == "PLAYER_LOGIN" then
         InitializeSavedVariables()
         
@@ -540,6 +537,8 @@ local function ProcessEvent(self, event, ...)
 		end
 
         hooksecurefunc(ActionBarActionButtonMixin, "OnLoad", Hook_UpdateButton)
+
+        Addon:Welcome()
     end
     if event == "ACTION_RANGE_CHECK_UPDATE" then
         local slot, inRange, checksRange = ...
@@ -565,4 +564,3 @@ eventHandlerFrame:RegisterEvent('PLAYER_REGEN_ENABLED')
 eventHandlerFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
 eventHandlerFrame:RegisterEvent('UNIT_SPELLCAST_START')
 eventHandlerFrame:RegisterEvent('UNIT_SPELLCAST_STOP')
-eventHandlerFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
