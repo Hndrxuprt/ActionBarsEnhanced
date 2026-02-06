@@ -431,7 +431,7 @@ function ABE_CastingBarMixin.OnUpdate(self, elapsed)
 
     if not self.value or not self.maxValue then return end
     local now = GetTime()
-    --if self.__lastCheck and (now - self.__lastCheck <= 0.1) then return end
+    if self.__lastCheck and (now - self.__lastCheck <= 0.1) then return end
 
     self.__lastCheck = now
 

@@ -93,7 +93,7 @@
 		</Frames>
 	</Frame>
 	<Frame name="ABE_CDMCustomBarTemplate" inherits="ABE_CDMCustomItemBaseTemplate" mixin="ABE_CDMCustomBarMixin" virtual="true" hidden="false" dontSavePosition="true">
-		<Size x="100" y="20"/>
+		<Size x="200" y="20"/>
 		<Frames>
 			<Frame parentKey="Icon">
 				<Size x="20" y="20"/>
@@ -110,7 +110,7 @@
 						</MaskTexture>
 					</Layer>
 					<Layer level="OVERLAY">
-						<Texture parentKey="IconOvelay" atlas="UI-HUD-CoolDownManager-IconOverlay">
+						<Texture parentKey="IconOverlay" atlas="UI-HUD-CoolDownManager-IconOverlay">
 							<Anchors>
 								<Anchor point="TOPLEFT" x="-8" y="7"/>
 								<Anchor point="BOTTOMRIGHT" x="8" y="-7"/>
@@ -119,44 +119,6 @@
 					</Layer>
 				</Layers>
 				<Frames>
-					<Frame parentKey="ProcGlow" mixin="ABE_CDMCustomItemProcGlow" hidden="false" dontSavePosition="true">
-						<Size x="40" y="40"/>
-						<Anchors>
-							<Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="-2" y="0" />
-						</Anchors>
-						<Layers>
-							<Layer level="ARTWORK">
-								<Texture parentKey="ProcStartFlipbook" atlas="UI-HUD-ActionBar-Proc-Start-Flipbook" alpha="0">
-									<Size x="150" y="150"/>
-									<Anchors>
-										<Anchor point="CENTER"/>
-									</Anchors>
-								</Texture>
-								<Texture parentKey="ProcLoopFlipbook" atlas="UI-HUD-ActionBar-Proc-Loop-Flipbook" setAllPoints="true" alpha="0"/>
-								<Texture parentKey="ProcAltGlow" atlas="UI-HUD-RotationHelper-ProcAltGlow" useAtlasSize="true" hidden="true">
-									<Anchors>
-										<Anchor point="CENTER"/>
-									</Anchors>
-								</Texture>
-							</Layer>
-						</Layers>
-						<Animations>
-							<AnimationGroup parentKey="ProcLoop" looping="REPEAT">
-								<Alpha childKey="ProcLoopFlipbook" duration=".001" order="0" fromAlpha="1" toAlpha="1"/>
-								<FlipBook parentKey="FlipAnim" childKey="ProcLoopFlipbook" duration="1" order="0" flipBookRows="6" flipBookColumns="5" flipBookFrames="30" flipBookFrameWidth="0" flipBookFrameHeight="0"/>
-							</AnimationGroup>
-								
-							<AnimationGroup parentKey="ProcStartAnim" setToFinalAlpha="true">
-								<Alpha childKey="ProcStartFlipbook" startDelay="0.5" duration=".001" order="0" fromAlpha="1" toAlpha="1"/>
-								<FlipBook childKey="ProcStartFlipbook" duration="0.7" order="1" flipBookRows="6" flipBookColumns="5" flipBookFrames="30" flipBookFrameWidth="0" flipBookFrameHeight="0"/>
-								<Alpha childKey="ProcStartFlipbook" duration=".001" order="2" fromAlpha="1" toAlpha="0"/>
-							</AnimationGroup>
-						</Animations>
-						<Scripts>
-							<OnLoad method="OnLoad"/>
-							<OnHide method="OnHide"/>
-						</Scripts>
-					</Frame>
 					<Cooldown parentKey="Cooldown" reverse="true" setAllPoints="true">
 						<SwipeTexture file="Interface\HUD\UI-HUD-CoolDownManager-Icon-Swipe">
 							<Color r="0" g="0" b="0" a="0.7"/>
@@ -185,8 +147,8 @@
 			<StatusBar parentKey="Bar">
 				<Size y="19"/>
 				<Anchors>
-					<Anchor point="LEFT" relativeKey="$parent.Icon" relativePoint="RIGHT" x="2" y="0"/>
-					<Anchor point="RIGHT" x="0" y="0"/>
+					<Anchor point="TOPLEFT" x="0" y="0"/>
+					<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
 				</Anchors>
 				<BarTexture atlas="UI-HUD-CoolDownManager-Bar" setAllPoints="true">
 					<Color r="1.0" g="0.5" b="0.25"/>
@@ -201,7 +163,9 @@
 						</Texture>
 					</Layer>
 					<Layer level="OVERLAY">
-						<Texture parentKey="Pip" atlas="UI-HUD-CoolDownManager-Bar-Pip" useAtlasSize="true"/>
+						<Texture parentKey="Pip" atlas="UI-HUD-CoolDownManager-Bar-Pip" useAtlasSize="true">
+							<Size x="8" y="19"/>
+						</Texture>
 						<FontString parentKey="Name" inherits="NumberFontNormal" justifyH="LEFT" justifyV="MIDDLE">
 							<Anchors>
 								<Anchor point="TOPLEFT" x="5" y="0"/>
@@ -230,7 +194,7 @@
 		</Scripts>
 	</Frame>
     
-    <Frame name="ABE_CDMCustomFrame" mixin="ABE_CDMCustomFrameMixin" inherits="ABE_CDMCustomFrameTemplate" virtual="true" clampedToScreen="true" dontSavePosition="true">
+    <Frame name="ABE_CDMCustomFrameBase" inherits="ABE_CDMCustomFrameTemplate" virtual="true" clampedToScreen="true" dontSavePosition="true">
         <Frames>		
             <Frame parentKey="Container" inherits="GridLayoutFrame" >
                 <KeyValues>
@@ -316,5 +280,15 @@
 				<Alpha childKey="ABESelection" fromAlpha=".1" toAlpha=".5" duration=".8"/>
 			</AnimationGroup>
 		</Animations>
+	</Frame>
+	<Frame name="ABE_CDMCustomFrame" mixin="ABE_CDMCustomFrameMixin" inherits="ABE_CDMCustomFrameBase" virtual="true">
+		<KeyValues>
+			<KeyValue key="itemTemplate" value="ABE_CDMCustomItemTemplate" type="string"/>
+		</KeyValues>
+	</Frame>
+	<Frame name="ABE_CDMCustomBarFrame" mixin="ABE_CDMCustomBarFrameMixin" inherits="ABE_CDMCustomFrameBase" virtual="true">
+		<KeyValues>
+			<KeyValue key="itemTemplate" value="ABE_CDMCustomBarTemplate" type="string"/>
+		</KeyValues>
 	</Frame>
 </Ui>

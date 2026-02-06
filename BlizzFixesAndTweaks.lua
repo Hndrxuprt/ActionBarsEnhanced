@@ -27,6 +27,41 @@ local function ReanchorFrame(self)
         isCentered = self.gridLayoutType == 1
     end
 
+    local uiCenterX, uiCenterY = UIParent:GetCenter()
+    local offsetX = centerX - uiCenterX
+    local offsetY = centerY - uiCenterY
+
+    if deltaX then offsetX = offsetX + deltaX end
+    if deltaY then offsetY = offsetY + deltaY end
+
+    self:ClearAllPoints()
+    self:SetPoint("CENTER", UIParent, "CENTER", offsetX, offsetY)
+
+    if self.systemInfo then
+        self.systemInfo.anchorInfo = {
+            point = "CENTER",
+            relativeTo = "UIParent",
+            relativePoint = "CENTER",
+            offsetX = offsetX,
+            offsetY = offsetY,
+        }
+        self.systemInfo.isInDefaultPosition = false
+    end
+<<<<<<< Updated upstream
+    EditModeManagerFrame:OnSystemPositionChange(self)
+=======
+    local layoutFramesGoingUp
+    if self.__layoutFramesGoingUp ~= nil then
+        layoutFramesGoingUp = self.__layoutFramesGoingUp == 1
+    else
+        layoutFramesGoingUp = self.layoutFramesGoingUp
+    end
+
+    local isCentered = false
+    if self.gridLayoutType then
+        isCentered = self.gridLayoutType == 1
+    end
+
     local isHorizontal = self.isHorizontal
 
     local screenCenterX, screenCenterY = UIParent:GetCenter()
@@ -58,7 +93,6 @@ local function ReanchorFrame(self)
         else
             if layoutFramesGoingRight then
                 point = "LEFT"
-                
             else
                 point = "RIGHT"
             end
@@ -104,12 +138,15 @@ end
 local function Hook_OnSystemPositionChange(self)
     local _, parent = self:GetPoint(1)
     local parentName = parent:GetName()
+    if framesToReanchor[self:GetName()] then
+        framesToReanchor[self:GetName()] = nil
+    end
+    
     if parentName ~= "UIParent" then
         self.__ANCHOR_MESSAGE = L.AnchorPosAttached..parentName
         self.__anchorIcon:SetVertexColor(0.98,0.98,0.2,1)
         return
     end
-
     ReanchorFrame(self)
 end
 
@@ -137,6 +174,7 @@ local function ShowAnchorIcon(self)
     self.__anchorIcon:SetPoint("CENTER", self, framePoint, 0, 0)
     self.__anchorIcon:SetVertexColor(1,1,1,0.5)
     self.__anchorIcon:Show()
+>>>>>>> Stashed changes
 end
 
 local function OnEditModeEnter()

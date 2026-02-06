@@ -1092,7 +1092,7 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				tinsert(UISpecialFrames, self:GetName());
+				--tinsert(UISpecialFrames, self:GetName());
 			</OnLoad>
 		</Scripts>
 	</Frame>

@@ -762,6 +762,72 @@ Addon.CustomFrameCooldownViewer = {
             {name = "CustomColorOnActualCD", template = "OptionsColorOverrideTemplate"},
         }
     },
+<<<<<<< Updated upstream
+=======
+}
+Addon.CustomFrameBarsCooldownViewer = {
+    {
+        name = "CDMCustomFrameBarContainer",
+        childs = {
+            {name = "CDMCustomFrameEditBox", template = "OptionsEditBoxTemplate"},
+            {name = "CDMCustomItemListFrame", template = "OptionsCDMCustomItemListTemplate", height = 250},
+            {name = "CDMCustomTrackTrink1", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomTrackTrink2", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomTrackWeapon1", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomTrackWeapon2", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomFrameAddSpellByID", template = "OptionsEditBoxTemplate"},
+            {name = "CDMCustomFrameAddItemByID", template = "OptionsEditBoxTemplate"},
+            {name = "CDMCustomHideWhenEmpty", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomFrameDeleteButton", template = "OptionsNamedButtonTemplate"}
+        }
+    },
+
+    {
+        name = "CDMCustomFrameGridContainer",
+        childs = {
+            --{name = "CDMCustomFrameItemSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameIconPadding", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameStride", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameGridLayoutType", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameHideWhenInactive", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameVerticalGrowth", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameHorizontalGrowth", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameGridDirection", template = "OptionsDropdownTemplate"},
+
+            {name = "Divider1", template = "OptionsDividerTemplate"},
+
+            {name = "CDMCustomFrameBarWidth", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameBarHeight", template = "OptionsCheckboxSliderTemplate"},
+
+            {name = "Divider2", template = "OptionsDividerTemplate"},
+
+            {name = "CDMCustomFrameStatusbarTexture", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameBackgroundTexture", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameBackgroundColor", template = "OptionsColorOverrideTemplate"},
+
+            {name = "Divider3", template = "OptionsDividerTemplate"},
+
+            {name = "CDMCustomFramePipTexture", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFramePipSize", template = "OptionsDoubleCheckboxSliderTemplate"},
+
+            {name = "Divider4", template = "OptionsDividerTemplate"},
+
+        }
+    },
+    {
+        name = "CDMCustomFrameBarIconOptionsContainer",
+        childs = {
+            {name = "CDMCustomFrametBarIconPosition", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameBarIconSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameBarIconOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+
+            {name = "Divider", template = "OptionsDividerTemplate"},
+
+            {name = "IconMaskTextureOptions", template = "OptionsDropdownTemplate"},
+            {name = "MaskScale", template = "OptionsCheckboxSliderTemplate"},
+            {name = "IconScale", template = "OptionsCheckboxSliderTemplate"},
+        }
+    },
 }
 
 Addon.PlayerCastingBarFrame = {
@@ -809,8 +875,8 @@ Addon.PlayerCastingBarFrame = {
     {
         name = "CastBarsIconOptionsContainer",
         childs = {
-            {name = "CastBarIconSize", template = "OptionsCheckboxSliderTemplate"},
             {name = "CastBarIconPosition", template = "OptionsDropdownTemplate"},
+            {name = "CastBarIconSize", template = "OptionsCheckboxSliderTemplate"},
             --{name = "CastBarIconPoint", template = "OptionsDoubleDropdownTemplate"},
             {name = "CastBarIconOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
 
@@ -997,4 +1063,5 @@ Addon.TargetFrameSpellBar = {
         }
     },
 
+>>>>>>> Stashed changes
 }

@@ -461,3 +461,7 @@ L.ShowCountdownNumbersForCharges = "Show charge countdown numbers"
 L.AnchorPosOK = "Anchor is |cff0bbe76ОК"
 L.AnchorPosUNSAVED = "|cffff0000UNSAVED!|r\nEXIT Edit Mode to save Anchor"
 L.AnchorPosAttached = "Attached to frame:|cff0bbe76"
+
+L.CreateIconsFrame = "Create Icons frame"
+L.CreateBarsFrame = "Create Bars frame"
+L.CreateChargeBarsFrame = "Create Charge Bars frame"

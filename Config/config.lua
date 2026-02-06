@@ -1968,6 +1968,22 @@ Addon.config.containers = {
         title = L.CDMCustomFrameGridLayoutTitle,
         desc = L.CDMCustomFrameGridLayoutDesc,
         childs = {
+            ["CDMCustomFrameBarSize"] = {
+                type            = "checkboxSlider",
+                name            = L.CDMCustomFrameBarWidth,
+                checkboxValue   = "UseCDMCustomFrameBarWidth",
+                sliderValue     = "CDMCustomFrameBarWidth",
+                min             = 10,
+                max             = 500,
+                step            = 1,
+                sliderName      = {top = L.Size},
+                callback        = function()
+                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    ABE_CDMCustomFrameCustomized:RefreshBarWidth(frame, frameName)
+                    frame:RefreshLayout()
+                end,
+            },
             ["CDMCustomFrameItemSize"] = {
                 type            = "checkboxSlider",
                 name            = L.CDMCustomFrameElementSize,
@@ -2099,6 +2115,113 @@ Addon.config.containers = {
                     local frameLabel = ABE_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
                     frame:SetGridDirection()
+                    frame:RefreshLayout()
+                end,
+            },
+
+            ["CDMCustomFrameBarWidth"] = {
+                type            = "checkboxSlider",
+                name            = L.Width,
+                checkboxValue   = "UseCDMCustomFrameBarWidth",
+                sliderValue     = "CDMCustomFrameBarWidth",
+                min             = 10,
+                max             = 800,
+                step            = 1,
+                sliderName      = {top = L.Width},
+                callback        = function()
+                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameLabel]
+                    ABE_CDMCustomFrameCustomized:RefreshBarSize(frame, frameLabel)
+                    frame:RefreshLayout()
+                end,
+            },
+            ["CDMCustomFrameBarHeight"] = {
+                type            = "checkboxSlider",
+                name            = L.Height,
+                checkboxValue   = "UseCDMCustomFrameBarHeight",
+                sliderValue     = "CDMCustomFrameBarHeight",
+                min             = 10,
+                max             = 100,
+                step            = 1,
+                sliderName      = {top = L.Height},
+                callback        = function()
+                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameLabel]
+                    ABE_CDMCustomFrameCustomized:RefreshBarSize(frame, frameLabel)
+                    frame:RefreshLayout()
+                end,
+            },
+
+            ["CDMCustomFrameStatusbarTexture"] = {
+                type        = "dropdown",
+                statusBar   = true,
+                setting     = function() return T.StatusBarTextures end,
+                name        = L.StatusBarTextures,
+                IsSelected  = function(id) return id == Addon:GetValue("CurrentCDMCustomFrameStatusbarTexture", nil, true) end,
+                OnSelect    = function(id) Addon:SaveSetting("CurrentCDMCustomFrameStatusbarTexture", id, true) end,
+                showNew     = false,
+                OnEnter     = false,
+                OnClose     = function()
+                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameLabel]
+                    ABE_CDMCustomFrameCustomized:RefreshBarTextures(frame, frameLabel)
+                    frame:RefreshLayout()
+                end,
+            },
+            ["CDMCustomFrameBackgroundTexture"] = {
+                type        = "dropdown",
+                statusBar   = true,
+                setting     = function() return T.StatusBarTextures end,
+                name        = L.StatusBarBGTextures,
+                IsSelected  = function(id) return id == Addon:GetValue("CurrentCDMCustomFrameBackgroundTexture", nil, true) end,
+                OnSelect    = function(id) Addon:SaveSetting("CurrentCDMCustomFrameBackgroundTexture", id, true) end,
+                showNew     = false,
+                OnEnter     = false,
+                OnClose     = function()
+                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameLabel]
+                    ABE_CDMCustomFrameCustomized:RefreshBarTextures(frame, frameLabel)
+                    frame:RefreshLayout()
+                end,
+            },
+            ["CDMCustomFrameBackgroundColor"] = {
+                type            = "colorSwatch",
+                name            = L.UseCustomBGColor,
+                value           = "CDMCustomFrameBackgroundColor",
+                checkboxValues  = {"UseCDMCustomFrameBackgroundColor"},
+                alpha           = true,
+                callback        = function()
+                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameLabel]
+                    frame:RefreshLayout()
+                end,
+            },
+            ["CDMCustomFramePipTexture"] = {
+                type        = "dropdown",
+                setting     = function() return T.PipTextures end,
+                name        = L.BarPipTexture,
+                IsSelected  = function(id) return id == Addon:GetValue("CurrentCDMCustomFramePipTexture", nil, true) end,
+                OnSelect    = function(id) Addon:SaveSetting("CurrentCDMCustomFramePipTexture", id, true) end,
+                showNew     = false,
+                OnEnter     = false,
+                OnClose     = function()
+                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameLabel]
+                    frame:RefreshLayout()
+                end,
+            },
+            ["CDMCustomFramePipSize"] = {
+                type            = "checkboxSlider",
+                name            = L.BarPipSize,
+                checkboxValue   = "UseCDMCustomFramePipSize",
+                sliderValue     = {"CDMCustomFramePipSizeX", "CDMCustomFramePipSizeY"},
+                min             = 1,
+                max             = 60,
+                step            = 1,
+                sliderName      = {{top = L.SizeX}, {top = L.SizeY}},
+                callback        = function()
+                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameLabel]
                     frame:RefreshLayout()
                 end,
             },

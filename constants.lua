@@ -64,6 +64,8 @@ Addon.GridLayoutType = {
     [2] = L.GridCompact,
     [3] = L.GridFixed,
 }
+<<<<<<< Updated upstream
+=======
 Addon.CastingBarIconPosition = {
     [1] = L.None,
     [2] = L.Left,
@@ -90,6 +92,11 @@ Addon.BarTextJustifyV = {
     [2] = "MIDDLE",
     [3] = "BOTTOM",
 }
+Addon.CustomBarType = {
+    [1] = "CD Only",
+    [2] = "Aura Only",
+    [3] = "Aura than CD",
+}
 
 do
     local cooldownColorCurve = C_CurveUtil.CreateColorCurve()
@@ -103,6 +110,7 @@ do
 
     Addon.cooldownColorCurve = cooldownColorCurve
 end
+>>>>>>> Stashed changes
 
 Addon.Defaults = {
     CurrentLoopGlow = 1,
@@ -418,6 +426,9 @@ Addon.Defaults = {
 
     CDMGridLayoutType = 3,
 
+<<<<<<< Updated upstream
+    CDMHideWhenInactive = false,
+=======
     CurrentHideWhenInactive = 1,
 
     ColorizedCooldownFont = false,
@@ -576,6 +587,23 @@ Addon.Defaults = {
     CDMEnableAttach = false,
     CurrentAttachFrame = "",
     ShowCountdownNumbersForCharges = true,
+
+    UseCDMCustomFrameBarWidth = true,
+    CDMCustomFrameBarWidth = 100,
+    UseCDMCustomFrameBarHeight = true,
+    CDMCustomFrameBarHeight = 20,
+
+    CurrentCDMCustomFrameStatusbarTexture = "Blizzard BuffBar",
+    CurrentCDMCustomFrameBackgroundTexture = "Blizzard BuffBar",
+    UseCDMCustomFrameBackgroundColor = true,
+    CDMCustomFrameBackgroundColor = { r=0.0, g=0.0, b=0.0, a=0.5 },
+    CurrentCDMCustomFramePipTexture = 1,
+    UseCDMCustomFramePipSize = true,
+    CDMCustomFramePipSizeX = 8,
+    CDMCustomFramePipSizeY = 30,
+    
+
+>>>>>>> Stashed changes
 }
 
 Addon.Templates = {
