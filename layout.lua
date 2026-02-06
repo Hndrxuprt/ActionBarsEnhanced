@@ -654,4 +654,306 @@ Addon.CustomFrameCooldownViewer = {
             {name = "CustomColorOnActualCD", template = "OptionsColorOverrideTemplate"},
         }
     },
+<<<<<<< Updated upstream
+=======
+}
+Addon.CustomFrameBarsCooldownViewer = {
+    {
+        name = "CDMCustomFrameBarContainer",
+        childs = {
+            {name = "CDMCustomFrameEditBox", template = "OptionsEditBoxTemplate"},
+            {name = "CDMCustomItemListFrame", template = "OptionsCDMCustomItemListTemplate", height = 250},
+            {name = "CDMCustomTrackTrink1", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomTrackTrink2", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomTrackWeapon1", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomTrackWeapon2", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomFrameAddSpellByID", template = "OptionsEditBoxTemplate"},
+            {name = "CDMCustomFrameAddItemByID", template = "OptionsEditBoxTemplate"},
+            {name = "CDMCustomHideWhenEmpty", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomFrameDeleteButton", template = "OptionsNamedButtonTemplate"}
+        }
+    },
+
+    {
+        name = "CDMCustomFrameGridContainer",
+        childs = {
+            --{name = "CDMCustomFrameItemSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameIconPadding", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameStride", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameGridLayoutType", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameHideWhenInactive", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameVerticalGrowth", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameHorizontalGrowth", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameGridDirection", template = "OptionsDropdownTemplate"},
+
+            {name = "Divider1", template = "OptionsDividerTemplate"},
+
+            {name = "CDMCustomFrameBarWidth", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameBarHeight", template = "OptionsCheckboxSliderTemplate"},
+
+            {name = "Divider2", template = "OptionsDividerTemplate"},
+
+            {name = "CDMCustomFrameStatusbarTexture", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameBackgroundTexture", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameBackgroundColor", template = "OptionsColorOverrideTemplate"},
+
+            {name = "Divider3", template = "OptionsDividerTemplate"},
+
+            {name = "CDMCustomFramePipTexture", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFramePipSize", template = "OptionsDoubleCheckboxSliderTemplate"},
+
+            {name = "Divider4", template = "OptionsDividerTemplate"},
+
+        }
+    },
+    {
+        name = "CDMCustomFrameBarIconOptionsContainer",
+        childs = {
+            {name = "CDMCustomFrametBarIconPosition", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameBarIconSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameBarIconOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+
+            {name = "Divider", template = "OptionsDividerTemplate"},
+
+            {name = "IconMaskTextureOptions", template = "OptionsDropdownTemplate"},
+            {name = "MaskScale", template = "OptionsCheckboxSliderTemplate"},
+            {name = "IconScale", template = "OptionsCheckboxSliderTemplate"},
+        }
+    },
+}
+
+Addon.PlayerCastingBarFrame = {
+    {
+        name = "CastBarsOptionsContainer",
+        childs = {
+            {name = "CastBarEnable", template = "OptionsCheckboxTemplate"},
+
+            {name = "Divider1", template = "OptionsDividerTemplate"},
+
+            {name = "CastBarWidth", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CastBarHeight", template = "OptionsCheckboxSliderTemplate"},
+            --{name = "CastBarSize", template = "OptionsDoubleCheckboxSliderTemplate"},
+            --{name = "CastBarPoint", template = "OptionsDoubleDropdownTemplate"},
+            --{name = "CastBarOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+            --{name = "CastBarOffsetX", template = "OptionsCheckboxSliderTemplate"},
+            --{name = "CastBarOffsetY", template = "OptionsCheckboxSliderTemplate"},
+            {name = "Divider2", template = "OptionsDividerTemplate"},
+
+            {name = "CastBarStatusbarTexture", template = "OptionsDropdownTemplate"},
+            {name = "CastBarBackgroundTexture", template = "OptionsDropdownTemplate"},
+            {name = "CastBarBackgroundColor", template = "OptionsColorOverrideTemplate"},
+
+            {name = "Divider3", template = "OptionsDividerTemplate"},
+
+            {name = "CastBarPipTexture", template = "OptionsDropdownTemplate"},
+            {name = "PipSize", template = "OptionsDoubleCheckboxSliderTemplate"},
+
+            {name = "Divider4", template = "OptionsDividerTemplate"},
+
+            {name = "CastHideTextBorder", template = "OptionsCheckboxTemplate"},
+            {name = "CastHideInterruptAnim", template = "OptionsCheckboxTemplate"},
+            {name = "CastQuickFinish", template = "OptionsCheckboxTemplate"},
+
+            {name = "Divider5", template = "OptionsDividerTemplate"},
+
+            {name = "CastBarStandardColor", template = "OptionsColorOverrideTemplate"},
+            --{name = "CastBarImportantColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CastBarChannelColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CastBarUninterruptableColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CastBarInterruptedColor", template = "OptionsColorOverrideTemplate"},
+            --{name = "CastBarReadyColor", template = "OptionsColorOverrideTemplate"},
+        }
+    },
+    {
+        name = "CastBarsIconOptionsContainer",
+        childs = {
+            {name = "CastBarIconPosition", template = "OptionsDropdownTemplate"},
+            {name = "CastBarIconSize", template = "OptionsCheckboxSliderTemplate"},
+            --{name = "CastBarIconPoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CastBarIconOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+
+            {name = "Divider", template = "OptionsDividerTemplate"},
+
+            {name = "IconMaskTextureOptions", template = "OptionsDropdownTemplate"},
+            {name = "MaskScale", template = "OptionsCheckboxSliderTemplate"},
+            {name = "IconScale", template = "OptionsCheckboxSliderTemplate"},
+        }
+    },
+    
+    {
+        name = "CastBarsSQWLatencyOptionsContainer",
+        childs = {
+            {name = "CastBarShowLatency", template = "OptionsCheckboxTemplate"},
+            {name = "CastBarLatencyTexture", template = "OptionsDropdownTemplate"},
+            {name = "CastBarLatencyColor", template = "OptionsColorOverrideTemplate"},
+
+            {name = "Divider", template = "OptionsDividerTemplate"},
+
+            {name = "CastBarShowSQW", template = "OptionsCheckboxTemplate"},
+            {name = "CastBarSQWTexture", template = "OptionsDropdownTemplate"},
+            {name = "CastBarSQWColor", template = "OptionsColorOverrideTemplate"},
+        }
+    },
+    {
+        name = "CastBarsFontContainer",
+        childs = {
+            {name = "CastBarCastNameFont", template = "OptionsDropdownTemplate"},
+            {name = "CastBarCastNameSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CastBarCastNameColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CastBarCastNamePoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CastBarCastNameOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+            {name = "CastBarCastNameJustifyH", template = "OptionsDropdownTemplate"},
+
+
+            {name = "Divider", template = "OptionsDividerTemplate"},
+
+            {name = "CastBarCastTimeFormat", template = "OptionsDropdownTemplate"},
+            {name = "CastBarCastTimeFont", template = "OptionsDropdownTemplate"},
+            {name = "CastBarCastTimeSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CastBarCastTimeColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CastBarCastTimePoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CastBarCastTimeOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+            {name = "CastBarCastTimeJustifyH", template = "OptionsDropdownTemplate"},
+
+            {name = "Divider2", template = "OptionsDividerTemplate"},
+
+            {name = "CastBarCastTargetEnable", template = "OptionsCheckboxTemplate"},
+            {name = "CastBarCastTargetFont", template = "OptionsDropdownTemplate"},
+            {name = "CastBarCastTargetSize", template = "OptionsCheckboxSliderTemplate"},
+            --{name = "CastBarCastTargetColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CastBarCastTargetPoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CastBarCastTargetOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+            {name = "CastBarCastTargetJustifyH", template = "OptionsDropdownTemplate"},
+
+        }
+    },
+    {
+        name = "CastBarsBackdropContainer",
+        childs = {
+            {name = "CastBarsBackdropSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CastBarsBackdropColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CastBarsBackdropColorByType", template = "OptionsCheckboxTemplate"},
+        }
+    },
+
+}
+Addon.TargetFrameSpellBar = {
+    {
+        name = "CastBarsOptionsContainer",
+        childs = {
+            {name = "CastBarEnable", template = "OptionsCheckboxTemplate"},
+            
+            {name = "Divider1", template = "OptionsDividerTemplate"},
+
+            {name = "CastBarWidth", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CastBarHeight", template = "OptionsCheckboxSliderTemplate"},
+            --{name = "CastBarSize", template = "OptionsDoubleCheckboxSliderTemplate"},
+            {name = "CastBarPoint", template = "OptionsDoubleDropdownTemplate"},
+            --{name = "CastBarOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+            {name = "CastBarOffsetX", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CastBarOffsetY", template = "OptionsCheckboxSliderTemplate"},
+
+            {name = "Divider2", template = "OptionsDividerTemplate"},
+
+            {name = "CastBarStatusbarTexture", template = "OptionsDropdownTemplate"},
+            {name = "CastBarBackgroundTexture", template = "OptionsDropdownTemplate"},
+            {name = "CastBarBackgroundColor", template = "OptionsColorOverrideTemplate"},
+
+            {name = "Divider3", template = "OptionsDividerTemplate"},
+
+            {name = "CastBarPipTexture", template = "OptionsDropdownTemplate"},
+            {name = "PipSize", template = "OptionsDoubleCheckboxSliderTemplate"},
+
+            {name = "Divider4", template = "OptionsDividerTemplate"},
+
+            {name = "CastHideTextBorder", template = "OptionsCheckboxTemplate"},
+            --{name = "CastHideInterruptAnim", template = "OptionsCheckboxTemplate"},
+            --{name = "CastQuickFinish", template = "OptionsCheckboxTemplate"},
+            {name = "CastBarShieldIconTexture", template = "OptionsDropdownTemplate"},
+            {name = "CastBarShieldIconSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CastBarShieldIconPoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CastBarShieldIconOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+
+            {name = "Divider5", template = "OptionsDividerTemplate"},
+
+            {name = "CastBarStandardColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CastBarImportantColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CastBarChannelColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CastBarUninterruptableColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CastBarInterruptedColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CastBarReadyColor", template = "OptionsColorOverrideTemplate"},
+        }
+    },
+    {
+        name = "CastBarsIconOptionsContainer",
+        childs = {
+            {name = "CastBarIconSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CastBarIconPosition", template = "OptionsDropdownTemplate"},
+            --{name = "CastBarIconPoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CastBarIconOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+
+            {name = "Divider", template = "OptionsDividerTemplate"},
+
+            {name = "IconMaskTextureOptions", template = "OptionsDropdownTemplate"},
+            {name = "MaskScale", template = "OptionsCheckboxSliderTemplate"},
+            {name = "IconScale", template = "OptionsCheckboxSliderTemplate"},
+        }
+    },
+    
+    --[[ {
+        name = "CastBarsSQWLatencyOptionsContainer",
+        childs = {
+            {name = "CastBarShowLatency", template = "OptionsCheckboxTemplate"},
+            {name = "CastBarLatencyTexture", template = "OptionsDropdownTemplate"},
+            {name = "CastBarLatencyColor", template = "OptionsColorOverrideTemplate"},
+
+            {name = "Divider", template = "OptionsDividerTemplate"},
+
+            {name = "CastBarShowSQW", template = "OptionsCheckboxTemplate"},
+            {name = "CastBarSQWTexture", template = "OptionsDropdownTemplate"},
+            {name = "CastBarSQWColor", template = "OptionsColorOverrideTemplate"},
+        }
+    }, ]]
+    {
+        name = "CastBarsFontContainer",
+        childs = {
+            {name = "CastBarCastNameFont", template = "OptionsDropdownTemplate"},
+            {name = "CastBarCastNameSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CastBarCastNameColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CastBarCastNamePoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CastBarCastNameOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+            {name = "CastBarCastNameJustifyH", template = "OptionsDropdownTemplate"},
+
+            {name = "Divider", template = "OptionsDividerTemplate"},
+
+            {name = "CastBarCastTimeFormat", template = "OptionsDropdownTemplate"},
+            {name = "CastBarCastTimeFont", template = "OptionsDropdownTemplate"},
+            {name = "CastBarCastTimeSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CastBarCastTimeColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CastBarCastTimePoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CastBarCastTimeOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+            {name = "CastBarCastTimeJustifyH", template = "OptionsDropdownTemplate"},
+
+            {name = "Divider2", template = "OptionsDividerTemplate"},
+
+            {name = "CastBarCastTargetEnable", template = "OptionsCheckboxTemplate"},
+            {name = "CastBarCastTargetFont", template = "OptionsDropdownTemplate"},
+            {name = "CastBarCastTargetSize", template = "OptionsCheckboxSliderTemplate"},
+            --{name = "CastBarCastTargetColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CastBarCastTargetPoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CastBarCastTargetOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+            {name = "CastBarCastTargetJustifyH", template = "OptionsDropdownTemplate"},
+
+        }
+    },
+    {
+        name = "CastBarsBackdropContainer",
+        childs = {
+            {name = "CastBarsBackdropSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CastBarsBackdropColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CastBarsBackdropColorByType", template = "OptionsCheckboxTemplate"},
+        }
+    },
+
+>>>>>>> Stashed changes
 }

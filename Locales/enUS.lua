@@ -366,4 +366,102 @@ L.HorizontalGrowthRIGHT = "Right"
 L.HorizontalGrowthLEFT = "Left"
 
 L.DirectionHORIZONTAL = "Horizontal"
+<<<<<<< Updated upstream
 L.DirectionVERTICAL = "Vertical"
+=======
+L.DirectionVERTICAL = "Vertical"
+
+L.ColorizedCooldownFont = "Colorize font by time"
+
+-- ========================================
+-- Cast Bars
+-- ========================================
+
+L.CastBarsOptionsTitle = "Cast Bar Options"
+L.CastBarsOptionsDesc = "Customize size, texture, color and extra options of Cast Bar."
+
+L.None = "None"
+L.Left = "On Left"
+L.Right = "On Right"
+L.LeftAndRight = "On Left and Right"
+
+L.CastBarsIconOptionsTitle = "Cast Bar Icon Options"
+L.CastBarsIconOptionsDesc = "Customize spell Icon appearance."
+
+L.CastBarIconPos = "Show Icon"
+
+L.AttachPoint = "Attach Point"
+
+L.CastBarsSQWLatencyOptionsTitle = "Latency and Spell Queue Window"
+L.CastBarsSQWLatencyOptionsDesc = "Show current |cffe35522Latency|r and |cff0bbe76Spell Queue Window|r.\nThe |cff0bbe76Spell Queue Window|r is a mechanic that allows to queue up next ability before the current one has finished casting. By default it is set to 400 ms.\nFor more info Google |cff0bbe76\"SpellQueueWindow\""
+
+L.CastBarStandartColor = "Color of Regular cast"
+L.CastBarImportantColor = "Color of Important cast"
+L.CastBarChannelColor = "Color of Channeled cast"
+L.CastBarUninterruptableColor = "Color of Uninterruptible cast"
+L.CastBarInterruptedColor = "Color of Interrupted cast"
+L.CastBarReadyColor = "Color when interrupt not on CD"
+
+L.CastTimeCurrent = "Current"
+L.CastTimeMax = "Total"
+L.CastTimeCurrentAndMax = "Current / Total"
+
+L.CastTimeFormat = "Timer Format"
+
+L.CastHideTextBorder = "Hide Font Border"
+
+L.CastHideInterruptAnim = "Hide Interruption Animation"
+
+L.CastQuickFinish = "Hide Cast bar without animation"
+
+L.ColorByCastbarType = "Border color by cast bar type"
+
+L.Width = "Width"
+L.Height = "Height"
+
+L.PlayerCastingBarFrame = "Player Castbar"
+L.TargetFrameSpellBar = "Target Castbar"
+L.FocusFrameSpellBar = "Focus Castbar"
+L.BossTargetFrames = "Boss Castbar"
+
+L.ShieldIconTexture = "Uninteraptable Icon"
+
+L.EnableSpellTargetName = "Show Spell Target"
+
+L.SpellTargetFont = "Spell Target Font"
+L.SpellTargetSize = "Spell Target Font Size"
+
+L.CastBarsFontDesc = "Customize font of a cast Name, Timer and Target."
+
+L.TimerFont = "Timer Font"
+
+L.FontTimerSize = "Timer font Size"
+
+L.UseCustomBGColor = "Custom background color"
+
+L.CDMAuraRemoveSwipe = "Don't show Aura"
+
+L.JustifyH = "Horizontal text Justification"
+
+L.AlwaysShow = "Always Show"
+L.ShowOnAura = "Show only with Aura"
+L.ShowOnAuraAndCD = "Show with Aura or CD"
+
+L.AttachTitle = "Frame Attach Options"
+L.AttachDesc = "Select the frame and anchor point to attach to"
+
+L.EnableAttach = "Enable frame Attachment"
+L.CDMCustomFrameAttachFrameName = "Attach to frame:"
+L.CDMCutomFrameAttachPoint = "Attach Point"
+L.CDMCutomFrameAttachOffset = "Attach point Offset"
+
+L.ShowCountdownNumbersForCharges = "Show charge countdown numbers"
+
+L.AnchorPosOK = "Anchor is |cff0bbe76ОК"
+L.AnchorPosUNSAVED = "|cffff0000UNSAVED!|r\nEXIT Edit Mode to save Anchor"
+L.AnchorPosAttached = "Attached to frame:|cff0bbe76"
+
+L.CreateIconsFrame = "Create Icons frame"
+L.CreateBarsFrame = "Create Bars frame"
+L.CreateChargeBarsFrame = "Create Charge Bars frame"
+>>>>>>> Stashed changes

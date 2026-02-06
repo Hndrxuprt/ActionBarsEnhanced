@@ -22,7 +22,8 @@ SharedMedia\RegisterMedia.lua
 
 constants.lua
 layout.lua
-config.lua
+Config\config.lua
+Config\ConfigCustomBars.lua
 LayoutGrid\LayoutGrid.lua
 frames\ActionBarsEnhanced.xml
 ActionBarsEnhanced_Options.lua
@@ -42,5 +43,6 @@ frames\CooldownManagerCustom.xml
 CooldownManager\CooldownManagerCustomSettings.lua
 CooldownManager\CooldownManagerCustom.lua
 CooldownManager\CooldownManagerCustomCustomization.lua
+CooldownManager\CooldownManagerCustomBar.lua
 
 BlizzFixesAndTweaks.lua

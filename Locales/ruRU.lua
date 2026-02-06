@@ -374,4 +374,104 @@ L.HorizontalGrowthRIGHT = "Справа"
 L.HorizontalGrowthLEFT = "Слева"
 
 L.DirectionHORIZONTAL = "Горизонтально"
+<<<<<<< Updated upstream
 L.DirectionVERTICAL = "Вертикально"
+=======
+L.DirectionVERTICAL = "Вертикально"
+
+L.ColorizedCooldownFont = "Красить текст по времени"
+
+
+-- ========================================
+-- Cast Bars
+-- ========================================
+
+L.CastBarsOptionsTitle = "Настройки кастбара"
+L.CastBarsOptionsDesc = "Кастомизация кастбара"
+
+L.None = "Нет"
+L.Left = "Слева"
+L.Right = "Справа"
+L.LeftAndRight = "Слева и справа"
+
+L.CastBarsIconOptionsTitle = "Иконка кастбара"
+L.CastBarsIconOptionsDesc = "Кастомизация иконки кастбара"
+
+L.CastBarIconPos = "Отображать иконку каста"
+
+L.AttachPoint = "Точка крепления"
+
+L.CastBarsSQWLatencyOptionsTitle = "Задержка и Очередь заклинаний"
+L.CastBarsSQWLatencyOptionsDesc = "Отображает текущую задержку и окно очереди заклинаний. |cff0bbe76Spell Queue Window|r позволяет поставить в очередь следующую способность до того, как закончится чтение предыдущего. По умолчанию это окно установлено на 400 мс. За доп. инфо выйди с этим вопросом в интернет."
+
+L.CastBarStandartColor = "Цвет обычного заклинания"
+L.CastBarImportantColor = "Цвет важного заклинания"
+L.CastBarChannelColor = "Цвет потокового заклинания"
+L.CastBarUninterruptableColor = "Цвет непрерываемого заклинания"
+L.CastBarInterruptedColor = "Цвет прерванного заклинания"
+L.CastBarReadyColor = "Цвет заклинания если кик не в кд"
+
+
+L.CastTimeCurrent = "Текущее"
+L.CastTimeMax = "Общее"
+L.CastTimeCurrentAndMax = "Текущее / Общее"
+
+L.CastTimeFormat = "Формат таймера"
+
+L.CastHideTextBorder = "Скрыть рамку текста"
+
+L.CastHideInterruptAnim = "Скрыть анимацию прерывания"
+
+L.CastQuickFinish = "Скрывать кастбар без анимации"
+
+L.ColorByCastbarType = "Цвет рамки по типу кастбара"
+
+L.Width = "Ширина"
+L.Height = "Высота"
+
+L.PlayerCastingBarFrame = "Кастбар игрока"
+L.TargetFrameSpellBar = "Кастбар цели"
+L.FocusFrameSpellBar = "Кастбар фокуса"
+L.BossTargetFrames = "Кастбар босса"
+
+L.ShieldIconTexture = "Иконка непрерываемого заклинания"
+
+L.EnableSpellTargetName = "Отображать цель заклинания"
+
+L.SpellTargetFont = "Шрифт цели заклинания"
+L.SpellTargetSize = "Размер шрифта цели заклинания"
+
+L.CastBarsFontDesc = "Настройка шрифтов для названия заклинания, таймера и цели заклинания."
+
+L.AlwaysShow = "Всегда отображать"
+L.ShowOnAura = "Только во время ауры"
+L.ShowOnAuraAndCD = "Во время ауры и кд"
+
+L.TimerFont = "Шрифт Таймера"
+
+L.FontTimerSize = "Размер шрифта Таймера"
+
+L.UseCustomBGColor = "Свой цвет фона"
+
+L.CDMAuraRemoveSwipe = "Не показывать ауру"
+
+L.JustifyH = "Горизонтальное выравнивание"
+
+L.EnableAttach = "Использовать привязку к фрейму"
+L.CDMCustomFrameAttachFrameName = "Привязать к фрейму:"
+L.CDMCutomFrameAttachPoint = "Точка крепления"
+L.CDMCutomFrameAttachOffset = "Смещение точки крепления"
+
+L.ShowCountdownNumbersForCharges = "Показывать время заряда"
+
+L.AnchorPosOK = "Привязка фрейма |cff0bbe76ОК"
+L.AnchorPosUNSAVED = "|cffff0000НЕ СОХРАНЕНО!|r\nЗАКРОЙ Редактирование, чтобы сохранить привязку фрейма"
+L.AnchorPosAttached = "Привязан к фрейму:\n|cff0bbe76"
+
+L.AttachTitle = "Настройка привязки фрейма"
+L.AttachDesc = "Выбор фрейма и точки для крепления."
+
+L.CreateIconsFrame = "Создать фрейм Иконок"
+L.CreateBarsFrame = "Создать фрейм Полосок"
+L.CreateChargeBarsFrame = "Создать фрейм Полосок стаков"
+>>>>>>> Stashed changes

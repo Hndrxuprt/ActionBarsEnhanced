@@ -160,6 +160,23 @@ local function OnCooldownClear(cooldownFrame, button)
     end
 end
 
+<<<<<<< Updated upstream
+=======
+local function CheckCooldownState(button)
+    if not button.cooldownUseAuraDisplayTime or button.__removeAura then
+        if (button.isOnGCD and not button.isOnActualCooldown) then
+            button.__isOnGCD = true
+        else
+            if not button.wasSetFromCharges then
+                button.__isOnActualCooldown = true
+            else
+                button.__isOnActualCooldown = false
+            end
+        end
+    end
+end
+
+>>>>>>> Stashed changes
 local function OnCooldownSet(cooldownFrame, button)
     if not cooldownFrame or not button then return end
 
@@ -187,6 +204,12 @@ local function OnCooldownSet(cooldownFrame, button)
                     end
                 end
             end
+<<<<<<< Updated upstream
+=======
+            cooldownFrame:SetCooldownFromDurationObject(duration, true)
+            
+            CheckCooldownState(button)
+>>>>>>> Stashed changes
         end
         timerString = cooldownFrame.__timer
     else
@@ -613,6 +636,7 @@ local function Hook_Layout(self)
     if not self.__padding or forceUpdate then
         if Addon:GetValue("UseCDMIconPadding", nil, frameName) then
             self.__padding = Addon:GetValue("CDMIconPadding", nil, frameName)
+            self.__padding = self.childXPadding or self.childYPadding
         else
             self.__padding = self.childXPadding or self.childYPadding or 100
         end
@@ -937,6 +961,7 @@ local function Hook_Layout(self)
     self.keepEmpty = self.gridLayoutType == 3
     self.__wasVisibleChildren = nil
     self.__visibleChildren = layoutChildren
+    --self.alwaysUpdateLayout = false
     if not self.RefreshLayoutGrid then
         self.RefreshLayoutGrid = function(self)
             local frameName = self:GetName()

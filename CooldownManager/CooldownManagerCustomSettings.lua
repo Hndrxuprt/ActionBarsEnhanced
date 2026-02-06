@@ -433,6 +433,29 @@ function OptionsCDMCustomItemListMixin:OpenFakeAuraSettings(item)
     end)
 end
 
+function OptionsCDMCustomItemListMixin:OpenStagesSettings(item)
+    local itemID = item:GetSpellID()
+    self.FakeAuraFrame.EditBox:SetText("")
+    self.FakeAuraFrame:Show()
+    self.FakeAuraFrame.Button:SetScript("OnClick", function()
+        local newStages = tonumber(self.FakeAuraFrame.EditBox:GetText())
+        newStages = (newStages and newStages > 0) and newStages or nil
+        local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+        local profileTable = Addon.P.profilesList[profileName]
+        local index = ABE_BarsListMixin:GetFrameIndex()
+        if profileTable["CDMCustomFrames"] then
+            local frameTbl = profileTable["CDMCustomFrames"][index]
+            if not frameTbl.stages then
+                frameTbl.stages = {}
+            end
+            frameTbl.stages[itemID] = newStages
+            EventRegistry:TriggerEvent("CDMCustomItemList.StagesAdded", itemID, newStages)
+        end
+        self.FakeAuraFrame:Hide()
+        self:OnShow()
+    end)
+end
+
 
 
 OptionsCDMCustomItemListContentMixin = {}
@@ -506,11 +529,7 @@ function OptionsCDMCustomItemListContentMixin:CreateNewItemFromCursor(cursorType
     if cursorType == "spell" then
         local spellID = select(3, ...)
         local baseSpellID = select(4, ...)
-        if not C_Spell.IsSpellPassive(spellID) then
-            return { type = "spell", id = spellID, baseID = baseSpellID}
-        else
-            Addon.Print("Don't add passive.")
-        end
+        return { type = "spell", id = spellID, baseID = baseSpellID}
     elseif cursorType == "item" then
         local itemID = select(1, ...)
         if itemID then
@@ -560,6 +579,9 @@ function OptionsCDMCustomItemMixin:GetIconTexture()
             if not isKnown then
                 isKnown = C_SpellBook.IsSpellKnown(spellID, i)
             end
+        end
+        if not isKnown then
+            isKnown = ABE_CDMCustomFrameMixin:FindAuraForCurrentSpellID(spellID)
         end
     end
     self.isKnown = isKnown
@@ -614,6 +636,9 @@ function OptionsCDMCustomItemMixin:DisplayContextMenu()
 
         rootDescription:CreateButton(L.FakeAura, function()
             self.parentFrame:OpenFakeAuraSettings(self)
+        end)
+        rootDescription:CreateButton("Use Stacks", function()
+            self.parentFrame:OpenStagesSettings(self)
         end)
         rootDescription:CreateDivider()
         rootDescription:CreateButton(L.Delete, function()

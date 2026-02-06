@@ -272,6 +272,10 @@ function ABE_BarsListMixin:ResetBarSettings(barName)
     ActionBarsEnhancedProfilesMixin:ResetCatOptions(barName)
 end
 
+function ABE_BarsListMixin:GetFrame()
+    return self
+end
+
 function ABE_BarsListMixin:InitButtons(buttons, frame)
     local currentProfile = Addon:GetCurrentProfile()
     local parentFrame = self
@@ -281,7 +285,7 @@ function ABE_BarsListMixin:InitButtons(buttons, frame)
         local template = "ABE_BarsListButtonTemplate"
 
         if buttonData.label == "AddNewGroup" or buttonData.label == "AddCustomFrame" then
-            template = "ABE_BarsListCreateGroupButtonTemplate"
+            template = "ABE_BarsListCreateGroupFrameTemplate"
         end
 
         local button = CreateFrame("Button", nil, frame, template)
@@ -351,30 +355,6 @@ function ABE_BarsListMixin:InitButtons(buttons, frame)
         button:SetScript("OnClick", function(self, button, down)
             if buttonData.label == "AddNewGroup" then
                 Addon.Print("New feature soon.")
-                return
-            end
-            if buttonData.label == "AddCustomFrame" then
-                local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
-                local profileTable = Addon.P.profilesList[profileName]
-
-                if not profileTable["CDMCustomFrames"] then
-                    profileTable["CDMCustomFrames"] = {}
-                end
-                local index = GetNextCustomFrameID()
-                local frameLabel = "CDMCustomFrame_" .. index
-                
-                table.insert(profileTable["CDMCustomFrames"], {
-                    label = frameLabel,
-                    name = "",
-                    layout = "CustomFrameCooldownViewer",
-                    point = {},
-                    trackedIDs = {},
-                    index = index,
-                })
-
-                EventRegistry:TriggerEvent("CDMCustomItemList.CreateNewFrame", frameLabel, "Custom Frame "..index)
-
-                parentFrame:RefreshMenu()
                 return
             end
 
@@ -552,3 +532,59 @@ end
 ABE_BarsListHeaderMixin = {}
 
 ABE_BarsGroupButtonMixin = {}
+
+ABE_BarsGroupButtonIconMixin = {}
+
+local function CreateCustomFrame(layout, template)
+    local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+    local profileTable = Addon.P.profilesList[profileName]
+
+    if not profileTable["CDMCustomFrames"] then
+        profileTable["CDMCustomFrames"] = {}
+    end
+
+    local index = GetNextCustomFrameID()
+    local frameLabel = "CDMCustomFrame_" .. index
+
+    table.insert(profileTable["CDMCustomFrames"], {
+        label = frameLabel,
+        name = "",
+        layout = layout,
+        template = template,
+        point = {},
+        trackedIDs = {},
+        index = index,
+    })
+
+    EventRegistry:TriggerEvent("CDMCustomItemList.CreateNewFrame", frameLabel, "Custom Frame "..index)
+
+    local listFrame = ABE_BarsListMixin:GetFrame()
+    listFrame:RefreshMenu()
+
+end
+
+function ABE_BarsGroupButtonIconMixin:OnClick()
+
+    self:DisplayContextMenu()
+
+    --[[ CreateCustomFrame("CustomFrameCooldownViewer", "ABE_CDMCustomFrame")
+
+    local listFrame = ABE_BarsListMixin:GetFrame()
+    listFrame:RefreshMenu() ]]
+end
+
+function ABE_BarsGroupButtonIconMixin:DisplayContextMenu()
+    MenuUtil.CreateContextMenu(self, function(owner, rootDescription)
+        rootDescription:SetTag("CDMCustom CreateMenu")
+
+        rootDescription:CreateButton(L.CreateIconsFrame, function()
+            CreateCustomFrame("CustomFrameCooldownViewer", "ABE_CDMCustomFrame")
+        end)
+        
+        rootDescription:CreateDivider()
+        
+        rootDescription:CreateButton(L.CreateBarsFrame, function()
+            CreateCustomFrame("CustomFrameBarsCooldownViewer", "ABE_CDMCustomBarFrame")
+        end)
+    end)
+end
