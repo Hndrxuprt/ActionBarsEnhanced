@@ -48,8 +48,6 @@ Addon.GridLayoutType = {
     [2] = L.GridCompact,
     [3] = L.GridFixed,
 }
-<<<<<<< Updated upstream
-=======
 Addon.CastingBarIconPosition = {
     [1] = L.None,
     [2] = L.Left,
@@ -94,7 +92,6 @@ do
 
     Addon.cooldownColorCurve = cooldownColorCurve
 end
->>>>>>> Stashed changes
 
 Addon.Defaults = {
     CurrentLoopGlow = 1,
@@ -406,9 +403,6 @@ Addon.Defaults = {
 
     CDMGridLayoutType = 3,
 
-<<<<<<< Updated upstream
-    CDMHideWhenInactive = false,
-=======
     CurrentHideWhenInactive = 1,
 
     ColorizedCooldownFont = false,
@@ -583,7 +577,6 @@ Addon.Defaults = {
     CDMCustomFramePipSizeY = 30,
     
 
->>>>>>> Stashed changes
 }
 
 Addon.Templates = {

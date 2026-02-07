@@ -366,9 +366,6 @@ L.HorizontalGrowthRIGHT = "Right"
 L.HorizontalGrowthLEFT = "Left"
 
 L.DirectionHORIZONTAL = "Horizontal"
-<<<<<<< Updated upstream
-L.DirectionVERTICAL = "Vertical"
-=======
 L.DirectionVERTICAL = "Vertical"
 
 L.ColorizedCooldownFont = "Colorize font by time"
@@ -464,4 +461,3 @@ L.AnchorPosAttached = "Attached to frame:|cff0bbe76"
 L.CreateIconsFrame = "Create Icons frame"
 L.CreateBarsFrame = "Create Bars frame"
 L.CreateChargeBarsFrame = "Create Charge Bars frame"
->>>>>>> Stashed changes

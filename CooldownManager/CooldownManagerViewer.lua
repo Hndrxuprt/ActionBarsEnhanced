@@ -160,8 +160,6 @@ local function OnCooldownClear(cooldownFrame, button)
     end
 end
 
-<<<<<<< Updated upstream
-=======
 local function CheckCooldownState(button)
     if not button.cooldownUseAuraDisplayTime or button.__removeAura then
         if (button.isOnGCD and not button.isOnActualCooldown) then
@@ -176,7 +174,6 @@ local function CheckCooldownState(button)
     end
 end
 
->>>>>>> Stashed changes
 local function OnCooldownSet(cooldownFrame, button)
     if not cooldownFrame or not button then return end
 
@@ -204,12 +201,9 @@ local function OnCooldownSet(cooldownFrame, button)
                     end
                 end
             end
-<<<<<<< Updated upstream
-=======
             cooldownFrame:SetCooldownFromDurationObject(duration, true)
             
             CheckCooldownState(button)
->>>>>>> Stashed changes
         end
         timerString = cooldownFrame.__timer
     else

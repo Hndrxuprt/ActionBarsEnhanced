@@ -33,11 +33,6 @@ function ABE_CDMCustomItemMixin:OnLoad()
 end
 
 function ABE_CDMCustomItemMixin:OnShow()
-<<<<<<< Updated upstream
-    --[[ if self:GetSpellID() then
-        self:RefreshData()
-    end ]]
-=======
     if self:GetSpellID() then
         C_Timer.After(0, function()
             self:RefreshData()
@@ -54,7 +49,6 @@ function ABE_CDMCustomItemMixin:OnShow()
     self:RegisterEvent("ITEM_COUNT_CHANGED")
     self:RegisterEvent("BAG_UPDATE_DELAYED")
     self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player", "pet")
->>>>>>> Stashed changes
     
 end
 
@@ -79,8 +73,6 @@ local function IsHealthstoneItem(spellID)
     return false
 end
 
-<<<<<<< Updated upstream
-=======
 function ABE_CDMCustomItemMixin:OnEvent(event, ...)
     if event == "SPELL_UPDATE_COOLDOWN" then
 		local spellID, baseSpellID, category, startRecoveryCategory = ...
@@ -147,7 +139,6 @@ function ABE_CDMCustomItemMixin:OnEvent(event, ...)
     end
 end
 
->>>>>>> Stashed changes
 function ABE_CDMCustomItemMixin:OnEnter()
     local showTooltip = false
     if showTooltip then
@@ -286,16 +277,9 @@ function ABE_CDMCustomItemMixin:GetCooldownInfo()
             enable = enable,
         }
     elseif self.type == "spell" then
-<<<<<<< Updated upstream
-        self.cooldownInfo = C_Spell.GetSpellCooldown(self.spellID)
-        if not isBeta then
-            self.cooldownInfo.isOnGCD, self.cooldownInfo.isOnActualCooldown = Addon:IsSpellOnGCD(self.spellID)
-        end
-=======
         self.overrideID = C_Spell.GetOverrideSpell(self.spellID)
         local spellID = self.overrideID or self.spellID
         self.cooldownInfo = C_Spell.GetSpellCooldown(spellID)
->>>>>>> Stashed changes
     elseif self.type == "slot" then
         --self.cooldownInfo = C_Spell.GetSpellCooldown(self:GetSpellID())
         local start, duration, enable = GetInventoryItemCooldown("player", self.slotID)
@@ -372,13 +356,6 @@ function ABE_CDMCustomItemMixin:RefreshCount()
         local charges = C_Spell.GetSpellCharges(self.spellID)
         count = charges and charges.currentCharges or ""
 
-<<<<<<< Updated upstream
-        if not isBeta then
-            self.Applications:SetAlpha((charges ~= nil) and math.min(charges.currentCharges, 1) or 1)
-        else
-            self.Applications:SetAlpha((charges ~= nil) and (charges.currentCharges) or 1)
-        end
-=======
         if not self.spellID then return end
 
         local charges = C_Spell.GetSpellCharges(self.spellID) or {}
@@ -394,7 +371,6 @@ function ABE_CDMCustomItemMixin:RefreshCount()
 
         --self.Applications:SetAlphaFromBoolean(((charges.maxCharges > 1) and (charges.currentCharges ~= nil)), tonumber(charges.currentCharges), 0 )
         applications:SetAlpha(charges.currentCharges ~= nil and tonumber(charges.currentCharges) or 1)
->>>>>>> Stashed changes
     end
     --[[ if self.spellID == 1966 then
         Addon:DebugPrint("RefreshCount: ", count)
@@ -407,15 +383,10 @@ function ABE_CDMCustomItemMixin:RefreshCount()
 end
 
 function ABE_CDMCustomItemMixin:GetChargesCooldownInfo()
-<<<<<<< Updated upstream
-    local cooldownFrame = self.Cooldown
-    local auraCooldown = self.AuraCooldown
-=======
     local cooldownFrame = self:GetCooldownFrame()
     local auraCooldown = self:GetAuraFrame()
 
     if not self.spellID then return false end
->>>>>>> Stashed changes
 
     local charges = C_Spell.GetSpellCharges(self.spellID)
 
@@ -846,8 +817,6 @@ function ABE_CDMCustomFrameMixin:OnShow()
     else
         self:UnregisterEvent("UNIT_AURA")
     end
-<<<<<<< Updated upstream
-=======
 end
 
 function ABE_CDMCustomFrameMixin:OnShow()
@@ -863,7 +832,6 @@ function ABE_CDMCustomFrameMixin:OnShow()
     self:RegisterUnitAura()
     self:RegisterUnitEvent("UNIT_PET", "player")
     --self:RegisterEvent("PLAYER_TOTEM_UPDATE")
->>>>>>> Stashed changes
     --self:RegisterUnitEvent("UNIT_TARGET", "player")
 end
 
@@ -987,14 +955,6 @@ function ABE_CDMCustomFrameMixin:OnEvent(event, ...)
                     for _, frameName in ipairs(CooldownManagerFrames) do
                         local frame = _G[frameName]
                         if frame then
-<<<<<<< Updated upstream
-                            itemFrames = frame.auraInstanceIDToItemFramesMap[auraData.auraInstanceID]
-                            if itemFrames then
-                                for _, item in ipairs(itemFrames) do
-                                    local spellID = item.cooldownInfo.spellID
-                                    self:OnAuraAddedEvent(spellID, auraData)
-                                    return
-=======
                             RunNextFrame(function()
                                 itemFrames = frame.auraInstanceIDToItemFramesMap[auraData.auraInstanceID]
                                 if itemFrames then
@@ -1005,9 +965,8 @@ function ABE_CDMCustomFrameMixin:OnEvent(event, ...)
                                         self:OnAuraAddedEvent(spellID, overrideSpellID, auraData)
                                         return
                                     end
->>>>>>> Stashed changes
                                 end
-                            end
+                            end)
                         end
                     end
                 end
@@ -1039,13 +998,9 @@ function ABE_CDMCustomFrameMixin:OnEvent(event, ...)
         end
     end
     
-<<<<<<< Updated upstream
-    if event == "PLAYER_SPECIALIZATION_CHANGED" or event == "PLAYER_TALENT_UPDATE" or event == "TRAIT_CONFIG_UPDATED" then
-=======
     if event == "PLAYER_SPECIALIZATION_CHANGED" or event == "PLAYER_TALENT_UPDATE"
     or event == "TRAIT_CONFIG_UPDATED" or event == "CHALLENGE_MODE_START"
     or event == "UNIT_PET" then
->>>>>>> Stashed changes
         self:RefreshLayout()
     end
 end
@@ -1574,11 +1529,7 @@ local function ProcessEvent(self, event, ...)
 
         for index, data in ipairs(profileTable["CDMCustomFrames"]) do
             if data then
-<<<<<<< Updated upstream
-                local frame = ABE_CDMCustomFrameMixin:CreateFrame("CDMCustomFrame_" .. index, nil, nil, nil, data.point.x or 0, data.point.y or 0)
-=======
                 local frame = ABE_CDMCustomFrameMixin:CreateFrame( profileTable["CDMCustomFrames"][index].label, nil, nil, nil, data.point.x or 0, data.point.y or 0, data.template)
->>>>>>> Stashed changes
                 frame:SetDisplayName(data.name)
             end
         end

@@ -374,9 +374,6 @@ L.HorizontalGrowthRIGHT = "Справа"
 L.HorizontalGrowthLEFT = "Слева"
 
 L.DirectionHORIZONTAL = "Горизонтально"
-<<<<<<< Updated upstream
-L.DirectionVERTICAL = "Вертикально"
-=======
 L.DirectionVERTICAL = "Вертикально"
 
 L.ColorizedCooldownFont = "Красить текст по времени"
@@ -474,4 +471,3 @@ L.AttachDesc = "Выбор фрейма и точки для крепления.
 L.CreateIconsFrame = "Создать фрейм Иконок"
 L.CreateBarsFrame = "Создать фрейм Полосок"
 L.CreateChargeBarsFrame = "Создать фрейм Полосок стаков"
->>>>>>> Stashed changes

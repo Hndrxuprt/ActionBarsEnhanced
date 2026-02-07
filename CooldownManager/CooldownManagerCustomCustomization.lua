@@ -12,14 +12,9 @@ function ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
     self:RefreshIconMask(frame, frameName)
     self:RefreshCooldownFrame(frame, frameName)
     self:RefreshBackdrop(frame, frameName)
-<<<<<<< Updated upstream
-    self:RefreshLoopGlow(frame, frameName)
-    self:RefreshCooldownFont(frame, frameName)
-=======
     --self:RefreshLoopGlow(frame, frameName)
     self:RefreshCooldownFont(frame, frameName)   
 
->>>>>>> Stashed changes
 end
 
 function ABE_CDMCustomFrameCustomized:RefreshIconMask(frame, frameName)
@@ -117,11 +112,6 @@ function ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName)
     frame.cooldownColorCurve:AddPoint(60, CreateColor(1, 1, 1, 1))
 
     for itemFrame in frame.itemPool:EnumerateActive() do
-<<<<<<< Updated upstream
-        local cooldownFrame = itemFrame.Cooldown
-        local auraFrame = itemFrame.AuraCooldown
-        local swipeTextureIndex = Addon:GetValue("CurrentCDMSwipeTexture", nil, frameName)
-=======
         local cooldownFrame = itemFrame.Icon.Cooldown or itemFrame.Cooldown
         local auraFrame = itemFrame.Icon.AuraCooldown or itemFrame.AuraCooldown
         
@@ -129,7 +119,6 @@ function ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName)
         itemFrame.__removeAura = Addon:GetValue("CDMAuraRemoveSwipe", nil, frameName)
         
         local swipeTextureIndex = Addon:GetValue("CurrentSwipeTexture", nil, frameName)
->>>>>>> Stashed changes
 
         if swipeTextureIndex > 1 then
             cooldownFrame:SetSwipeTexture(T.SwipeTextures[swipeTextureIndex].texture)
@@ -138,15 +127,6 @@ function ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName)
 
         if Addon:GetValue("UseCDMSwipeSize", nil, frameName) then
             cooldownFrame:ClearAllPoints()
-<<<<<<< Updated upstream
-            cooldownFrame:SetPoint("CENTER", itemFrame, "CENTER")
-            local size = Addon:GetValue("CDMSwipeSize", nil, frameName)
-            cooldownFrame:SetSize(size, size)
-
-            auraFrame:ClearAllPoints()
-            auraFrame:SetPoint("CENTER", itemFrame, "CENTER")
-            local size = Addon:GetValue("CDMSwipeSize", nil, frameName)
-=======
             cooldownFrame:SetPoint("CENTER", cooldownFrame:GetParent(), "CENTER")
             local size = Addon:GetValue("SwipeSize", nil, frameName)
             cooldownFrame:SetSize(size, size)
@@ -154,7 +134,6 @@ function ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName)
             auraFrame:ClearAllPoints()
             auraFrame:SetPoint("CENTER", auraFrame:GetParent(), "CENTER")
             local size = Addon:GetValue("SwipeSize", nil, frameName)
->>>>>>> Stashed changes
             auraFrame:SetSize(size, size)            
         else
             cooldownFrame:SetAllPoints()
@@ -335,14 +314,10 @@ function ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
     frameName = frameName or frame.frameName
     for itemFrame in frame.itemPool:EnumerateActive() do
 
-<<<<<<< Updated upstream
-        itemFrame.Cooldown:SetCountdownAbbrevThreshold(620)
-=======
         local cooldownFrame = itemFrame.Icon.Cooldown or itemFrame.Cooldown
         local auraCooldown  = itemFrame.Icon.AuraCooldown or itemFrame.AuraCooldown
 
         cooldownFrame:SetCountdownAbbrevThreshold(920)
->>>>>>> Stashed changes
 
         local color = {r = 1.0, g = 1.0, b = 1.0, a = 1.0}
         if Addon:GetValue("UseCooldownCDMFontColor", nil, frameName) then

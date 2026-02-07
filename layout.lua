@@ -654,8 +654,6 @@ Addon.CustomFrameCooldownViewer = {
             {name = "CustomColorOnActualCD", template = "OptionsColorOverrideTemplate"},
         }
     },
-<<<<<<< Updated upstream
-=======
 }
 Addon.CustomFrameBarsCooldownViewer = {
     {
@@ -955,5 +953,4 @@ Addon.TargetFrameSpellBar = {
         }
     },
 
->>>>>>> Stashed changes
 }
