@@ -137,6 +137,8 @@ end
 function ABE_CastingBarMixin.SetLook(self, look)
     if not self then return end
 
+    self.__barType = self.__barType or {}
+
     local frameName = self.boss and "BossTargetFrames" or self:GetName()
 
     self:SetIgnoreParentAlpha(true)
@@ -323,7 +325,7 @@ function ABE_CastingBarMixin.HandleCastStop(self, event, castID, castComplete, i
     end
     
     if Addon:GetValue("CastQuickFinish", nil, frameName) then
-        self:StopFinishAnims()
+        --self:StopFinishAnims()
         self:Hide()
     else
         if not self.FadeOutAnim:IsPlaying() then
@@ -332,10 +334,67 @@ function ABE_CastingBarMixin.HandleCastStop(self, event, castID, castComplete, i
     end
 end
 
+function ABE_CastingBarMixin.OnHandleInterruptOrSpellFailed(self)
+    if not self then return end
+
+    local frameName = self.boss and "BossTargetFrames" or self:GetName()
+
+    local texture = self:GetStatusBarTexture()
+
+    local barType = self.__barType or {}
+
+    barType.interrupted = true
+
+    local color = self.CASTBAR_COLORS["standard"]
+
+    color.r, color.g, color.b, color.a = texture:GetVertexColor()
+    texture:SetVertexColorFromBoolean(barType.interrupted, self.CASTBAR_COLORS["interrupted"], color)
+end
+
+function ABE_CastingBarMixin.SetCustomColor(self)
+
+    if not self then return end
+
+    local frameName = self.boss and "BossTargetFrames" or self:GetName()
+
+    local texture = self:GetStatusBarTexture()
+
+    local barType = self.__barType or {}
+
+    local color = self.CASTBAR_COLORS["standard"]
+
+    texture:SetVertexColor(color.r, color.g, color.b, color.a)
+    
+    if barType.channel ~= nil then
+        texture:SetVertexColorFromBoolean(barType.channel, self.CASTBAR_COLORS["channel"], color)
+    end
+    if barType.empowered ~= nil then
+        color.r, color.g, color.b, color.a = texture:GetVertexColor()
+        texture:SetVertexColorFromBoolean(barType.empowered, self.CASTBAR_COLORS["empowered"], color)
+    end
+    if barType.uninterruptable ~= nil then
+        color.r, color.g, color.b, color.a = texture:GetVertexColor()
+        texture:SetVertexColorFromBoolean(barType.uninterruptable, self.CASTBAR_COLORS["uninterruptable"], color)
+    end
+
+    if self.spellID and Addon:GetValue("UseCastBarImportantColor", nil, frameName) then
+        color.r, color.g, color.b, color.a = texture:GetVertexColor()
+        local isImportant = C_Spell.IsSpellImportant(self.spellID)
+        texture:SetVertexColorFromBoolean(isImportant, self.CASTBAR_COLORS["important"], color)
+    end
+    
+    if Addon:GetValue("CastBarsBackdropColorByType", nil, frameName) then
+        local color = {}
+        color.r,color.g,color.b,color.a = Addon:GetRGBA("CastBarsBackdropColor", nil, frameName)
+        --SetBackdropBorderColorByType(self, color)
+    end
+
+end
+
 function ABE_CastingBarMixin.GetTypeInfo(self, barType)
     if not self then return end
 
-    barType = barType or "standard"
+    barType = self.__barType or {}
 
     local frameName = self.boss and "BossTargetFrames" or self:GetName()
 
@@ -357,7 +416,9 @@ function ABE_CastingBarMixin.GetTypeInfo(self, barType)
         readytokick         = Addon:GetValue("UseCastBarReadyColor", nil, frameName) and { r=rr, g=rg, b=rb, a=ra } or { r=0.2, g=0.95, b=0.2, a=1.0 },
     }
 
-    local color = self.CASTBAR_COLORS[barType]
+    ABE_CastingBarMixin.SetCustomColor(self)
+
+    --[[ local color = self.CASTBAR_COLORS[barType]
     C_Timer.After(0, function() 
         self:SetStatusBarColor(color.r, color.g, color.b, color.a)
         if self.spellID and Addon:GetValue("UseCastBarImportantColor", nil, frameName) then
@@ -371,7 +432,7 @@ function ABE_CastingBarMixin.GetTypeInfo(self, barType)
     else
         local r,g,b,a = Addon:GetRGBA("CastBarsBackdropColor", nil, frameName)
         SetBackdropBorderColorByType(self, {r=r,g=g,b=b,a=a})
-    end
+    end ]]
 end
 
 function ABE_CastingBarMixin.AddStages(self, numStages)
@@ -462,7 +523,8 @@ function ABE_CastingBarMixin.OnUpdate(self, elapsed)
         local targetNameText = UnitSpellTargetName(self.unit)
         local classFilename = UnitSpellTargetClass(self.unit)
 
-        if not targetNameText or self.barType == "empowered" or self.barType == "interrupted" then
+        if not targetNameText or ((not issecretvalue(self.__barType.empowered) and self.__barType.empowered)
+        or (not issecretvalue(self.__barType.interrupted) and self.__barType.interrupted)) then
             self.__CastTargetNameText:SetText("")
             return
         end
@@ -482,13 +544,18 @@ function ABE_CastingBarMixin.OnUpdate(self, elapsed)
 
         self.__CastTargetNameText:SetText(targetNameText or "")
     end
-    if self:IsInterruptable() and (self.unit ~= "player" and UnitCanAttack(self.unit, "player")) and Addon:GetValue("UseCastBarReadyColor", nil, frameName) then
+    if (self.unit ~= "player" and UnitCanAttack(self.unit, "player")) and Addon:GetValue("UseCastBarReadyColor", nil, frameName) then
         local interruptSpellID = Addon:GetInterruptSpell()
         if interruptSpellID then
-            local color = self.CASTBAR_COLORS[self.barType]
-            local interruptDuration = C_Spell.GetSpellCooldownDuration(interruptSpellID)
             local texture = self:GetStatusBarTexture()
+            local color = {}
+            color.r, color.g, color.b, color.a = texture:GetVertexColor()
+            local interruptDuration = C_Spell.GetSpellCooldownDuration(interruptSpellID)
             texture:SetVertexColorFromBoolean(interruptDuration:IsZero(), self.CASTBAR_COLORS["readytokick"], color)
+            if self.__barType.uninterruptable ~= nil then
+                color.r, color.g, color.b, color.a = texture:GetVertexColor()
+                texture:SetVertexColorFromBoolean(self.__barType.uninterruptable, self.CASTBAR_COLORS["uninterruptable"], color)
+            end
         end
     end
 
@@ -503,7 +570,7 @@ function ABE_CastingBarMixin.ShowSpark(self)
     local pipWidth = Addon:GetValue("UseCastBarPipSize", nil, frameName) and Addon:GetValue("CastBarPipSizeX", nil, frameName) or 8
     local pipHeight = Addon:GetValue("UseCastBarPipSize", nil, frameName) and Addon:GetValue("CastBarPipSizeY", nil, frameName) or 20
 
-    local currentBarType = self.barType
+    local currentBarType = self.__barType
     if currentBarType == "interrupted" then
         Addon:SetTexture(self.Spark, sparkTexture, false)
 		self.Spark:SetSize(pipWidth, pipHeight)
@@ -516,22 +583,29 @@ function ABE_CastingBarMixin.ShowSpark(self)
 		self.Spark:SetSize(pipWidth, pipHeight)
 	end
 
-    for barType, barTypeInfo in pairs(CASTING_BAR_TYPES) do
-		local sparkFx = barTypeInfo.sparkFx and self[barTypeInfo.sparkFx];
-		if sparkFx then
-			sparkFx:Hide()
-		end
-	end
+    if self.CraftGlow then
+        self.CraftGlow:Hide()
+    end
+    if self.StandardGlow then
+        self.StandardGlow:Hide()
+    end
+    if self.ChannelShadow then
+        self.ChannelShadow:Hide()
+    end
 
 end
 
 function ABE_CastingBarMixin.PlayFinishAnim(self)
-    for _, barTypeInfo in pairs(CASTING_BAR_TYPES) do
-		local finishAnim = barTypeInfo.finishAnim and self[barTypeInfo.finishAnim];
-		if finishAnim then
-			finishAnim:Stop()
-		end
-	end
+    if self.CraftingFinish then
+        self.CraftingFinish:Stop()
+    end
+    if self.StandardFinish then
+        self.StandardFinish:Stop()
+    end
+    if self.ChannelFinish then
+        self.ChannelFinish:Stop()
+    end
+
     if self.FlashAnim then
 		self.FlashAnim:Stop()
 	end
@@ -576,10 +650,11 @@ function ABE_CastingBarMixin.ProcessShieldBorder(self)
     if self.BorderShield then
         local shieldAtlas = T.CastBarShieldIcons[Addon:GetValue("CurrentCastBarShieldIconTexture", nil, frameName)]
         if shieldAtlas.hide then
-            self.BorderShield:Hide()
+            self.BorderShield:SetAlpha(0)
         else
             self.BorderShield:ClearAllPoints()
-            self.BorderShield:SetShown(self.showShield and not self:IsInterruptable())
+            self.BorderShield:SetAlpha(1)
+            self.BorderShield:SetShown(false)
             local layer, sublevel = self.Text:GetDrawLayer()
             self.BorderShield:SetDrawLayer("OVERLAY",7)
             Addon:SetTexture(self.BorderShield, shieldAtlas.texture, false)
@@ -601,8 +676,8 @@ local function StartCastbar(self)
     local texture = spellInfo.iconID
 
 
-    self.barType = self:GetEffectiveType(false, false, false, false)
-    self:SetStatusBarTexture(self:GetTypeInfo(self.barType).filling)
+    --self.barType = self:GetEffectiveType(false, false, false, false)
+    --self:SetStatusBarTexture(self:GetTypeInfo(self.barType).filling)
 
     self.value = 5
     self.maxValue = 15
@@ -631,10 +706,21 @@ end
 
 function ABE_CastingBarMixin.OnOptionsSelected(self, show)
     if show then
-        StartCastbar(self)
+        --StartCastbar(self)
     else
         self:Hide()
     end
+end
+
+function ABE_CastingBarMixin.OnGetEffectiveType(self, isChannel, notInterruptible, isTradeSkill, isEmpowered)
+    self.__barType = {
+        standard = true,
+        channel = isChannel,
+        uninterruptable = notInterruptible,
+        applyingcrafting = isTradeSkill,
+        empowered = isEmpowered,
+        interrupted = false,
+    }
 end
 
 function ABE_CastingBarMixin.SetHooks(frame)
@@ -677,5 +763,11 @@ function ABE_CastingBarMixin.SetHooks(frame)
     end
     if frame.UpdateHighlightImportantCast then
         hooksecurefunc(frame, "UpdateHighlightImportantCast", ABE_CastingBarMixin.UpdateHighlightImportantCast)
+    end
+    if frame.GetEffectiveType then
+        hooksecurefunc(frame, "GetEffectiveType" , ABE_CastingBarMixin.OnGetEffectiveType)
+    end
+    if frame.HandleInterruptOrSpellFailed then
+        hooksecurefunc(frame, "HandleInterruptOrSpellFailed", ABE_CastingBarMixin.OnHandleInterruptOrSpellFailed)
     end
 end

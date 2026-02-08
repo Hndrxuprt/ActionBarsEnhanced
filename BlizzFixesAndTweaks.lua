@@ -47,9 +47,6 @@ local function ReanchorFrame(self)
         }
         self.systemInfo.isInDefaultPosition = false
     end
-<<<<<<< Updated upstream
-    EditModeManagerFrame:OnSystemPositionChange(self)
-=======
     local layoutFramesGoingUp
     if self.__layoutFramesGoingUp ~= nil then
         layoutFramesGoingUp = self.__layoutFramesGoingUp == 1
@@ -174,7 +171,6 @@ local function ShowAnchorIcon(self)
     self.__anchorIcon:SetPoint("CENTER", self, framePoint, 0, 0)
     self.__anchorIcon:SetVertexColor(1,1,1,0.5)
     self.__anchorIcon:Show()
->>>>>>> Stashed changes
 end
 
 local function OnEditModeEnter()

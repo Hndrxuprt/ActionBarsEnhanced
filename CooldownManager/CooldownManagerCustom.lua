@@ -978,7 +978,7 @@ function ABE_CDMCustomFrameMixin:OnEvent(event, ...)
                                         return
                                     end
                                 end
-                            end
+                            end)
                         end
                     end
                 end

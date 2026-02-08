@@ -223,7 +223,7 @@ function Addon:GetInterruptSpell()
     local interruptSpells = Addon.InterruptMap[UnitClassBase("player")] or {}
 
     for _, spellID in ipairs(interruptSpells) do
-        if C_SpellBook.IsSpellKnown(spellID) then
+        if C_SpellBook.IsSpellKnownOrInSpellBook(spellID) or C_SpellBook.IsSpellKnownOrInSpellBook(spellID, Enum.SpellBookSpellBank.Pet) then
             return spellID
         end
     end

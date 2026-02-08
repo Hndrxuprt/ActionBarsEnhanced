@@ -40,11 +40,11 @@ local function Hook_UpdateShownState(self, state)
         self.ChannelShadow:Hide()
     end
 
-    if self.barType == "empowered" then
+    --[[ if self.barType == "empowered" then
         self.__latencyBar:Hide()
         self.__sqwBar:Hide()
         return
-    end
+    end ]]
     --local timeDiff = GetTime() - sendTime
 
     local _, _, latencyHome, latencyWorld = GetNetStats()
