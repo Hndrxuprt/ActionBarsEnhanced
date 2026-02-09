@@ -8,6 +8,7 @@ ABE_CDMCustomFrameCustomized = {}
 function ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
     frameName = frameName or frame.frameName
 
+    self:RefreshFrameAlpha(frame, frameName)
     self:RefreshItemSize(frame, frameName)
     self:RefreshIconMask(frame, frameName)
     self:RefreshCooldownFrame(frame, frameName)
@@ -15,6 +16,19 @@ function ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
     self:RefreshLoopGlow(frame, frameName)
     self:RefreshCooldownFont(frame, frameName)   
 
+end
+
+function ABE_CDMCustomFrameCustomized:RefreshFrameAlpha(frame, frameName)
+    frameName = frameName or frame.frameName
+
+    local alpha = 1
+    if Addon:GetValue("UseCDMCustomFrameAlpha", nil, frameName) then
+        alpha = Addon:GetValue("CDMCustomFrameAlpha", nil, frameName) or 1
+    end
+
+    if frame.Container then
+        frame.Container:SetAlpha(alpha)
+    end
 end
 
 function ABE_CDMCustomFrameCustomized:RefreshIconMask(frame, frameName)

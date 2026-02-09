@@ -299,6 +299,9 @@ L.CDMCustomFrameTrackSlot17 = "Добавить Оружие #2 (17 слот)"
 L.CDMCustomFrameHideWhen0 = "Скрывать если количество 0"
 
 L.CDMCustomFrameAlphaOnCD = "Прозрачность если НЕ на КД"
+L.FrameAlpha = "Альфа фрейма"
+L.CDMFrameAlphaDesc = "Настройка альфы текущего фрейма."
+L.CDMCustomFrameAlphaDesc = "Настройка альфы текущего кастомного фрейма."
 
 L.CDMCustomFrameGridLayoutTitle = "Настройка сетки фрейма"
 L.CDMCustomFrameGridLayoutDesc = "Выбрать размер элемента, расстояние между элементами, количество столбцов и направление роста."

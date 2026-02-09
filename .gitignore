@@ -1,1 +1,17 @@
-TODO
+Deploy-ToWoW.ps1
+
+# IDE/editor
+.vscode/
+.idea/
+*.code-workspace
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# OS
+Thumbs.db
+Desktop.ini
