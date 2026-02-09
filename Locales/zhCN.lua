@@ -295,6 +295,9 @@ L.CDMCustomFrameTrackSlot17 = "添加武器 #2（栏位 17）"
 L.CDMCustomFrameHideWhen0 = "数量为 0 时隐藏"
 
 L.CDMCustomFrameAlphaOnCD = "不在冷却时的透明度"
+L.FrameAlpha = "框架透明度"
+L.CDMFrameAlphaDesc = "设置此框架的透明度。"
+L.CDMCustomFrameAlphaDesc = "设置此自定义框架的透明度。"
 
 L.CDMCustomFrameGridLayoutTitle = "框架网格布局"
 L.CDMCustomFrameGridLayoutDesc = "设置物品大小、间距、最大列数和扩展方向。"

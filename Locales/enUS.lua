@@ -294,6 +294,9 @@ L.CDMCustomFrameTrackSlot17 = "Add Weapon #2 (Slot 17)"
 L.CDMCustomFrameHideWhen0 = "Hide when count is 0"
 
 L.CDMCustomFrameAlphaOnCD = "Opacity when NOT on Cooldown"
+L.FrameAlpha = "Frame Opacity"
+L.CDMFrameAlphaDesc = "Set the opacity of this frame."
+L.CDMCustomFrameAlphaDesc = "Set the opacity of this custom frame."
 
 L.CDMCustomFrameGridLayoutTitle = "Frame Grid Layout"
 L.CDMCustomFrameGridLayoutDesc = "Set item size, spacing, max columns, and growth direction."

@@ -364,6 +364,12 @@ Addon.EssentialCooldownViewer = {
         }
     },
     {
+        name = "CooldownViewerAlphaContainer",
+        childs = {
+            {name = "CDMFrameAlpha", template = "OptionsCheckboxSliderTemplate"},
+        }
+    },
+    {
         name = "GlowOptionsContainer",
         childs = {
             {name = "GlowOptions", template = "OptionsDropdownTemplate"},
@@ -481,6 +487,12 @@ Addon.BuffIconCooldownViewer = {
         }
     },
     {
+        name = "CooldownViewerAlphaContainer",
+        childs = {
+            {name = "CDMFrameAlpha", template = "OptionsCheckboxSliderTemplate"},
+        }
+    },
+    {
         name = "FadeOptionsContainer",
         childs = {
             {name = "FadeOutBars", template = "OptionsCheckboxSliderTemplate"},
@@ -565,6 +577,12 @@ Addon.BuffBarCooldownViewer = {
             {name = "GridLayoutType", template = "OptionsDropdownTemplate"},
             {name = "RemovePandemicAnims", template = "OptionsCheckboxTemplate"},
             {name = "RemoveAuraTypeBorder", template = "OptionsCheckboxTemplate"},
+        }
+    },
+    {
+        name = "CooldownViewerAlphaContainer",
+        childs = {
+            {name = "CDMFrameAlpha", template = "OptionsCheckboxSliderTemplate"},
         }
     },
     {
@@ -656,6 +674,12 @@ Addon.CustomFrameCooldownViewer = {
             {name = "CDMCustomFrameVerticalGrowth", template = "OptionsDropdownTemplate"},
             {name = "CDMCustomFrameHorizontalGrowth", template = "OptionsDropdownTemplate"},
             {name = "CDMCustomFrameGridDirection", template = "OptionsDropdownTemplate"},
+        }
+    },
+    {
+        name = "CDMCustomFrameAlphaContainer",
+        childs = {
+            {name = "CDMCustomFrameAlpha", template = "OptionsCheckboxSliderTemplate"},
         }
     },
     {

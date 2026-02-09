@@ -19,6 +19,13 @@ function CooldownManagerEnhanced:ForceUpdate(frameName)
 
     CooldownManagerEnhanced.forced = frameName
     local frame = _G[frameName]
+    if frame then
+        local alpha = 1
+        if Addon:GetValue("UseCDMFrameAlpha", nil, frameName) then
+            alpha = Addon:GetValue("CDMFrameAlpha", nil, frameName) or 1
+        end
+        frame:SetAlpha(alpha)
+    end
     
     frame:Layout()
     --frame:RefreshData()
@@ -498,6 +505,12 @@ local function Hook_Layout(self)
         self.__locked = false
         return
     end
+
+    local alpha = 1
+    if Addon:GetValue("UseCDMFrameAlpha", nil, frameName) then
+        alpha = Addon:GetValue("CDMFrameAlpha", nil, frameName) or 1
+    end
+    self:SetAlpha(alpha)
 
     local forceUpdate = CooldownManagerEnhanced.forced == frameName
 

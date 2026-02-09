@@ -1253,6 +1253,30 @@ Addon.config.containers = {
             },
         }
     },
+    CooldownViewerAlphaContainer = {
+        title = L.FrameAlpha,
+        desc = L.CDMFrameAlphaDesc,
+        childs = {
+            ["CDMFrameAlpha"] = {
+                type            = "checkboxSlider",
+                name            = L.FrameAlpha,
+                checkboxValue   = "UseCDMFrameAlpha",
+                sliderValue     = "CDMFrameAlpha",
+                min             = 0,
+                max             = 1,
+                step            = 0.1,
+                sliderName      = {top = L.FrameAlpha},
+                callback        = function()
+                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    if frame then
+                        frame:SetAlpha(Addon:GetValue("CDMFrameAlpha", nil, frameName) or 1)
+                    end
+                    CooldownManagerEnhanced:ForceUpdate(frameName)
+                end,
+            },
+        }
+    },
     CooldownViewerFontContainer = {
         title = L.FontTitle,
         desc = L.FontDesc,
@@ -1960,6 +1984,27 @@ Addon.config.containers = {
                     local frameLabel = ABE_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
                     frame:RefreshLayout()
+                end,
+            },
+        }
+    },
+    CDMCustomFrameAlphaContainer = {
+        title = L.FrameAlpha,
+        desc = L.CDMCustomFrameAlphaDesc,
+        childs = {
+            ["CDMCustomFrameAlpha"] = {
+                type            = "checkboxSlider",
+                name            = L.FrameAlpha,
+                checkboxValue   = "UseCDMCustomFrameAlpha",
+                sliderValue     = "CDMCustomFrameAlpha",
+                min             = 0,
+                max             = 1,
+                step            = 0.1,
+                sliderName      = {top = L.FrameAlpha},
+                callback        = function()
+                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameLabel]
+                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameLabel)
                 end,
             },
         }

@@ -292,8 +292,12 @@ Addon.Defaults = {
     ButtonsNumber = 12,
 
     CDMEnable = false,
+    UseCDMFrameAlpha = false,
+    CDMFrameAlpha = 1,
     UseCDMIconPadding = false,
     CDMIconPadding = 2,
+    UseCDMCustomFrameAlpha = false,
+    CDMCustomFrameAlpha = 1,
 
     CDMReverseSwipe = false,
     CDMAuraReverseSwipe = false,
