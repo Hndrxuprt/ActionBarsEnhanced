@@ -182,7 +182,7 @@ function Addon:UpdateActionBarGrid(frame, padding, equal)
 
     local frameName = frame:GetName()
 
-    --if frameName == "StanceBar" then return end
+    if frameName == "StanceBar" then return end
 
     padding = padding or Addon:GetValue("CurrentBarPadding", nil, frameName)
 

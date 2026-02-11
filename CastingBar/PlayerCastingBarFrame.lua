@@ -40,11 +40,13 @@ local function Hook_UpdateShownState(self, state)
         self.ChannelShadow:Hide()
     end
 
-    if self.barType == "empowered" then
+    local barType = self.__barType or {}
+
+    --[[ if self.barType == "empowered" then
         self.__latencyBar:Hide()
         self.__sqwBar:Hide()
         return
-    end
+    end ]]
     --local timeDiff = GetTime() - sendTime
 
     local _, _, latencyHome, latencyWorld = GetNetStats()
@@ -60,11 +62,14 @@ local function Hook_UpdateShownState(self, state)
         self.__sqwBar:SetDrawLayer(strata, 2)
 
         Addon:SetTexture(self.__sqwBar, Addon:GetStatusBarTextureByName(Addon:GetValue("CurrentCastBarSQWTexture", nil, frameName)))
-        self.__sqwBar:SetVertexColor(Addon:GetRGBA("CastBarSQWColor", nil, frameName))
+        local r, g, b, a = Addon:GetRGBA("CastBarSQWColor", nil, frameName)
+        self.__sqwBar:SetVertexColor(r, g, b, a)
 
         self.__sqwBar:SetWidth(math.min((self:GetWidth() * (self.__sqw / self.maxValue)), self:GetWidth()))
         self.__sqwBar:SetHeight(self:GetHeight())
         self.__sqwBar:Show()
+
+        self.__sqwBar:SetAlphaFromBoolean(barType.empowered, 0, a)
     else
         self.__sqwBar:Hide()
     end
@@ -75,11 +80,14 @@ local function Hook_UpdateShownState(self, state)
         self.__latencyBar:SetDrawLayer(strata, 3)
 
         Addon:SetTexture(self.__latencyBar, Addon:GetStatusBarTextureByName(Addon:GetValue("CurrentCastBarLatencyTexture", nil, frameName)))
-        self.__latencyBar:SetVertexColor(Addon:GetRGBA("CastBarLatencyColor", nil, frameName))
+        local r, g, b, a = Addon:GetRGBA("CastBarLatencyColor", nil, frameName)
+        self.__latencyBar:SetVertexColor(r, g, b, a)
 
         self.__latencyBar:SetWidth(math.min((self:GetWidth() * (latency / 1000) / self.maxValue), self:GetWidth()))
         self.__latencyBar:SetHeight(self:GetHeight())
         self.__latencyBar:Show()
+
+        self.__latencyBar:SetAlphaFromBoolean(barType.empowered, 0, a)
     else
         self.__latencyBar:Hide()
     end

@@ -929,8 +929,18 @@
 				<Texture parentKey="Icon" setAllPoints="true" atlas="cdm-empty"/>
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="2">
+				<Texture parentKey="HasColor" file="Interface/addons/ActionBarsEnhanced/assets/ABE_Border_Square_4.png" setAllPoints="true" hidden="true"/>
+			</Layer>
+			<Layer level="ARTWORK" textureSubLevel="3">
 				<Texture parentKey="HasAura" atlas="ConduitIconFrame-Corners" setAllPoints="true" desaturated="true" hidden="true">
 					<Color r="1" g="0.6" b="1" a="1"/>
+				</Texture>
+				<Texture parentKey="HasCharges" atlas="plunderstorm-icon-small-utility" hidden="true">
+					<Color r="1" g="1" b="0.1" a="1"/>
+					<Size x="21" y="24"/>
+					<Anchors>
+						<Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="-2"/>
+					</Anchors>
 				</Texture>
 			</Layer>
 			<Layer level="HIGHLIGHT">
@@ -1092,7 +1102,7 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
-				tinsert(UISpecialFrames, self:GetName());
+				--tinsert(UISpecialFrames, self:GetName());
 			</OnLoad>
 		</Scripts>
 	</Frame>

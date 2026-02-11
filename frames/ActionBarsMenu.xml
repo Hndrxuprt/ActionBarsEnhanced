@@ -238,6 +238,52 @@
 			</Layer>
 		</Layers>
 	</Frame>
+	<Frame name="ABE_BarsListCreateGroupFrameTemplate" virtual="true">
+		<Size x="175" y="20"/>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Border" atlas="shop-card-label-bg" hidden="false" alpha="0.6" desaturated="true">
+					<Size x="190" y="22"/>
+					<Anchors>
+						<Anchor point="TOP" relativePoint="TOP"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="CreateGroupIcons" mixin="ABE_BarsGroupButtonIconMixin" virtual="true">
+				<Size x="175" y="20"/>
+				<Anchors>
+					<Anchor point="CENTER"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture parentKey="Plus" atlas="editmode-new-layout-plus-disabled" desaturated="true" hidden="false">
+							<Size x="13" y="13"/>
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<HighlightTexture atlas="glues-characterSelect-icon-plus-hover">
+					<Size x="31" y="31"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</HighlightTexture>
+				<PushedTexture atlas="glues-characterSelect-plus-pressed">
+					<Size x="31" y="31"/>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</PushedTexture>
+				<Scripts>
+					<OnClick method="OnClick"/>
+				</Scripts>
+			</Button>
+		</Frames>
+	</Frame>
 	<Button name="ABE_BarsListCreateGroupButtonTemplate" mixin="ABE_BarsGroupButtonMixin" virtual="true">
 		<Size x="175" y="20"/>
 		<Layers>

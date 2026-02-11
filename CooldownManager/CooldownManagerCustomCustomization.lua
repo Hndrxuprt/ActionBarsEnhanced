@@ -12,7 +12,7 @@ function ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
     self:RefreshIconMask(frame, frameName)
     self:RefreshCooldownFrame(frame, frameName)
     self:RefreshBackdrop(frame, frameName)
-    self:RefreshLoopGlow(frame, frameName)
+    --self:RefreshLoopGlow(frame, frameName)
     self:RefreshCooldownFont(frame, frameName)   
 
 end
@@ -26,8 +26,9 @@ function ABE_CDMCustomFrameCustomized:RefreshIconMask(frame, frameName)
 
     for itemFrame in frame.itemPool:EnumerateActive() do
 
-        local mask = itemFrame.IconMask
-        local icon = itemFrame.Icon
+        local mask = itemFrame.Icon.IconMask or itemFrame.IconMask
+        local icon = itemFrame.Icon.Icon or itemFrame.Icon
+        local iconOverlay = itemFrame.Icon.IconOverlay or itemFrame.IconOverlay
 
         Addon:SetTexture(mask, iconMaskAtlas.texture)
                 
@@ -54,10 +55,10 @@ function ABE_CDMCustomFrameCustomized:RefreshIconMask(frame, frameName)
             icon:SetAllPoints()
         end
 
-        if iconMaskIndex > 1 then
-            itemFrame.IconOvelay:Hide()
-        else
-            itemFrame.IconOvelay:Show()
+        if iconOverlay and iconMaskIndex > 1 then
+            iconOverlay:Hide()
+        elseif iconOverlay then
+            iconOverlay:Show()
         end
     end
 end
@@ -67,10 +68,59 @@ function ABE_CDMCustomFrameCustomized:RefreshItemSize(frame, frameName)
 
     if Addon:GetValue("UseCDMCustomItemSize", nil, frameName) then
         for itemFrame in frame.itemPool:EnumerateActive() do
-            local size = Addon:GetValue("CDMCustomItemSize", nil, frameName)
-            itemFrame.frameSize = size
-            itemFrame:SetSize(size, size)
-            itemFrame.ProcGlow:SetSize(size + 8, size + 8)
+            if not itemFrame.Bar then
+                local size = Addon:GetValue("CDMCustomItemSize", nil, frameName)
+                itemFrame.frameSize = size
+                itemFrame:SetSize(size, size)                
+            end
+        end
+    end
+end
+
+function ABE_CDMCustomFrameCustomized:RefreshBarIconSize(frame, frameName)
+    frameName = frameName or frame.frameName
+    local iconPos = Addon:GetValue("CurrentCDMCustomFrametBarIconPosition", nil, frameName)
+    if iconPos > 1 then
+        if Addon:GetValue("UseCDMCustomFrameBarIconSize", nil, frameName) then
+            for itemFrame in frame.itemPool:EnumerateActive() do
+                local size = Addon:GetValue("CDMCustomFrameBarIconSize", nil, frameName)
+                itemFrame.Icon:SetSize(size, size)
+                itemFrame.Icon:SetAlpha(1)
+
+                if Addon:GetValue("UseCDMCustomFrameBarIconOffset", nil, frameName) then
+                    local offsetX = Addon:GetValue("CDMCustomFrameBarIconOffsetX", nil, frameName)
+                    local offsetY = Addon:GetValue("CDMCustomFrameBarIconOffsetY", nil, frameName)
+                    itemFrame.Icon:SetPointsOffset(offsetX, offsetY)
+                end
+            end
+        end
+    else
+        for itemFrame in frame.itemPool:EnumerateActive() do
+            itemFrame.Icon:SetAlpha(0)
+        end
+    end
+end
+function ABE_CDMCustomFrameCustomized:RefreshBarSize(frame, frameName)
+    frameName = frameName or frame.frameName
+    for itemFrame in frame.itemPool:EnumerateActive() do
+        if itemFrame.Bar then
+            local width = Addon:GetValue("UseCDMCustomFrameBarWidth", nil, frameName) and Addon:GetValue("CDMCustomFrameBarWidth", nil, frameName) or 100
+            local height = Addon:GetValue("UseCDMCustomFrameBarHeight", nil, frameName) and Addon:GetValue("CDMCustomFrameBarHeight", nil, frameName) or 10
+            itemFrame:SetSize(width, height)
+        end
+    end
+end
+function ABE_CDMCustomFrameCustomized:RefreshBarTextures(frame, frameName)
+    frameName = frameName or frame.frameName
+    for itemFrame in frame.itemPool:EnumerateActive() do
+        if itemFrame.Bar then
+            local foreground = Addon:GetStatusBarTextureByName(Addon:GetValue("CurrentCDMCustomFrameStatusbarTexture", nil, frameName))
+            local background = Addon:GetStatusBarTextureByName(Addon:GetValue("CurrentCDMCustomFrameBackgroundTexture", nil, frameName))
+            local color = itemFrame:GetCustomColor() or { r=1, g=1, b=1, a=1 }
+            itemFrame.Bar:SetStatusBarTexture(foreground)
+            itemFrame.Bar:SetStatusBarColor(color.r, color.g, color.b, color.a)
+            itemFrame.Bar.BarBG:SetVertexColor(Addon:GetRGBA("CDMCustomFrameBackgroundColor", nil, frameName))
+            Addon:SetTexture(itemFrame.Bar.BarBG, background)
         end
     end
 end
@@ -79,8 +129,9 @@ function ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName)
     frameName = frameName or frame.frameName
 
     for itemFrame in frame.itemPool:EnumerateActive() do
-        local cooldownFrame = itemFrame.Cooldown
-        local auraFrame = itemFrame.AuraCooldown
+        local cooldownFrame = itemFrame.Icon.Cooldown or itemFrame.Cooldown
+        local auraFrame = itemFrame.Icon.AuraCooldown or itemFrame.AuraCooldown
+        
 
         itemFrame.__removeAura = Addon:GetValue("CDMAuraRemoveSwipe", nil, frameName)
         
@@ -93,12 +144,12 @@ function ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName)
 
         if Addon:GetValue("UseSwipeSize", nil, frameName) then
             cooldownFrame:ClearAllPoints()
-            cooldownFrame:SetPoint("CENTER", itemFrame, "CENTER")
+            cooldownFrame:SetPoint("CENTER", cooldownFrame:GetParent(), "CENTER")
             local size = Addon:GetValue("SwipeSize", nil, frameName)
             cooldownFrame:SetSize(size, size)
 
             auraFrame:ClearAllPoints()
-            auraFrame:SetPoint("CENTER", itemFrame, "CENTER")
+            auraFrame:SetPoint("CENTER", auraFrame:GetParent(), "CENTER")
             local size = Addon:GetValue("SwipeSize", nil, frameName)
             auraFrame:SetSize(size, size)            
         else
@@ -279,7 +330,10 @@ function ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
     frameName = frameName or frame.frameName
     for itemFrame in frame.itemPool:EnumerateActive() do
 
-        itemFrame.Cooldown:SetCountdownAbbrevThreshold(920)
+        local cooldownFrame = itemFrame.Icon.Cooldown or itemFrame.Cooldown
+        local auraCooldown  = itemFrame.Icon.AuraCooldown or itemFrame.AuraCooldown
+
+        cooldownFrame:SetCountdownAbbrevThreshold(920)
 
         local color = {r = 1.0, g = 1.0, b = 1.0, a = 1.0}
         if Addon:GetValue("UseCooldownFontColor", nil, frameName) then
@@ -296,10 +350,10 @@ function ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
             false,
             frameName
         )
-        itemFrame.Cooldown:SetCountdownFont(fontName)
-        itemFrame.AuraCooldown:SetCountdownFont(fontName)
+        cooldownFrame:SetCountdownFont(fontName)
+        auraCooldown:SetCountdownFont(fontName)
 
-        local stacksFrame = itemFrame.Applications
+        local stacksFrame = itemFrame.Icon.Applications or itemFrame.Applications
         local stacksString = stacksFrame.Applications
         if stacksString then
             if Addon:GetValue("CurrentStacksFont", nil, frameName) ~= "Default" then

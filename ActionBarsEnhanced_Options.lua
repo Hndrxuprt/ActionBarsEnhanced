@@ -223,7 +223,7 @@ function Addon:GetInterruptSpell()
     local interruptSpells = Addon.InterruptMap[UnitClassBase("player")] or {}
 
     for _, spellID in ipairs(interruptSpells) do
-        if C_SpellBook.IsSpellKnown(spellID) then
+        if C_SpellBook.IsSpellKnownOrInSpellBook(spellID) or C_SpellBook.IsSpellKnownOrInSpellBook(spellID, Enum.SpellBookSpellBank.Pet) then
             return spellID
         end
     end
@@ -1403,14 +1403,13 @@ function ActionBarEnhancedMixin:InitOptions()
 
     function ActionBarEnhancedEditBoxMixin:SetupEditBox(name, defaultText, OnEnterPressed, OnEditFocusLost, OnEditFocusGained, numeric, numLetters)
         self.Label:SetText(name)
-        local displayText = ""
+        local text = ""
         if type(defaultText) == "function" then
-            displayText = defaultText()
+            text = defaultText() or ""
         else
-            displayText = defaultText
+            text = defaultText or ""
         end
-
-        self.EditBox:SetText(displayText)
+        self.EditBox:SetText(text)
 
         if numeric then
             self.EditBox:SetNumeric(numeric)

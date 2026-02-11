@@ -180,6 +180,8 @@ function OptionsCDMCustomItemListMixin:OnShow()
         end
         
         item.fakeAura = item:GetFakeAura()
+        item.stages = item:GetStages()
+        item.color = item:GetCustomColor()
 
         item:SetParent(gridFrame)
         item:Show()
@@ -412,6 +414,9 @@ end
 
 function OptionsCDMCustomItemListMixin:OpenFakeAuraSettings(item)
     local itemID = item:GetSpellID()
+    self.FakeAuraFrame.Label:SetText(L.SetFakeAura)
+    self.FakeAuraFrame.Desc:SetText(L.SetFakeAuraDesc)
+
     self.FakeAuraFrame.EditBox:SetText((item.fakeAura and item.fakeAura > 0) and item.fakeAura or "")
     self.FakeAuraFrame:Show()
     self.FakeAuraFrame.Button:SetScript("OnClick", function()
@@ -427,6 +432,32 @@ function OptionsCDMCustomItemListMixin:OpenFakeAuraSettings(item)
             end
             frameTbl.fakeAuras[itemID] = newDuration
             EventRegistry:TriggerEvent("CDMCustomItemList.FakeAuraAdded", itemID, newDuration)
+        end
+        self.FakeAuraFrame:Hide()
+        self:OnShow()
+    end)
+end
+
+function OptionsCDMCustomItemListMixin:OpenStagesSettings(item)
+    local itemID = item:GetSpellID()
+    self.FakeAuraFrame.Label:SetText(L.SetStages)
+    self.FakeAuraFrame.Desc:SetText(L.SetStagesDesc)
+
+    self.FakeAuraFrame.EditBox:SetText((item.stages and item.stages > 0) and item.stages or "")
+    self.FakeAuraFrame:Show()
+    self.FakeAuraFrame.Button:SetScript("OnClick", function()
+        local newStages = tonumber(self.FakeAuraFrame.EditBox:GetText())
+        newStages = (newStages and newStages > 0) and newStages or nil
+        local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+        local profileTable = Addon.P.profilesList[profileName]
+        local index = ABE_BarsListMixin:GetFrameIndex()
+        if profileTable["CDMCustomFrames"] then
+            local frameTbl = profileTable["CDMCustomFrames"][index]
+            if not frameTbl.stages then
+                frameTbl.stages = {}
+            end
+            frameTbl.stages[itemID] = newStages
+            EventRegistry:TriggerEvent("CDMCustomItemList.StagesAdded", itemID, newStages)
         end
         self.FakeAuraFrame:Hide()
         self:OnShow()
@@ -506,11 +537,7 @@ function OptionsCDMCustomItemListContentMixin:CreateNewItemFromCursor(cursorType
     if cursorType == "spell" then
         local spellID = select(3, ...)
         local baseSpellID = select(4, ...)
-        if not C_Spell.IsSpellPassive(spellID) then
-            return { type = "spell", id = spellID, baseID = baseSpellID}
-        else
-            Addon.Print("Don't add passive.")
-        end
+        return { type = "spell", id = spellID, baseID = baseSpellID}
     elseif cursorType == "item" then
         local itemID = select(1, ...)
         if itemID then
@@ -540,11 +567,32 @@ OptionsCDMCustomItemMixin = {}
 function OptionsCDMCustomItemMixin:OnShow()
     self.Icon:SetTexture(self:GetIconTexture())
     self.Icon:SetDesaturated(not self.isKnown)
+    local frameName = ABE_BarsListMixin:GetFrameLebel()
+    local frame = _G[frameName]
+    self.frameTemplate = frame.template
+
     if self.fakeAura then
         self.HasAura:Show()
     else
         self.HasAura:Hide()
     end
+    if self:IsBarFrame() then
+        if self.stages then
+            self.HasCharges:Show()
+        else
+            self.HasCharges:Hide()
+        end
+        if self.color then
+            self.HasColor:Show()
+            self.HasColor:SetVertexColor(self.color.r, self.color.g, self.color.b, 1)
+        else
+            self.HasColor:Hide()
+        end
+    end
+end
+
+function OptionsCDMCustomItemMixin:IsBarFrame()
+    return self.frameTemplate == "ABE_CDMCustomBarFrame"
 end
 
 function OptionsCDMCustomItemMixin:GetIconTexture()
@@ -560,6 +608,9 @@ function OptionsCDMCustomItemMixin:GetIconTexture()
             if not isKnown then
                 isKnown = C_SpellBook.IsSpellKnown(spellID, i)
             end
+        end
+        if not isKnown then
+            isKnown = ABE_CDMCustomFrameMixin:FindAuraForCurrentSpellID(spellID)
         end
     end
     self.isKnown = isKnown
@@ -607,6 +658,49 @@ function OptionsCDMCustomItemMixin:OnDragStart()
     PlaySound(SOUNDKIT.UI_CURSOR_PICKUP_OBJECT)
     self:BeginOrderChange()
 end
+function OptionsCDMCustomItemMixin:SaveCustomColor(newColor)
+    local itemID = self:GetSpellID()
+    if not itemID then return end
+    local frameIndex = ABE_BarsListMixin:GetFrameIndex()
+    local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+    local profileTable = Addon.P.profilesList[profileName]
+
+    newColor.r = newColor.r or 1
+    newColor.g = newColor.g or 1
+    newColor.b = newColor.b or 1
+    newColor.a = newColor.a or 1
+
+    if profileTable["CDMCustomFrames"] then
+        local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
+        if not frameTbl.color then
+            frameTbl.color = {}
+        end
+        frameTbl.color[itemID] = newColor
+    end
+end
+
+function OptionsCDMCustomItemMixin:GetCustomColor()
+    local itemID = self:GetSpellID()
+    if not itemID then return end
+    local frameIndex = ABE_BarsListMixin:GetFrameIndex()
+    local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+    local profileTable = Addon.P.profilesList[profileName]
+    local color
+
+    if profileTable["CDMCustomFrames"] then
+        local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
+        if frameTbl and frameTbl.color then
+            color = frameTbl.color[itemID]
+        end
+    end
+    if color then
+        color.r = color.r or 1
+        color.g = color.g or 1
+        color.b = color.b or 1
+        color.a = color.a or 1
+    end
+    return color or { r=1, g=1, b=1, a=1 }
+end
 
 function OptionsCDMCustomItemMixin:DisplayContextMenu()
     MenuUtil.CreateContextMenu(self, function(owner, rootDescription)
@@ -615,6 +709,35 @@ function OptionsCDMCustomItemMixin:DisplayContextMenu()
         rootDescription:CreateButton(L.FakeAura, function()
             self.parentFrame:OpenFakeAuraSettings(self)
         end)
+        if self:IsBarFrame() then
+            rootDescription:CreateButton(L.Stages, function()
+                self.parentFrame:OpenStagesSettings(self)
+            end)
+            local color = self.color
+            local colorInfo = {
+                r=color.r, g=color.g, b=color.b, opacity=color.a,
+                swatchFunc = function()
+                    local r,g,b = ColorPickerFrame:GetColorRGB()
+                    local a = ColorPickerFrame:GetColorAlpha()
+                    self:SaveCustomColor({r=r, g=g, b=b, a=a})
+                    self.color = {r=r, g=g, b=b, a=a}
+                    self.HasColor:SetVertexColor(r, g, b, 1)
+                end,
+                cancelFunc = function()
+                    local r,g,b = ColorPickerFrame:GetColorRGB()
+                    local a = ColorPickerFrame:GetColorAlpha()
+                    self:SaveCustomColor({r=r, g=g, b=b, a=a})
+                    self.color = {r=r, g=g, b=b, a=a}
+                    self.HasColor:SetVertexColor(r, g, b, 1)
+                end,
+                hasOpacity = 1,
+            }
+            rootDescription:CreateColorSwatch(L.UseCustomColor, function()
+                ColorPickerFrame:SetupColorPickerAndShow(colorInfo)
+            end,
+            colorInfo
+            )
+        end
         rootDescription:CreateDivider()
         rootDescription:CreateButton(L.Delete, function()
             self:RemoveItem()
@@ -676,6 +799,21 @@ function OptionsCDMCustomItemMixin:GetFakeAura()
         local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
         if frameTbl and frameTbl.fakeAuras then
             return frameTbl.fakeAuras[itemID]
+        end
+    end
+end
+
+function OptionsCDMCustomItemMixin:GetStages()
+    local itemID = self:GetSpellID()
+    if not itemID then return end
+    local frameIndex = ABE_BarsListMixin:GetFrameIndex()
+    local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+    local profileTable = Addon.P.profilesList[profileName]
+
+    if profileTable["CDMCustomFrames"] then
+        local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
+        if frameTbl and frameTbl.stages then
+            return frameTbl.stages[itemID]
         end
     end
 end

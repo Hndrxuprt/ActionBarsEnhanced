@@ -470,3 +470,11 @@ L.AnchorPosAttached = "Привязан к фрейму:\n|cff0bbe76"
 
 L.AttachTitle = "Настройка привязки фрейма"
 L.AttachDesc = "Выбор фрейма и точки для крепления."
+
+L.CreateIconsFrame = "Создать фрейм Иконок"
+L.CreateBarsFrame = "Создать фрейм Полосок"
+L.CreateChargeBarsFrame = "Создать фрейм Полосок стаков"
+
+L.SetStages = "Максимум стаков"
+L.SetStagesDesc = "Максимальное количество стаков, которое будет использоваться для ауры."
+L.Stages = "Использовать заряды"

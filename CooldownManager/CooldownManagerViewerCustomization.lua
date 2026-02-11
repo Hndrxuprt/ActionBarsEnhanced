@@ -14,10 +14,12 @@ function ABE_CDMCustomized:RefreshIconMask(child, frameName)
     local icon = (frameName ~= "BuffBarCooldownViewer") and child.Icon or child.Icon.Icon
     local mask = icon:GetMaskTexture(1)
 
-    mask:SetHorizTile(false)
-    mask:SetVertTile(false)
+    if mask then
+        mask:SetHorizTile(false)
+        mask:SetVertTile(false)
 
-    Addon:SetTexture(mask, iconMaskAtlas.texture)
+        Addon:SetTexture(mask, iconMaskAtlas.texture)
+    end
 
     if iconMaskAtlas.point then
         mask:ClearAllPoints()

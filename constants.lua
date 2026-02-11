@@ -90,6 +90,11 @@ Addon.BarTextJustifyV = {
     [2] = "MIDDLE",
     [3] = "BOTTOM",
 }
+Addon.CustomBarType = {
+    [1] = "CD Only",
+    [2] = "Aura Only",
+    [3] = "Aura than CD",
+}
 
 do
     local cooldownColorCurve = C_CurveUtil.CreateColorCurve()
@@ -101,7 +106,13 @@ do
     cooldownColorCurve:AddPoint(10, CreateColor(1, 1, 0, 1))
     cooldownColorCurve:AddPoint(10.2, CreateColor(1, 1, 1, 1))
 
+    local alphaCurve = C_CurveUtil.CreateCurve()
+    alphaCurve:SetType(Enum.LuaCurveType.Step)
+    alphaCurve:AddPoint(0, 0.0)
+    alphaCurve:AddPoint(0.001, 1.0)
+
     Addon.cooldownColorCurve = cooldownColorCurve
+    Addon.alphaCurve = alphaCurve
 end
 
 Addon.Defaults = {
@@ -576,6 +587,29 @@ Addon.Defaults = {
     CDMEnableAttach = false,
     CurrentAttachFrame = "",
     ShowCountdownNumbersForCharges = true,
+
+    UseCDMCustomFrameBarWidth = true,
+    CDMCustomFrameBarWidth = 100,
+    UseCDMCustomFrameBarHeight = true,
+    CDMCustomFrameBarHeight = 20,
+
+    CurrentCDMCustomFrameStatusbarTexture = "Blizzard BuffBar",
+    CurrentCDMCustomFrameBackgroundTexture = "Blizzard BuffBar",
+    UseCDMCustomFrameBackgroundColor = true,
+    CDMCustomFrameBackgroundColor = { r=0.0, g=0.0, b=0.0, a=0.5 },
+    CurrentCDMCustomFramePipTexture = 1,
+    UseCDMCustomFramePipSize = true,
+    CDMCustomFramePipSizeX = 8,
+    CDMCustomFramePipSizeY = 30,
+
+    UseCDMCustomFrameBarIconSize = false,
+    CDMCustomFrameBarIconSize = 20,
+    CurrentCDMCustomFrametBarIconPosition = 1,
+    UseCDMCustomFrameBarIconOffset = false,
+    CDMCustomFrameBarIconOffsetX = 0,
+    CDMCustomFrameBarIconOffsetY = 0,
+    
+
 }
 
 Addon.Templates = {
