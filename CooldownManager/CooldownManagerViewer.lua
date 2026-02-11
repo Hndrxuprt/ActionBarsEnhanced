@@ -580,14 +580,7 @@ local function Hook_Layout(self)
         self.__layoutFramesGoingRight = Addon:GetValue("CDMHorizontalGrowth", nil, frameName)
     end
     
-    if not self.__padding or forceUpdate then
-        if Addon:GetValue("UseCDMIconPadding", nil, frameName) then
-            self.__padding = Addon:GetValue("CDMIconPadding", nil, frameName)
-            self.__padding = self.childXPadding or self.childYPadding
-        else
-            self.__padding = self.childXPadding or self.childYPadding or 100
-        end
-    end
+    self.__padding = self.childXPadding or self.childYPadding
 
     if not self.grildLayoutType or forceUpdate then
         self.gridLayoutType = Addon:GetValue("CDMGridLayoutType", nil, frameName)
