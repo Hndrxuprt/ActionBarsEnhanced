@@ -314,6 +314,9 @@ end
 
 function ABE_CDMCustomItemMixin:RefreshSpellTexture()
     local spellTexture = self:GetSpellTexture()
+    if self.auraData then
+        spellTexture = self.auraData.icon
+    end
     local icon = self.Icon.Icon or self.Icon
     icon:SetTexture(spellTexture)
 end
@@ -353,10 +356,10 @@ function ABE_CDMCustomItemMixin:RefreshCount()
     if self.type == "item" and self.itemID then
         count = C_Item.GetItemCount(self.itemID, nil, true) or 0
     elseif self.type == "spell" then
+        if not self.spellID then return end
+
         local charges = C_Spell.GetSpellCharges(self.spellID)
         count = charges and charges.currentCharges or ""
-
-        if not self.spellID then return end
 
         local charges = C_Spell.GetSpellCharges(self.spellID) or {}
 
@@ -380,6 +383,7 @@ function ABE_CDMCustomItemMixin:RefreshCount()
     applications:SetAlpha(count)
 
     self:RefreshIconDesaturation()
+    self:RefreshSpellTexture()
     --self.ProcGlow:SetAlpha(count ~= "" and count or 1)
 end
 
@@ -1098,7 +1102,7 @@ end
 function ABE_CDMCustomFrameMixin:FindAuraForCurrentSpellID(spellID)
     for cdID, data in pairs(CooldownViewerSettings:GetDataProvider():GetDisplayData().cooldownInfoByID) do
         local itemSpellID = data.spellID
-        if itemSpellID == spellID then
+        if itemSpellID == spellID and data.isKnown then
             return true
         end
     end

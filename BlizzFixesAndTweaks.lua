@@ -27,38 +27,6 @@ local function ReanchorFrame(self)
         isCentered = self.gridLayoutType == 1
     end
 
-    local uiCenterX, uiCenterY = UIParent:GetCenter()
-    local offsetX = centerX - uiCenterX
-    local offsetY = centerY - uiCenterY
-
-    if deltaX then offsetX = offsetX + deltaX end
-    if deltaY then offsetY = offsetY + deltaY end
-
-    self:ClearAllPoints()
-    self:SetPoint("CENTER", UIParent, "CENTER", offsetX, offsetY)
-
-    if self.systemInfo then
-        self.systemInfo.anchorInfo = {
-            point = "CENTER",
-            relativeTo = "UIParent",
-            relativePoint = "CENTER",
-            offsetX = offsetX,
-            offsetY = offsetY,
-        }
-        self.systemInfo.isInDefaultPosition = false
-    end
-    local layoutFramesGoingUp
-    if self.__layoutFramesGoingUp ~= nil then
-        layoutFramesGoingUp = self.__layoutFramesGoingUp == 1
-    else
-        layoutFramesGoingUp = self.layoutFramesGoingUp
-    end
-
-    local isCentered = false
-    if self.gridLayoutType then
-        isCentered = self.gridLayoutType == 1
-    end
-
     local isHorizontal = self.isHorizontal
 
     local screenCenterX, screenCenterY = UIParent:GetCenter()
@@ -90,6 +58,7 @@ local function ReanchorFrame(self)
         else
             if layoutFramesGoingRight then
                 point = "LEFT"
+                
             else
                 point = "RIGHT"
             end
