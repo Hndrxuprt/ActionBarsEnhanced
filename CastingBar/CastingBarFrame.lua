@@ -75,16 +75,20 @@ local function ProcessBorder(frame, frameName)
 end
 
 local function SetBackdropBorderColorByType(self, color)
+    if not self.__border then return end
+
     local frameName = self.boss and "BossTargetFrames" or self:GetName()
 
+    local bColor = CopyTable(color)
+
     if not Addon:GetValue("CastBarsBackdropColorByType", nil, frameName) then
-        color.r,color.g,color.b,color.a = Addon:GetRGBA("CastBarsBackdropColor", nil, frameName)
+        bColor.r,bColor.g,bColor.b,bColor.a = Addon:GetRGBA("CastBarsBackdropColor", nil, frameName)
     end
     
     if self.__border then
-        self.__border:SetBackdropBorderColor(color.r, color.g, color.b, color.a)
-        self.__iconFrameLeft.border:SetBackdropBorderColor(color.r, color.g, color.b, color.a)
-        self.__iconFrameRight.border:SetBackdropBorderColor(color.r, color.g, color.b, color.a)
+        self.__border:SetBackdropBorderColor(bColor.r, bColor.g, bColor.b, bColor.a)
+        self.__iconFrameLeft.border:SetBackdropBorderColor(bColor.r, bColor.g, bColor.b, bColor.a)
+        self.__iconFrameRight.border:SetBackdropBorderColor(bColor.r, bColor.g, bColor.b, bColor.a)
     end
 end
 
