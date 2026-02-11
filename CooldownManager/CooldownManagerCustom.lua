@@ -320,7 +320,7 @@ end
 
 function ABE_CDMCustomItemMixin:RefreshIconDesaturation(desaturated)
     local icon = self.Icon.Icon or self.Icon
-    if self.type ~= "spell" then
+    if self.type == "item" then
         if self.count == 0 or self.count == "" then
             desaturated = true
         else
@@ -377,6 +377,7 @@ function ABE_CDMCustomItemMixin:RefreshCount()
     end ]]
     self.count = count
     applications.Applications:SetText(count)
+    applications:SetAlpha(count)
 
     self:RefreshIconDesaturation()
     --self.ProcGlow:SetAlpha(count ~= "" and count or 1)

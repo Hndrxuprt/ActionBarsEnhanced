@@ -567,26 +567,31 @@ OptionsCDMCustomItemMixin = {}
 function OptionsCDMCustomItemMixin:OnShow()
     self.Icon:SetTexture(self:GetIconTexture())
     self.Icon:SetDesaturated(not self.isKnown)
-    local frameName = ABE_BarsListMixin:GetFrameLebel()
-    local frame = _G[frameName]
-    self.frameTemplate = frame.template
 
     if self.fakeAura then
         self.HasAura:Show()
     else
         self.HasAura:Hide()
     end
-    if self:IsBarFrame() then
-        if self.stages then
-            self.HasCharges:Show()
-        else
-            self.HasCharges:Hide()
-        end
-        if self.color then
-            self.HasColor:Show()
-            self.HasColor:SetVertexColor(self.color.r, self.color.g, self.color.b, 1)
-        else
-            self.HasColor:Hide()
+
+
+    local frameName = ABE_BarsListMixin:GetFrameLebel()
+    local frame = _G[frameName]
+    if frame then
+        self.frameTemplate = frame.template
+
+        if self:IsBarFrame() then
+            if self.stages then
+                self.HasCharges:Show()
+            else
+                self.HasCharges:Hide()
+            end
+            if self.color then
+                self.HasColor:Show()
+                self.HasColor:SetVertexColor(self.color.r, self.color.g, self.color.b, 1)
+            else
+                self.HasColor:Hide()
+            end
         end
     end
 end

@@ -599,13 +599,7 @@ local function CreateCustomFrame(layout, template)
 end
 
 function ABE_BarsGroupButtonIconMixin:OnClick()
-
     self:DisplayContextMenu()
-
-    --[[ CreateCustomFrame("CustomFrameCooldownViewer", "ABE_CDMCustomFrame")
-
-    local listFrame = ABE_BarsListMixin:GetFrame()
-    listFrame:RefreshMenu() ]]
 end
 
 function ABE_BarsGroupButtonIconMixin:DisplayContextMenu()
@@ -618,8 +612,9 @@ function ABE_BarsGroupButtonIconMixin:DisplayContextMenu()
         
         rootDescription:CreateDivider()
         
-        --[[ rootDescription:CreateButton(L.CreateBarsFrame, function()
-            CreateCustomFrame("CustomFrameBarsCooldownViewer", "ABE_CDMCustomBarFrame")
-        end) ]]
+        rootDescription:CreateButton(L.CreateBarsFrame, function()
+            Addon.Print("not ready yet :<")
+            --CreateCustomFrame("CustomFrameBarsCooldownViewer", "ABE_CDMCustomBarFrame")
+        end)
     end)
 end
