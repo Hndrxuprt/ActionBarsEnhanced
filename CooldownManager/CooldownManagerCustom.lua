@@ -364,13 +364,13 @@ function ABE_CDMCustomItemMixin:RefreshCount()
         --Addon:DebugPrint("RefreshCount", self.auraData, self.auraInstanceID)
 
         if self.auraData then
-            charges.currentCharges = C_UnitAuras.GetAuraApplicationDisplayCount("player", self.auraInstanceID, 1)
+            charges.currentCharges = self.auraData.applications
         end
 
         count = charges.currentCharges or 0
 
         --self.Applications:SetAlphaFromBoolean(((charges.maxCharges > 1) and (charges.currentCharges ~= nil)), tonumber(charges.currentCharges), 0 )
-        applications:SetAlpha(charges.currentCharges ~= nil and tonumber(charges.currentCharges) or 1)
+        --applications:SetAlpha(charges.currentCharges ~= nil and tonumber(charges.currentCharges) or 1)
     end
     --[[ if self.spellID == 1966 then
         Addon:DebugPrint("RefreshCount: ", count)
