@@ -465,3 +465,7 @@ L.AnchorPosAttached = "Attached to frame:|cff0bbe76"
 L.CreateIconsFrame = "Create Icons frame"
 L.CreateBarsFrame = "Create Bars frame"
 L.CreateChargeBarsFrame = "Create Charge Bars frame"
+
+L.SetStages = "Max Charges"
+L.SetStagesDesc = "Maximum number of Charges for this Aura."
+L.Stages = "Custom Charges"

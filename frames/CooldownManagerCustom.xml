@@ -19,14 +19,7 @@
 					</MaskedTextures>
 				</MaskTexture>
 			</Layer>
-			<Layer level="OVERLAY">
-				<Texture parentKey="IconOvelay" atlas="UI-HUD-CoolDownManager-IconOverlay">
-					<Anchors>
-						<Anchor point="TOPLEFT" x="-8" y="7"/>
-						<Anchor point="BOTTOMRIGHT" x="8" y="-7"/>
-					</Anchors>
-				</Texture>
-			</Layer>
+			
 		</Layers>
 		<Frames>
 			<Frame parentKey="ProcGlow" mixin="ABE_CDMCustomItemProcGlow" hidden="false" dontSavePosition="true">
@@ -92,13 +85,21 @@
 			</Frame>
 		</Frames>
 	</Frame>
+	<Frame name="ABE_CDMCustomBarStagePipTemplate" useParentLevel="true" virtual="true">
+		<Size x="2" y="10"/>
+		<Layers>
+			<Layer level="ARTWORK" textureSubLevel="2">
+				<Texture parentKey="BasePip" file="Interface\Buttons\WHITE8x8" setAllPoints="true"/>
+			</Layer>
+		</Layers>
+	</Frame>
 	<Frame name="ABE_CDMCustomBarTemplate" inherits="ABE_CDMCustomItemBaseTemplate" mixin="ABE_CDMCustomBarMixin" virtual="true" hidden="false" dontSavePosition="true">
 		<Size x="200" y="20"/>
 		<Frames>
 			<Frame parentKey="Icon">
 				<Size x="20" y="20"/>
 				<Anchors>
-					<Anchor point="LEFT" relativeKey="$parent" relativePoint="LEFT" x="0" y="0" />
+					<Anchor point="RIGHT" relativeKey="$parent" relativePoint="LEFT" x="0" y="0" />
 				</Anchors>
 				<Layers>
 					<Layer level="ARTWORK">
@@ -157,8 +158,8 @@
 					<Layer level="BACKGROUND">
 						<Texture parentKey="BarBG" atlas="UI-HUD-CoolDownManager-Bar-BG">
 							<Anchors>
-								<Anchor point="TOPLEFT" x="-2" y="2"/>
-								<Anchor point="BOTTOMRIGHT" x="4" y="-7"/>
+								<Anchor point="TOPLEFT" x="0" y="0"/>
+								<Anchor point="BOTTOMRIGHT" x="0" y="0"/>
 							</Anchors>
 						</Texture>
 					</Layer>
@@ -168,8 +169,7 @@
 						</Texture>
 						<FontString parentKey="Name" inherits="NumberFontNormal" justifyH="LEFT" justifyV="MIDDLE">
 							<Anchors>
-								<Anchor point="TOPLEFT" x="5" y="0"/>
-								<Anchor point="BOTTOMRIGHT" x="-25" y="0"/>
+								<Anchor point="LEFT" relativePoint="LEFT" x="2" y="0"/>
 							</Anchors>
 						</FontString>
 						<FontString parentKey="Duration" inherits="NumberFontNormal" justifyH="LEFT">

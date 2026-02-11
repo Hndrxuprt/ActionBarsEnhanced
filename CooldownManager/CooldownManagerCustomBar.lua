@@ -6,7 +6,12 @@ ABE_CDMCustomBarFrameMixin = CreateFromMixins(ABE_CDMCustomFrameMixin)
 
 function ABE_CDMCustomBarMixin:OnLoad()
 
-    ABE_CDMCustomItemMixin.OnLoad(self)
+    local cooldownFrame = self:GetCooldownFrame()
+    local auraCooldown = self:GetAuraFrame()
+
+    cooldownFrame:SetScript("OnCooldownDone", GenerateClosure(self.OnCooldownDone, self))
+    auraCooldown:SetScript("OnCooldownDone", GenerateClosure(self.OnAuraDone, self))
+    self:SetMouseClickEnabled(false)
 
     self:SetMouseClickEnabled(false)
     self.Bar.Pip:ClearAllPoints()
@@ -16,7 +21,7 @@ function ABE_CDMCustomBarMixin:OnLoad()
     self.Bar:SetMinMaxValues(0, 0)
     self.Bar:SetValue(self.value or 0)
 
-    
+    self.color = self:GetCustomColor()
 end
 
 function ABE_CDMCustomBarFrameMixin:RefreshLayout()
@@ -24,6 +29,7 @@ function ABE_CDMCustomBarFrameMixin:RefreshLayout()
 
     ABE_CDMCustomFrameCustomized:RefreshItemSize(self, self.frameName)
     ABE_CDMCustomFrameCustomized:RefreshBarTextures(self, self.frameName)
+    ABE_CDMCustomFrameCustomized:RefreshBarIconSize(self, self.frameName)
 end
 
 function ABE_CDMCustomBarMixin:RefreshData()
@@ -40,6 +46,19 @@ function ABE_CDMCustomBarMixin:GetStages()
         local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
         if frameTbl and frameTbl.stages then
             return frameTbl.stages[self.itemID or self.spellID]
+        end
+    end
+end
+
+function ABE_CDMCustomBarMixin:GetCustomColor()
+    if not self.spellID then return end
+    local frameName = self.parentName
+    local frameIndex = _G[frameName]:GetFrameIndexByName(frameName)
+    local profileTable = Addon.CurrentProfileTbl or Addon:GetCurrentProfileTable()
+    if profileTable["CDMCustomFrames"] then
+        local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
+        if frameTbl and frameTbl.color then
+            return frameTbl.color[self.itemID or self.spellID]
         end
     end
 end
@@ -69,21 +88,21 @@ end
 function ABE_CDMCustomBarMixin:OnCooldownDone()
     ABE_CDMCustomItemMixin.OnCooldownDone(self)
 
+    self.Bar.Duration:Hide()
+    self.Bar:SetMinMaxValues(0, 0)
+    self.Bar:SetValue(self.value or 0)
+
     self.casting = false
     self.spark:Hide()
     self:SetScript("OnUpdate", nil)
 end
 
 function ABE_CDMCustomBarMixin:RefreshSpellCooldownInfo()
-    local showIcon = true
-    if showIcon then
-        ABE_CDMCustomItemMixin.RefreshSpellCooldownInfo(self)
-    end
+    ABE_CDMCustomItemMixin.RefreshSpellCooldownInfo(self)
 
     self.stages = self:GetStages()
 
     if not self.stages then
-
         if self.isOnAuraTimer or self.isOnActualCooldown or self.isOnChargeCooldown then
             if self:GetScript("OnUpdate") == nil then
                 self:SetScript("OnUpdate", GenerateClosure(self.OnUpdate, self))
@@ -93,6 +112,7 @@ function ABE_CDMCustomBarMixin:RefreshSpellCooldownInfo()
         if self.isOnAuraTimer then
             self.barType = "aura"
         elseif self.isOnActualCooldown or self.isOnChargeCooldown then
+            
             self.barType = "cooldown"
             if self.type == "spell" then
                 local durationObj = self:GetCooldownDurationObj()
@@ -139,13 +159,15 @@ function ABE_CDMCustomBarMixin:AddStages(numStages)
         local stagePipName = "StagePip"..i
         local stagePip = self.StagePipPool[stagePipName]
         if not stagePip then
-            stagePip = CreateFrame("FRAME", nil, self.Bar, "CastingBarFrameStagePipTemplate")
+            stagePip = CreateFrame("FRAME", nil, self.Bar, "ABE_CDMCustomBarStagePipTemplate")
             self.StagePipPool[stagePipName] = stagePip
         end
         
         if stagePip then
             stagePip:ClearAllPoints()
             stagePip:SetPoint("CENTER", self.Bar, "LEFT", offset, 0)
+            stagePip:SetSize(2, self:GetHeight())
+            stagePip.BasePip:SetVertexColor(0, 0, 0, 1)
             stagePip:Show()
         end
     end
@@ -170,10 +192,14 @@ function ABE_CDMCustomBarMixin:OnUpdate(elapsed)
             self.spark:Show()
             self.__isActive = true
             if self.type == "spell" then
-                self.value = self:GetCooldownDurationObj():GetRemainingDuration()
+                local durationObject = self:GetCooldownDurationObj()
+                self.value = durationObject:GetRemainingDuration()
+                self.maxValue = durationObject:GetTotalDuration()
+                statusbar.Duration:SetAlpha(durationObject:EvaluateRemainingDuration(Addon.alphaCurve, 0))
             else
                 local cooldownInfo = self:GetCooldownInfo()
                 self.value = cooldownInfo.startTime > 0 and cooldownInfo.duration - (GetTime() - cooldownInfo.startTime) or 0
+                statusbar.Duration:SetAlpha(self.value == 0 and 0 or 1)
             end
             statusbar:SetMinMaxValues(0, self.maxValue)
             statusbar:SetValue(self.value)
@@ -189,6 +215,7 @@ function ABE_CDMCustomBarMixin:OnUpdate(elapsed)
                 statusbar:SetValue(self.value)
                 statusbar.Duration:SetText(string.format("%.1f", self.value))
                 statusbar.Duration:Show()
+                statusbar.Duration:SetAlpha(auraDurationObject:EvaluateRemainingDuration(Addon.alphaCurve, 0))
             end
         end
     end

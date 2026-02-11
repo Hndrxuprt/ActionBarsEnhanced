@@ -77,6 +77,29 @@ function ABE_CDMCustomFrameCustomized:RefreshItemSize(frame, frameName)
     end
 end
 
+function ABE_CDMCustomFrameCustomized:RefreshBarIconSize(frame, frameName)
+    frameName = frameName or frame.frameName
+    local iconPos = Addon:GetValue("CurrentCDMCustomFrametBarIconPosition", nil, frameName)
+    if iconPos > 1 then
+        if Addon:GetValue("UseCDMCustomFrameBarIconSize", nil, frameName) then
+            for itemFrame in frame.itemPool:EnumerateActive() do
+                local size = Addon:GetValue("CDMCustomFrameBarIconSize", nil, frameName)
+                itemFrame.Icon:SetSize(size, size)
+                itemFrame.Icon:SetAlpha(1)
+
+                if Addon:GetValue("UseCDMCustomFrameBarIconOffset", nil, frameName) then
+                    local offsetX = Addon:GetValue("CDMCustomFrameBarIconOffsetX", nil, frameName)
+                    local offsetY = Addon:GetValue("CDMCustomFrameBarIconOffsetY", nil, frameName)
+                    itemFrame.Icon:SetPointsOffset(offsetX, offsetY)
+                end
+            end
+        end
+    else
+        for itemFrame in frame.itemPool:EnumerateActive() do
+            itemFrame.Icon:SetAlpha(0)
+        end
+    end
+end
 function ABE_CDMCustomFrameCustomized:RefreshBarSize(frame, frameName)
     frameName = frameName or frame.frameName
     for itemFrame in frame.itemPool:EnumerateActive() do
@@ -93,8 +116,10 @@ function ABE_CDMCustomFrameCustomized:RefreshBarTextures(frame, frameName)
         if itemFrame.Bar then
             local foreground = Addon:GetStatusBarTextureByName(Addon:GetValue("CurrentCDMCustomFrameStatusbarTexture", nil, frameName))
             local background = Addon:GetStatusBarTextureByName(Addon:GetValue("CurrentCDMCustomFrameBackgroundTexture", nil, frameName))
-            local bgColor = Addon:GetRGBA("CDMCustomFrameBackgroundColor", nil, frameName)
+            local color = itemFrame:GetCustomColor() or { r=1, g=1, b=1, a=1 }
             itemFrame.Bar:SetStatusBarTexture(foreground)
+            itemFrame.Bar:SetStatusBarColor(color.r, color.g, color.b, color.a)
+            itemFrame.Bar.BarBG:SetVertexColor(Addon:GetRGBA("CDMCustomFrameBackgroundColor", nil, frameName))
             Addon:SetTexture(itemFrame.Bar.BarBG, background)
         end
     end

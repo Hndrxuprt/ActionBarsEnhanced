@@ -75,6 +75,12 @@ local function ProcessBorder(frame, frameName)
 end
 
 local function SetBackdropBorderColorByType(self, color)
+    local frameName = self.boss and "BossTargetFrames" or self:GetName()
+
+    if not Addon:GetValue("CastBarsBackdropColorByType", nil, frameName) then
+        color.r,color.g,color.b,color.a = Addon:GetRGBA("CastBarsBackdropColor", nil, frameName)
+    end
+    
     if self.__border then
         self.__border:SetBackdropBorderColor(color.r, color.g, color.b, color.a)
         self.__iconFrameLeft.border:SetBackdropBorderColor(color.r, color.g, color.b, color.a)
@@ -334,7 +340,7 @@ function ABE_CastingBarMixin.HandleCastStop(self, event, castID, castComplete, i
     end
 end
 
-function ABE_CastingBarMixin.OnHandleInterruptOrSpellFailed(self)
+function ABE_CastingBarMixin.OnPlayInterruptAnims(self)
     if not self then return end
 
     local frameName = self.boss and "BossTargetFrames" or self:GetName()
@@ -349,6 +355,8 @@ function ABE_CastingBarMixin.OnHandleInterruptOrSpellFailed(self)
 
     color.r, color.g, color.b, color.a = texture:GetVertexColor()
     texture:SetVertexColorFromBoolean(barType.interrupted, self.CASTBAR_COLORS["interrupted"], color)
+
+    SetBackdropBorderColorByType(self, self.CASTBAR_COLORS["interrupted"])
 end
 
 function ABE_CastingBarMixin.SetCustomColor(self)
@@ -375,6 +383,8 @@ function ABE_CastingBarMixin.SetCustomColor(self)
     if barType.uninterruptable ~= nil then
         color.r, color.g, color.b, color.a = texture:GetVertexColor()
         texture:SetVertexColorFromBoolean(barType.uninterruptable, self.CASTBAR_COLORS["uninterruptable"], color)
+
+        SetBackdropBorderColorByType(self, color)
     end
 
     if self.spellID and Addon:GetValue("UseCastBarImportantColor", nil, frameName) then
@@ -382,13 +392,6 @@ function ABE_CastingBarMixin.SetCustomColor(self)
         local isImportant = C_Spell.IsSpellImportant(self.spellID)
         texture:SetVertexColorFromBoolean(isImportant, self.CASTBAR_COLORS["important"], color)
     end
-    
-    if Addon:GetValue("CastBarsBackdropColorByType", nil, frameName) then
-        local color = {}
-        color.r,color.g,color.b,color.a = Addon:GetRGBA("CastBarsBackdropColor", nil, frameName)
-        --SetBackdropBorderColorByType(self, color)
-    end
-
 end
 
 function ABE_CastingBarMixin.GetTypeInfo(self, barType)
@@ -398,23 +401,27 @@ function ABE_CastingBarMixin.GetTypeInfo(self, barType)
 
     local frameName = self.boss and "BossTargetFrames" or self:GetName()
 
-    local sr,sg,sb,sa = Addon:GetRGBA("CastBarStandardColor", nil, frameName)
-    local cr,cg,cb,ca = Addon:GetRGBA("CastBarChannelColor", nil, frameName)
-    local ur,ug,ub,ua = Addon:GetRGBA("CastBarUninterruptableColor", nil, frameName)
-    local ir,ig,ib,ia = Addon:GetRGBA("CastBarInterruptedColor", nil, frameName)
-    local imr,img,imb,ima = Addon:GetRGBA("CastBarImportantColor", nil, frameName)
-    local rr,rg,rb,ra = Addon:GetRGBA("CastBarReadyColor", nil, frameName)
-    self.CASTBAR_COLORS = {
-        applyingcrafting    = { r=0.2, g=1.0, b=0.5, a=1 },
-        applyingtalents     = { r=0.1, g=1.0, b=0.1, a=1 },
-        standard            = Addon:GetValue("UseCastBarStandardColor", nil, frameName) and { r=sr, g=sg, b=sb, a=sa } or { r=1.0, g=1.0, b=0.4, a=1 },
-        empowered           = { r=1.0, g=1.0, b=1.0, a=0.4 },
-        channel             = Addon:GetValue("UseCastBarChannelColor", nil, frameName) and { r=cr, g=cg, b=cb, a=ca } or { r=0.2, g=0.4, b=0.98, a=1 },
-        uninterruptable     = Addon:GetValue("UseCastBarUninterruptableColor", nil, frameName) and { r=ur, g=ug, b=ub, a=ua } or { r=0.5, g=0.5, b=0.5, a=1 },
-        interrupted         = Addon:GetValue("UseCastBarInterruptedColor", nil, frameName) and { r=ir, g=ig, b=ib, a=ia } or { r=1, g=0.2, b=0.2, a=1 },
-        important           = Addon:GetValue("UseCastBarImportantColor", nil, frameName) and { r=imr, g=img, b=imb, a=ima } or { r=0.95, g=0.55, b=0.2, a=1.0 },
-        readytokick         = Addon:GetValue("UseCastBarReadyColor", nil, frameName) and { r=rr, g=rg, b=rb, a=ra } or { r=0.2, g=0.95, b=0.2, a=1.0 },
-    }
+    if not self.CASTBAR_COLORS or self.__forceUpdate then
+        local sr,sg,sb,sa = Addon:GetRGBA("CastBarStandardColor", nil, frameName)
+        local cr,cg,cb,ca = Addon:GetRGBA("CastBarChannelColor", nil, frameName)
+        local ur,ug,ub,ua = Addon:GetRGBA("CastBarUninterruptableColor", nil, frameName)
+        local ir,ig,ib,ia = Addon:GetRGBA("CastBarInterruptedColor", nil, frameName)
+        local imr,img,imb,ima = Addon:GetRGBA("CastBarImportantColor", nil, frameName)
+        local rr,rg,rb,ra = Addon:GetRGBA("CastBarReadyColor", nil, frameName)
+        self.CASTBAR_COLORS = {
+            applyingcrafting    = { r=0.2, g=1.0, b=0.5, a=1 },
+            applyingtalents     = { r=0.1, g=1.0, b=0.1, a=1 },
+            standard            = Addon:GetValue("UseCastBarStandardColor", nil, frameName) and { r=sr, g=sg, b=sb, a=sa } or { r=1.0, g=1.0, b=0.4, a=1 },
+            empowered           = { r=1.0, g=1.0, b=1.0, a=0.4 },
+            channel             = Addon:GetValue("UseCastBarChannelColor", nil, frameName) and { r=cr, g=cg, b=cb, a=ca } or { r=0.2, g=0.4, b=0.98, a=1 },
+            uninterruptable     = Addon:GetValue("UseCastBarUninterruptableColor", nil, frameName) and { r=ur, g=ug, b=ub, a=ua } or { r=0.5, g=0.5, b=0.5, a=1 },
+            interrupted         = Addon:GetValue("UseCastBarInterruptedColor", nil, frameName) and { r=ir, g=ig, b=ib, a=ia } or { r=1, g=0.2, b=0.2, a=1 },
+            important           = Addon:GetValue("UseCastBarImportantColor", nil, frameName) and { r=imr, g=img, b=imb, a=ima } or { r=0.95, g=0.55, b=0.2, a=1.0 },
+            readytokick         = Addon:GetValue("UseCastBarReadyColor", nil, frameName) and { r=rr, g=rg, b=rb, a=ra } or { r=0.2, g=0.95, b=0.2, a=1.0 },
+        }
+
+        self.__forceUpdate = nil
+    end
 
     ABE_CastingBarMixin.SetCustomColor(self)
 
@@ -767,7 +774,7 @@ function ABE_CastingBarMixin.SetHooks(frame)
     if frame.GetEffectiveType then
         hooksecurefunc(frame, "GetEffectiveType" , ABE_CastingBarMixin.OnGetEffectiveType)
     end
-    if frame.HandleInterruptOrSpellFailed then
-        hooksecurefunc(frame, "HandleInterruptOrSpellFailed", ABE_CastingBarMixin.OnHandleInterruptOrSpellFailed)
+    if frame.PlayInterruptAnims then
+        hooksecurefunc(frame, "PlayInterruptAnims", ABE_CastingBarMixin.OnPlayInterruptAnims)
     end
 end

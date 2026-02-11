@@ -81,7 +81,7 @@ function ABE_CDMCustomItemMixin:OnEvent(event, ...)
                 local frame = _G[self.parentName]
                 frame:UpdateAllTrinkets(self.slotID)
             end
-            print(event, self.spellID)
+
             self:OnSpellUpdateCooldownEvent()
         end
     elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
@@ -217,7 +217,7 @@ function ABE_CDMCustomItemMixin:FindAuraForCurrentSpellID()
     for cdID, data in pairs(CooldownViewerSettings:GetDataProvider():GetDisplayData().cooldownInfoByID) do
         local itemSpellID = data.spellID
         if itemSpellID == self.spellID then
-            Addon:DebugPrint("SpellFound", itemSpellID, self.spellID)
+            --Addon:DebugPrint("SpellFound", itemSpellID, self.spellID)
             self.linkedSpellID = data.linkedSpellID
             self.overrideTooltipSpellID = data.overrideTooltipSpellID
             self.overrideSpellID = data.overrideSpellID
@@ -233,7 +233,7 @@ function ABE_CDMCustomItemMixin:FindAuraInstanceIDForCurrentSpellID()
         local auraInstanceID = itemFrame:GetAuraSpellInstanceID()
         local spellID = itemFrame:GetBaseSpellID()
         local cooldownID = itemFrame:GetCooldownID()
-        Addon:DebugPrint("AuraInstanceID Set:", self.spellID, spellID, cooldownID)
+        --Addon:DebugPrint("AuraInstanceID Set:", self.spellID, spellID, cooldownID)
         if self.spellID == spellID then
             self.auraInstanceID = auraInstanceID
         end
@@ -293,7 +293,8 @@ end
 
 function ABE_CDMCustomItemMixin:GetCooldownDurationObj()
     if self.type == "spell" then
-        self.durationObj = C_Spell.GetSpellChargeDuration(self.baseSpellID or self.spellID) or C_Spell.GetSpellCooldownDuration(self.baseSpellID or self.spellID)
+        local spellID = self.overrideID or self.baseSpellID or self.spellID
+        self.durationObj = C_Spell.GetSpellChargeDuration(spellID) or C_Spell.GetSpellCooldownDuration(spellID)
     end
     return self.durationObj or nil
 end
@@ -972,7 +973,7 @@ function ABE_CDMCustomFrameMixin:OnEvent(event, ...)
                                 if itemFrames then
                                     for _, item in ipairs(itemFrames) do
                                         local spellID = item.cooldownInfo.spellID
-                                        print("addedAuras", spellID)
+                                        --print("addedAuras", spellID)
                                         local overrideSpellID = item.cooldownInfo.overrideSpellID
                                         self:OnAuraAddedEvent(spellID, overrideSpellID, auraData)
                                         return
@@ -1304,6 +1305,7 @@ function ABE_CDMCustomFrameMixin:CreateFrame(name, parent, point, relativePoint,
     local frame = CreateFrame("Frame", name, UIParent, template)
     frame:Show()
     frame:SetPoint(point, UIParent, relativePoint, math.ceil(offsetX) or 0, math.ceil(offsetY) or 0)
+    frame.template = template
 
     return frame, { x = offsetX, y = offsetY }
 end

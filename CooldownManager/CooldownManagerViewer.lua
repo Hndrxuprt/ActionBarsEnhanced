@@ -166,26 +166,7 @@ local function OnCooldownSet(cooldownFrame, button)
         button.__cooldownDoneHooked = true
     end
 
-    local timerString
-    if not isBeta then
-        if not cooldownFrame.__timer then
-            local cdRegions = { cooldownFrame:GetRegions() }
-            if cdRegions then
-                for i, region in ipairs(cdRegions) do
-                    if region:IsObjectType("FontString") then
-                        cooldownFrame.__timer = region
-                        break
-                    end
-                end
-            end
-            cooldownFrame:SetCooldownFromDurationObject(duration, true)
-            
-            CheckCooldownState(button)
-        end
-        timerString = cooldownFrame.__timer
-    else
-        timerString = cooldownFrame:GetCountdownFontString()
-    end
+    local timerString = cooldownFrame:GetCountdownFontString()
 
     button.__cooldownSet = true
     if button.cooldownUseAuraDisplayTime or button.pandemicAlertTriggerTime then
@@ -214,26 +195,17 @@ local function OnCooldownSet(cooldownFrame, button)
             Addon.SetBorderColor(button, {Addon:GetRGBA("CDMBackdropColor", nil, barName)}, "reset")
         end
         
-        if not isBeta then
-            local spellID = button:GetSpellID()
-            button.__isOnGCD, button.__isOnActualCooldown = Addon:IsSpellOnGCD(spellID)
-            if (button.__isOnGCD and not button.__isOnActualCooldown) and Addon:GetValue("CDMRemoveGCDSwipe", nil, barName) then
-                cooldownFrame:SetSwipeColor(0,0,0,0)
-            end
-        else
-            if (button.isOnGCD and not button.isOnActualCooldown) then
+        if (button.isOnGCD and not button.isOnActualCooldown) then
                 button.__isOnGCD = true
+        else
+            if not button.wasSetFromCharges then
+                button.__isOnActualCooldown = true
             else
-                if not button.wasSetFromCharges then
-                    button.__isOnActualCooldown = true
-                else
-                    button.__isOnActualCooldown = false
-                end
+                button.__isOnActualCooldown = false
             end
-            if (button.isOnGCD and not button.isOnActualCooldown) and Addon:GetValue("CDMRemoveGCDSwipe", nil, barName) then
-                cooldownFrame:Clear()
-            end
-            
+        end
+        if (button.isOnGCD and not button.isOnActualCooldown) and Addon:GetValue("CDMRemoveGCDSwipe", nil, barName) then
+            cooldownFrame:Clear()
         end
 
         timerString:SetVertexColor(1,1,1,1)

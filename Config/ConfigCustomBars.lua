@@ -25,7 +25,6 @@ Addon.config.containers["CDMCustomFrameBarContainer"] = {
                 local frameName = ABE_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
                 local name = self:GetText()
-                print(name)
                 self.currentName = name
                 if frame then
                     frame:SetDisplayName(name)
@@ -158,9 +157,9 @@ Addon.config.containers["CDMCustomFrameBarIconOptionsContainer"] = {
             step            = 1,
             sliderName      = {top = L.Size},
             callback        = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
-                local frame = _G[frameName]
-                ABE_CastingBarMixin.UpdateIconShown(frame)
+                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameLabel]
+                frame:RefreshLayout()
             end,
         },
         ["CDMCustomFrametBarIconPosition"] = {
@@ -172,9 +171,9 @@ Addon.config.containers["CDMCustomFrameBarIconOptionsContainer"] = {
             showNew     = false,
             OnEnter     = false,
             OnClose     = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
-                local frame = _G[frameName]
-                ABE_CastingBarMixin.UpdateIconShown(frame)
+                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameLabel]
+                frame:RefreshLayout()
             end,
         },
         ["CDMCustomFrameBarIconOffset"] = {
@@ -187,9 +186,9 @@ Addon.config.containers["CDMCustomFrameBarIconOptionsContainer"] = {
             step            = 1,
             sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
             callback        = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
-                local frame = _G[frameName]
-                ABE_CastingBarMixin.UpdateIconShown(frame)
+                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameLabel]
+                frame:RefreshLayout()
             end,
         },
         ["IconMaskTextureOptions"] = {
@@ -201,9 +200,9 @@ Addon.config.containers["CDMCustomFrameBarIconOptionsContainer"] = {
             showNew     = false,
             OnEnter     = false,
             OnClose     = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
-                local frame = _G[frameName]
-                ABE_CastingBarMixin.UpdateIconShown(frame)
+                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameLabel]
+                frame:RefreshLayout()
             end,
         },
         ["MaskScale"] = {
@@ -216,9 +215,9 @@ Addon.config.containers["CDMCustomFrameBarIconOptionsContainer"] = {
             step            = 0.01,
             sliderName      = {top = L.Scale},
             callback        = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
-                local frame = _G[frameName]
-                ABE_CastingBarMixin.UpdateIconShown(frame)
+                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameLabel]
+                frame:RefreshLayout()
             end,
         },
         ["IconScale"] = {
@@ -231,9 +230,9 @@ Addon.config.containers["CDMCustomFrameBarIconOptionsContainer"] = {
             step            = 0.01,
             sliderName      = {top = L.Scale},
             callback        = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
-                local frame = _G[frameName]
-                ABE_CastingBarMixin.UpdateIconShown(frame)
+                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameLabel]
+                frame:RefreshLayout()
             end,
         },
     }

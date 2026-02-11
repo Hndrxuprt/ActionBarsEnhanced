@@ -106,7 +106,13 @@ do
     cooldownColorCurve:AddPoint(10, CreateColor(1, 1, 0, 1))
     cooldownColorCurve:AddPoint(10.2, CreateColor(1, 1, 1, 1))
 
+    local alphaCurve = C_CurveUtil.CreateCurve()
+    alphaCurve:SetType(Enum.LuaCurveType.Step)
+    alphaCurve:AddPoint(0, 0.0)
+    alphaCurve:AddPoint(0.001, 1.0)
+
     Addon.cooldownColorCurve = cooldownColorCurve
+    Addon.alphaCurve = alphaCurve
 end
 
 Addon.Defaults = {
@@ -595,6 +601,13 @@ Addon.Defaults = {
     UseCDMCustomFramePipSize = true,
     CDMCustomFramePipSizeX = 8,
     CDMCustomFramePipSizeY = 30,
+
+    UseCDMCustomFrameBarIconSize = false,
+    CDMCustomFrameBarIconSize = 20,
+    CurrentCDMCustomFrametBarIconPosition = 1,
+    UseCDMCustomFrameBarIconOffset = false,
+    CDMCustomFrameBarIconOffsetX = 0,
+    CDMCustomFrameBarIconOffsetY = 0,
     
 
 }

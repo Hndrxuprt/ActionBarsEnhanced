@@ -1850,7 +1850,7 @@ Addon.config.containers = {
                 OnEnterPressed  = function(self)
                     local frameName = ABE_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    name = self:GetText()
+                    local name = self:GetText()
                     self.currentName = name
                     if frame then
                         frame:SetDisplayName(name)
@@ -3198,6 +3198,11 @@ Addon.config.containers = {
                 value           = "CastBarStandardColor",
                 checkboxValues  = {"UseCastBarStandardColor"},
                 alpha           = true,
+                callback        = function()
+                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    frame.__forceUpdate = true
+                end,
             },
             ["CastBarImportantColor"] = {
                 type            = "colorSwatch",
@@ -3205,6 +3210,11 @@ Addon.config.containers = {
                 value           = "CastBarImportantColor",
                 checkboxValues  = {"UseCastBarImportantColor"},
                 alpha           = true,
+                callback        = function()
+                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    frame.__forceUpdate = true
+                end,
             },
             ["CastBarChannelColor"] = {
                 type            = "colorSwatch",
@@ -3212,6 +3222,11 @@ Addon.config.containers = {
                 value           = "CastBarChannelColor",
                 checkboxValues  = {"UseCastBarChannelColor"},
                 alpha           = true,
+                callback        = function()
+                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    frame.__forceUpdate = true
+                end,
             },
             ["CastBarUninterruptableColor"] = {
                 type            = "colorSwatch",
@@ -3219,6 +3234,11 @@ Addon.config.containers = {
                 value           = "CastBarUninterruptableColor",
                 checkboxValues  = {"UseCastBarUninterruptableColor"},
                 alpha           = true,
+                callback        = function()
+                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    frame.__forceUpdate = true
+                end,
             },
             ["CastBarInterruptedColor"] = {
                 type            = "colorSwatch",
@@ -3226,6 +3246,11 @@ Addon.config.containers = {
                 value           = "CastBarInterruptedColor",
                 checkboxValues  = {"UseCastBarInterruptedColor"},
                 alpha           = true,
+                callback        = function()
+                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    frame.__forceUpdate = true
+                end,
             },
             ["CastBarReadyColor"] = {
                 type            = "colorSwatch",
@@ -3233,6 +3258,11 @@ Addon.config.containers = {
                 value           = "CastBarReadyColor",
                 checkboxValues  = {"UseCastBarReadyColor"},
                 alpha           = true,
+                callback        = function()
+                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    frame.__forceUpdate = true
+                end,
             },
         }
         

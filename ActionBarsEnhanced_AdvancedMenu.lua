@@ -618,8 +618,8 @@ function ABE_BarsGroupButtonIconMixin:DisplayContextMenu()
         
         rootDescription:CreateDivider()
         
-        rootDescription:CreateButton(L.CreateBarsFrame, function()
+        --[[ rootDescription:CreateButton(L.CreateBarsFrame, function()
             CreateCustomFrame("CustomFrameBarsCooldownViewer", "ABE_CDMCustomBarFrame")
-        end)
+        end) ]]
     end)
 end

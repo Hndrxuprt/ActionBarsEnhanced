@@ -808,8 +808,15 @@ Addon.CustomFrameBarsCooldownViewer = {
             {name = "CDMCustomFramePipTexture", template = "OptionsDropdownTemplate"},
             {name = "CDMCustomFramePipSize", template = "OptionsDoubleCheckboxSliderTemplate"},
 
-            {name = "Divider4", template = "OptionsDividerTemplate"},
-
+        }
+    },
+    {
+        name = "CDMCustomFrameAttachContainer",
+        childs = {
+            {name = "CDMEnableAttach", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomFrameAttachTo", template = "OptionsEditBoxTemplate"},
+            {name = "CDMCustomFrameAttachPoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CDMCustomFrameAttachOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
         }
     },
     {
@@ -824,6 +831,52 @@ Addon.CustomFrameBarsCooldownViewer = {
             {name = "IconMaskTextureOptions", template = "OptionsDropdownTemplate"},
             {name = "MaskScale", template = "OptionsCheckboxSliderTemplate"},
             {name = "IconScale", template = "OptionsCheckboxSliderTemplate"},
+        }
+    },
+    {
+        name = "CDMCustomFrameCDContainer",
+        childs = {
+            {name = "CDMCustomFrameSwipeTexture", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameSwipeSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameSwipeColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CDMCustomFrameReverseSwipe", template = "OptionsCheckboxTemplate"},
+            {name = "ShowCountdownNumbersForCharges", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomFrameRemoveGCDSwipe", template = "OptionsCheckboxTemplate"},
+
+            {name = "Divider", template = "OptionsDividerTemplate"},
+
+            {name = "CDMCustomFrameRemoveAuraSwipe", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomFrameAuraSwipeColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CDMCustomFrameAuraTimerColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CDMCustomFrameAuraReverseSwipe", template = "OptionsCheckboxTemplate"},
+
+            {name = "Divider", template = "OptionsDividerTemplate"},
+
+            {name = "CDMCustomFrameEdgeTexture", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameEdgeSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameEdgeColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CDMCustomFrameEdgeAlwaysShow", template = "OptionsCheckboxTemplate"},
+            {name = "PreviewSwipe", template = "OptionsButtonCooldownPreviewTemplate", point = {"TOP", "desc", "BOTTOM", 180, -10}, scale="1.8"},
+            {name = "PreviewAuraSwipe", template = "OptionsButtonCooldownPreviewTemplate", point = {"TOP", "desc", "BOTTOM", 180, -120}, scale="1.8"},
+            {name = "PreviewEdge", template = "OptionsButtonCooldownPreviewTemplate", point = {"TOP", "desc", "BOTTOM", 180, -230}, scale="1.8"},
+        }
+    },
+    {
+        name = "CDMCustomFrameFontContainer",
+        childs = {
+            {name = "CDMCooldownFont", template = "OptionsDropdownTemplate"},
+            {name = "CDMCooldownFontSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCooldownFontOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+            {name = "CDMCooldownFontColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CDMColorizedCooldownFont", template = "OptionsCheckboxTemplate"},
+            {name = "Divider", template = "OptionsDividerTemplate"},
+            {name = "CDMStacksFont", template = "OptionsDropdownTemplate"},
+            {name = "CDMStacksPoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CDMStacksOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+            {name = "CDMStacksFontSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMStacksFontColor", template = "OptionsColorOverrideTemplate"},
+            {name = "PreviewCooldownFont", template = "OptionsButtonCooldownPreviewTemplate", point = {"TOP", "desc", "BOTTOM", 180, -10}, scale="1.8"},
+            {name = "PreviewFont", template = "OptionsButtonTextPreviewTemplate", point = {"TOP", "desc", "BOTTOM", 180, -110}, scale="1.8"},
         }
     },
 }
