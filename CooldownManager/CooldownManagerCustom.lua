@@ -366,7 +366,7 @@ function ABE_CDMCustomItemMixin:RefreshCount()
         self.auraData = self.auraInstanceID and C_UnitAuras.GetAuraDataByAuraInstanceID("player", self.auraInstanceID) or nil
         --Addon:DebugPrint("RefreshCount", self.auraData, self.auraInstanceID)
 
-        if self.auraData then
+        if self.auraData and not self.stages then
             charges.currentCharges = self.auraData.applications
         end
 
@@ -462,11 +462,11 @@ function ABE_CDMCustomItemMixin:RefreshBackdrop()
     if not self.iconBorder then return end
 
     if self.isOnAuraTimer then
-        if Addon:GetRGBA("UseCDMBackdropAuraColor", nil, self.parentName) then
+        if Addon:GetValue("UseCDMBackdropAuraColor", nil, self.parentName) then
             self.iconBorder:SetBackdropBorderColor(Addon:GetRGBA("CDMBackdropAuraColor", nil, self.parentName))
         end
     else
-        if Addon:GetRGBA("UseCDMBackdropColor", nil, self.parentName) then
+        if Addon:GetValue("UseCDMBackdropColor", nil, self.parentName) then
             self.iconBorder:SetBackdropBorderColor(Addon:GetRGBA("CDMBackdropColor", nil, self.parentName))
         end
     end
@@ -888,12 +888,14 @@ function ABE_CDMCustomFrameMixin:OnAuraAddedEvent(spellID, overrideSpellID, aura
             itemFrame.auraInstanceID = auraData.auraInstanceID
             itemFrame.auraDuration = auraData.duration
             local auraDurationObject = C_UnitAuras.GetAuraDuration("player", itemFrame.auraInstanceID)
-            itemFrame.__auraDurationObject = auraDurationObject
-            itemFrame.auraStartTime = auraDurationObject:GetStartTime()
-            itemFrame.isOnAuraTimer = true
-            local auraCooldown = itemFrame:GetAuraFrame()
-            auraCooldown:SetCooldown(itemFrame.auraStartTime, auraData.duration)
-            itemFrame:RefreshData()
+            if auraDurationObject then
+                itemFrame.__auraDurationObject = auraDurationObject
+                itemFrame.auraStartTime = auraDurationObject:GetStartTime()
+                itemFrame.isOnAuraTimer = true
+                local auraCooldown = itemFrame:GetAuraFrame()
+                auraCooldown:SetCooldown(itemFrame.auraStartTime, auraData.duration)
+                itemFrame:RefreshData()
+            end
         end
     end
 end
@@ -903,10 +905,12 @@ function ABE_CDMCustomFrameMixin:OnAuraUpdatedEvent(auraInstanceID)
         if itemFrame.auraInstanceID == auraInstanceID then
             itemFrame.isOnAuraTimer = true
             local auraDurationObject = C_UnitAuras.GetAuraDuration("player", itemFrame.auraInstanceID)
-            itemFrame.auraStartTime = auraDurationObject:GetStartTime()
-            local auraCooldown = itemFrame:GetAuraFrame()
-            auraCooldown:SetCooldown(itemFrame.auraStartTime, itemFrame.auraDuration or auraDurationObject:GetTotalDuration()) 
-            itemFrame:RefreshData()
+            if auraDurationObject then
+                itemFrame.auraStartTime = auraDurationObject:GetStartTime()
+                local auraCooldown = itemFrame:GetAuraFrame()
+                auraCooldown:SetCooldown(itemFrame.auraStartTime, itemFrame.auraDuration or auraDurationObject:GetTotalDuration()) 
+                itemFrame:RefreshData()
+            end
         end
     end
 end
@@ -1223,18 +1227,19 @@ function ABE_CDMCustomFrameMixin:RefreshLayout()
 end
 
 function ABE_CDMCustomFrameMixin:RefreshVisibileOnCD()
+    if self.visibleChildren then
+        for _, frame in ipairs(self.visibleChildren) do
+            frame.__isEditing = self.isEditing
+        end
+            
+        if self.Container.isCentered then
+            Addon:ApplyCenteredGridLayout(self.Container, self.visibleChildren, self.Container.stride, self.Container.childXPadding)
+        else
+            Addon:ApplyStandardGridLayout(self.Container, self.visibleChildren, self.Container.stride, self.Container.childXPadding)
+        end
 
-    for _, frame in ipairs(self.visibleChildren) do
-        frame.__isEditing = self.isEditing
+        self:ResizeFrame(self, self.visibleChildren)
     end
-        
-    if self.Container.isCentered then
-        Addon:ApplyCenteredGridLayout(self.Container, self.visibleChildren, self.Container.stride, self.Container.childXPadding)
-    else
-        Addon:ApplyStandardGridLayout(self.Container, self.visibleChildren, self.Container.stride, self.Container.childXPadding)
-    end
-
-    self:ResizeFrame(self, self.visibleChildren)
 end
 
 function ABE_CDMCustomFrameMixin:ResizeFrame(frame, visibleChildren)

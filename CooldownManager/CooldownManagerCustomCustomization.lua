@@ -235,6 +235,14 @@ function ABE_CDMCustomFrameCustomized:RefreshBackdrop(frame, frameName)
                 itemFrame.iconBorder:SetBackdropBorderColor(Addon:GetRGBA("CDMBackdropColor", nil, frameName))
                 itemFrame.iconBorder:Show()
             end
+            if itemFrame.Bar and not itemFrame.BarBorder then
+                itemFrame.BarBorder = Addon.CreateBorder(itemFrame.Bar, frameName)
+                itemFrame.BarBorder:Show()
+            elseif itemFrame.BarBorder then
+                Addon.SetBackdropBorderSize(itemFrame.BarBorder, Addon:GetValue("CDMBackdropSize", nil, frameName))
+                itemFrame.BarBorder:SetBackdropBorderColor(Addon:GetRGBA("CDMBackdropColor", nil, frameName))
+                itemFrame.BarBorder:Show()
+            end
         end
     end
 end

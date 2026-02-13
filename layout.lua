@@ -879,6 +879,14 @@ Addon.CustomFrameBarsCooldownViewer = {
             {name = "PreviewFont", template = "OptionsButtonTextPreviewTemplate", point = {"TOP", "desc", "BOTTOM", 180, -110}, scale="1.8"},
         }
     },
+    {
+        name = "CDMCustomFrameBackdropContainer",
+        childs = {
+            {name = "CDMCustomFrameBackdropSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameBackdropColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CDMCustomFrameBackdropAuraColor", template = "OptionsColorOverrideTemplate"},
+        }
+    },
 }
 
 Addon.PlayerCastingBarFrame = {

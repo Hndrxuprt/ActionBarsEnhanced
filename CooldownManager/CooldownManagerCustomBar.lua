@@ -39,26 +39,30 @@ function ABE_CDMCustomBarMixin:RefreshData()
 end
 function ABE_CDMCustomBarMixin:GetStages()
     if not self.spellID then return end
+
+    local spellID = self.itemID or self.baseSpellID or self.spellID
     local frameName = self.parentName
     local frameIndex = _G[frameName]:GetFrameIndexByName(frameName)
     local profileTable = Addon.CurrentProfileTbl or Addon:GetCurrentProfileTable()
     if profileTable["CDMCustomFrames"] then
         local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
         if frameTbl and frameTbl.stages then
-            return frameTbl.stages[self.itemID or self.spellID]
+            return frameTbl.stages[spellID]
         end
     end
 end
 
 function ABE_CDMCustomBarMixin:GetCustomColor()
     if not self.spellID then return end
+
+    local spellID = self.itemID or self.baseSpellID or self.spellID
     local frameName = self.parentName
     local frameIndex = _G[frameName]:GetFrameIndexByName(frameName)
     local profileTable = Addon.CurrentProfileTbl or Addon:GetCurrentProfileTable()
     if profileTable["CDMCustomFrames"] then
         local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
         if frameTbl and frameTbl.color then
-            return frameTbl.color[self.itemID or self.spellID]
+            return frameTbl.color[spellID]
         end
     end
 end
@@ -75,7 +79,7 @@ function ABE_CDMCustomBarMixin:RefreshCount()
 
         statusbar:SetMinMaxValues(0, self.stages)
         local count
-        if self.auraData then
+        if self.auraData and not self.stages then
             count = self.auraData.applications
         else
             count = self.count
@@ -136,7 +140,9 @@ function ABE_CDMCustomBarFrameMixin:OnAuraAddedEvent(spellID, overrideSpellID, a
     for itemFrame in self.itemPool:EnumerateActive() do
         if not itemFrame.__removeAura and ((itemFrame.spellID == spellID or itemFrame.baseSpellID == spellID)
         or (itemFrame.spellID == overrideSpellID or itemFrame.baseSpellID == overrideSpellID)) then
-            itemFrame.barType = "aura"
+            if not itemFrame.stages then
+                itemFrame.barType = "aura"
+            end
         end
     end
 end
