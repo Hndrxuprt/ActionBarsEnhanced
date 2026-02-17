@@ -573,6 +573,20 @@ Addon.config.containers = {
                     end
                 end,
             },
+            ["HideMinimapButton"] = {
+                type            = "checkbox",
+                name            = L.HideMinimapButton,
+                value           = "HideMinimapButton",
+                callback        = function(checked)
+                    local LDBIcon = LibStub("LibDBIcon-1.0")
+                    Addon.minimap.hide = checked
+                    if checked then
+                        LDBIcon:Hide("ActionBarEnhanced")
+                    else
+                        LDBIcon:Show("ActionBarEnhanced")
+                    end
+                end,
+            },
             ["HideInterrupt"] = {
                 type            = "checkbox",
                 name            = L.HideInterrupt,

@@ -279,6 +279,7 @@ Addon.layout = {
         name = "HideFramesOptionsContainer",
         childs = {
             {name = "HideTalkingHead", template = "OptionsCheckboxTemplate"},
+            {name = "HideMinimapButton", template = "OptionsCheckboxTemplate"},
             {name = "HideInterrupt", template = "OptionsCheckboxTemplate"},
             {name = "HideCasting", template = "OptionsCheckboxTemplate"},
             {name = "HideReticle", template = "OptionsCheckboxTemplate"},

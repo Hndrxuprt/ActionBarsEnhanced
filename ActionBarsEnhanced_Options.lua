@@ -1795,5 +1795,6 @@ local ldb = LDB:NewDataObject("ActionBarEnhanced", {
     end
 })
 
-Addon.minimap = Addon.minimap or {hide=false}
+Addon.minimap = Addon.minimap or {}
+Addon.minimap.hide = Addon:GetValue("HideMinimapButton") or false
 LDBIcon:Register("ActionBarEnhanced", ldb, Addon.minimap)

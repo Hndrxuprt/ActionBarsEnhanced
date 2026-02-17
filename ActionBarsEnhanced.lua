@@ -1430,6 +1430,18 @@ local function ProcessEvent(self, event, ...)
         --UIParent:SetScale(0.53333)
         ApplyProfile()
 
+        -- Update minimap button visibility from saved settings
+        if Addon.minimap then
+            local LDBIcon = LibStub("LibDBIcon-1.0")
+            local hideButton = Addon:GetValue("HideMinimapButton")
+            Addon.minimap.hide = hideButton
+            if hideButton then
+                LDBIcon:Hide("ActionBarEnhanced")
+            else
+                LDBIcon:Show("ActionBarEnhanced")
+            end
+        end
+
         --Addon:UpdateAllActionBarGrid()
         Addon:HookActionBarGrid()
 

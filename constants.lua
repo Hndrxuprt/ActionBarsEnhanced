@@ -206,6 +206,7 @@ Addon.Defaults = {
     HideMicroMenu = false,
     HideStanceBar = false,
     HideTalkingHead = false,
+    HideMinimapButton = false,
     HideInterrupt = true,
     HideCasting = true,
     HideReticle = true,
