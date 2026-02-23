@@ -490,6 +490,7 @@ function ABE_BarsListMixin:InitButtons(buttons, frame)
             GameTooltip:Show()
         end)
         button.Paste:SetScript("OnLeave",function(self)
+            GameTooltip:SetScale(1)
             GameTooltip:Hide()
         end)
         
