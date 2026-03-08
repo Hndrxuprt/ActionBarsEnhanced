@@ -376,18 +376,21 @@ function ABE_CastingBarMixin.SetCustomColor(self)
     local color = self.CASTBAR_COLORS["standard"]
 
     texture:SetVertexColor(color.r, color.g, color.b, color.a)
+    texture:SetAlpha(1)
     
     if barType.channel ~= nil then
         texture:SetVertexColorFromBoolean(barType.channel, self.CASTBAR_COLORS["channel"], color)
+        texture:SetAlpha(color.a)
     end
     if barType.empowered ~= nil then
         color.r, color.g, color.b, color.a = texture:GetVertexColor()
         texture:SetVertexColorFromBoolean(barType.empowered, self.CASTBAR_COLORS["empowered"], color)
+        texture:SetAlpha(color.a)
     end
     if barType.uninterruptable ~= nil then
         color.r, color.g, color.b, color.a = texture:GetVertexColor()
         texture:SetVertexColorFromBoolean(barType.uninterruptable, self.CASTBAR_COLORS["uninterruptable"], color)
-
+        texture:SetAlpha(color.a)
         SetBackdropBorderColorByType(self, color)
     end
 
@@ -395,6 +398,7 @@ function ABE_CastingBarMixin.SetCustomColor(self)
         color.r, color.g, color.b, color.a = texture:GetVertexColor()
         local isImportant = C_Spell.IsSpellImportant(self.spellID)
         texture:SetVertexColorFromBoolean(isImportant, self.CASTBAR_COLORS["important"], color)
+        texture:SetAlpha(color.a)
     end
 end
 

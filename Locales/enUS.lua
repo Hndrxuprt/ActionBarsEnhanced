@@ -290,6 +290,7 @@ L.CDMCustomFrameTrackSlot13 = "Add Trinket #1 (Slot 13)"
 L.CDMCustomFrameTrackSlot14 = "Add Trinket #2 (Slot 14)"
 L.CDMCustomFrameTrackSlot16 = "Add Weapon #1 (Slot 16)"
 L.CDMCustomFrameTrackSlot17 = "Add Weapon #2 (Slot 17)"
+L.CDMCustomFrameTrackRacial = "Track Racial"
 
 L.CDMCustomFrameHideWhen0 = "Hide when count is 0"
 
@@ -469,3 +470,5 @@ L.CreateChargeBarsFrame = "Create Charge Bars frame"
 L.SetStages = "Max Charges"
 L.SetStagesDesc = "Maximum number of Charges for this Aura."
 L.Stages = "Custom Charges"
+
+L.ConfigureRacials = "Configure Racials"

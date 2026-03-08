@@ -639,6 +639,7 @@ Addon.CustomFrameCooldownViewer = {
             {name = "CDMCustomTrackTrink2", template = "OptionsCheckboxTemplate"},
             {name = "CDMCustomTrackWeapon1", template = "OptionsCheckboxTemplate"},
             {name = "CDMCustomTrackWeapon2", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomTrackRacial", template = "OptionsCheckboxTemplate"},
             {name = "CDMCustomFrameAddSpellByID", template = "OptionsEditBoxTemplate"},
             {name = "CDMCustomFrameAddItemByID", template = "OptionsEditBoxTemplate"},
             {name = "CDMCustomHideWhenEmpty", template = "OptionsCheckboxTemplate"},

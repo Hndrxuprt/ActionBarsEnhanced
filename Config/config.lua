@@ -511,49 +511,49 @@ Addon.config.containers = {
                 name            = L.CustomColorOOR,
                 value           = "OORColor",
                 checkboxValues  = {"UseOORColor", "OORDesaturate"},
-                alpha           = false,
+                alpha           = true,
             },
             ["CustomColorOOM"] = {
                 type            = "colorSwatch",
                 name            = L.CustomColorOOM,
                 value           = "OOMColor",
                 checkboxValues  = {"UseOOMColor", "OOMDesaturate"},
-                alpha           = false,
+                alpha           = true,
             },
             ["CustomColorNotUsable"] = {
                 type            = "colorSwatch",
                 name            = L.CustomColorNoUse,
                 value           = "NoUseColor",
                 checkboxValues  = {"UseNoUseColor", "NoUseDesaturate"},
-                alpha           = false,
+                alpha           = true,
             },
             ["CustomColorOnGCD"] = {
                 type            = "colorSwatch",
                 name            = L.CustomColorGCD,
                 value           = "GCDColor",
                 checkboxValues  = {"UseGCDColor", "GCDColorDesaturate"},
-                alpha           = false,
+                alpha           = true,
             },
             ["CustomColorOnActualCD"] = {
                 type            = "colorSwatch",
                 name            = L.CustomColorCD,
                 value           = "CDColor",
                 checkboxValues  = {"UseCDColor", "CDColorDesaturate"},
-                alpha           = false,
+                alpha           = true,
             },
             ["CustomColorOnNormal"] = {
                 type            = "colorSwatch",
                 name            = L.CustomColorNormal,
                 value           = "NormalColor",
                 checkboxValues  = {"UseNormalColor", "NormalColorDesaturate"},
-                alpha           = false,
+                alpha           = true,
             },
             ["CustomColorOnAura"] = {
                 type            = "colorSwatch",
                 name            = L.CustomColorAura,
                 value           = "AuraColor",
                 checkboxValues  = {"UseAuraColor", "AuraColorDesaturate"},
-                alpha           = false,
+                alpha           = true,
             },
         }
     },
@@ -1935,6 +1935,15 @@ Addon.config.containers = {
                 callback        = function(checked)
                     local frameLabel = ABE_BarsListMixin:GetFrameLebel()
                     EventRegistry:TriggerEvent("CDMCustomItemList.AddItemBySlot", 17, frameLabel, checked)
+                end
+            },
+            ["CDMCustomTrackRacial"] = {
+                type            = "checkbox",
+                name            = "Track Racial",
+                value           = "CDMCustomTrackRacial",
+                callback        = function(checked)
+                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    EventRegistry:TriggerEvent("CDMCustomItemList.AddRacial", frameLabel, checked)
                 end
             },
             ["CDMCustomHideWhenEmpty"] = {

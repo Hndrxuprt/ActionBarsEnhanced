@@ -295,6 +295,7 @@ L.CDMCustomFrameTrackSlot13 = "Добавить Тринкет #1 (13 слот)"
 L.CDMCustomFrameTrackSlot14 = "Добавить Тринкет #2 (14 слот)"
 L.CDMCustomFrameTrackSlot16 = "Добавить Оружие #1 (16 слот)"
 L.CDMCustomFrameTrackSlot17 = "Добавить Оружие #2 (17 слот)"
+L.CDMCustomFrameTrackRacial = "Добавить Расовую способность"
 
 L.CDMCustomFrameHideWhen0 = "Скрывать если количество 0"
 
@@ -478,3 +479,5 @@ L.CreateChargeBarsFrame = "Создать фрейм Полосок стаков
 L.SetStages = "Максимум стаков"
 L.SetStagesDesc = "Максимальное количество стаков, которое будет использоваться для ауры."
 L.Stages = "Использовать заряды"
+
+L.ConfigureRacials = "Отслеживание Расовых"

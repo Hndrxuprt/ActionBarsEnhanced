@@ -434,6 +434,8 @@ local function Hook_UpdateFlipbook(Frame, Button)
 end
 
 local function FixKeyBindText(text)
+    if not text or text == "" then return end
+    
     local function escapePattern(text)
         return text:gsub("([%-%.%+%*%?%^%$%(%)%[%]%%])", "%%%1")
     end
@@ -487,11 +489,14 @@ function Addon:UpdateButtonFont(button, isStanceBar)
         hotKey = FixKeyBindText(hotKey)
         button.TextOverlayContainer.HotKey:SetText(hotKey)
         if Addon:GetValue("CurrentHotkeyFont", nil, configName) ~= "Default" then
-            button.TextOverlayContainer.HotKey:SetFont(
-                LibStub("LibSharedMedia-3.0"):Fetch("font", Addon:GetValue("CurrentHotkeyFont", nil, configName)),
-                (Addon:GetValue("UseHotkeyFontSize", nil, configName) and Addon:GetValue("HotkeyFontSize", nil, configName) or 11),
-                Addon:GetValue("CurrentHotkeyOutline", nil, configName) > 1 and Addon.FontOutlines[Addon:GetValue("CurrentHotkeyOutline", nil, configName)] or ""
-            )
+            local font = LibStub("LibSharedMedia-3.0"):Fetch("font", Addon:GetValue("CurrentHotkeyFont", nil, configName))
+            C_Timer.After(0, function()
+                button.TextOverlayContainer.HotKey:SetFont(
+                    font,
+                    (Addon:GetValue("UseHotkeyFontSize", nil, configName) and Addon:GetValue("HotkeyFontSize", nil, configName) or 11),
+                    Addon:GetValue("CurrentHotkeyOutline", nil, configName) > 1 and Addon.FontOutlines[Addon:GetValue("CurrentHotkeyOutline", nil, configName)] or "OUTLINE"
+                )
+            end)
         end
         button.TextOverlayContainer.HotKey:ClearAllPoints()
         local fontSize = Addon:GetValue("UseHotkeyFontSize", nil, configName) and Addon:GetValue("HotkeyFontSize", nil, configName) or 11
@@ -1139,6 +1144,22 @@ function Addon:RefreshCooldown(button, isStanceBar, barName)
         RefreshSwipeTexture(button, button.chargeCooldown, isStanceBar)
         local showCountdonwNumbers = Addon:GetValue("ShowCountdownNumbersForCharges", nil, configName)
         button.chargeCooldown:SetHideCountdownNumbers(not showCountdonwNumbers)
+
+        if button.action and showCountdonwNumbers then
+            local _, spellID = GetActionInfo(button.action)
+            if not issecretvalue(spellID) and spellID then
+                local dur = C_Spell.GetSpellChargeDuration(spellID)
+                if Addon.CombatResIDs[spellID] and dur then
+                    button.cooldown:SetAlpha(dur:EvaluateRemainingDuration(Addon.invertAlphaCurve))
+                else
+                    button.cooldown:SetAlpha(1)
+                end
+            else
+                button.cooldown:SetAlpha(1)
+            end
+        else
+            button.cooldown:SetAlpha(1)
+        end
     end
     Addon:RefreshIconColor(button)
 end
@@ -1457,7 +1478,7 @@ local function ProcessEvent(self, event, ...)
             T.StatusBarTextures = Addon:GetStatusBarTextures()
         end
 
-        if Addon.C.HideTalkingHead then
+        if Addon:GetValue("HideTalkingHead") then
             Addon.eventHandlerFrame:RegisterEvent("TALKINGHEAD_REQUESTED")
         else
             Addon.eventHandlerFrame:UnregisterEvent("TALKINGHEAD_REQUESTED")

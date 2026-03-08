@@ -166,6 +166,7 @@ local function OnCooldownSet(cooldownFrame, button)
         if Addon:GetValue("UseCDMBackdrop", nil, barName) then
             Addon.SetBorderColor(button, {Addon:GetRGBA("CDMBackdropColor", nil, barName)}, "reset")
         end
+        ABE_CDMCustomized:RefreshCooldownFrame(button, barName)
         return
     end
 

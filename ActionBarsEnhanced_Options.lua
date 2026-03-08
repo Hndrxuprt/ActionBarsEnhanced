@@ -229,6 +229,67 @@ function Addon:GetInterruptSpell()
     end
 end
 
+function Addon:GetRacialSpell()
+    local _,_, raceID = UnitRace("player")
+    
+    for _, spellID in ipairs(Addon.RacialSpellsMap[raceID]) do
+        if C_SpellBook.IsSpellKnownOrInSpellBook(spellID) then
+            return spellID
+        end
+    end
+end
+
+function Addon:IsRacialSpell(spellID)
+    local _,_, raceID = UnitRace("player")
+
+    for _, racialID in ipairs(Addon.RacialSpellsMap[raceID]) do
+        if spellID == racialID then
+            return true
+        end
+    end
+
+    for _, data in pairs(Addon.RacialSpellsMap) do
+        for _, racialID in ipairs(data) do
+            if spellID == racialID then
+                return true
+            end
+        end
+    end
+
+    return false
+end
+
+function Addon:LoadRacialTable()
+    local currentProfile = Addon:GetCurrentProfile()
+
+    if not ABDB.Profiles.profilesList[currentProfile]["GlobalSettings"].RacialSpellsTracked then
+         ABDB.Profiles.profilesList[currentProfile]["GlobalSettings"].RacialSpellsTracked = {}
+         local tracked = ABDB.Profiles.profilesList[currentProfile]["GlobalSettings"].RacialSpellsTracked
+         for raceID, spells in pairs(Addon.RacialSpellsMap) do
+            tracked[raceID] = true
+         end
+    end
+end
+
+function Addon:GetRaceIcon(race, gender)
+
+    local raceOverride = {
+		Scourge = "undead",
+		HighmountainTauren = "highmountain",
+		LightforgedDraenei = "lightforged",
+		ZandalariTroll = "zandalari",
+		EarthenDwarf = "earthen",
+		Harronir = "haranir",
+	}
+
+    race = raceOverride[race] or race
+
+    race = race:lower()
+    gender = gender:lower()
+    
+    return "raceicon128-"..race.."-"..gender
+end
+
 local EditModeIconDataProvider = nil
 
 function Addon:GetRandomClassSpellIcon()

@@ -10,6 +10,9 @@ local function tblContains(tbl, item)
         if item.type == data.type and item.id == data.id then
             return index
         end
+        if item.type == data.type and (Addon:IsRacialSpell(item.id) and Addon:IsRacialSpell(data.id)) then
+            return index
+        end
     end
     return false
 end
@@ -61,11 +64,39 @@ function OptionsCDMCustomItemListMixin:OnLoad()
     self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.AddItemByID", self.OnAddItemByID)
     self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.AddSpellByID", self.OnAddSpellByID)
     self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.AddItemBySlot", self.OnAddItemBySlot)
+    self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.AddRacial", self.OnAddRacials)
 
     self.FakeAuraFrame.Label:SetText(L.SetFakeAura)
     self.FakeAuraFrame.Desc:SetText(L.SetFakeAuraDesc)
 end
 
+function OptionsCDMCustomItemListMixin:OnAddRacials(frameName, track)
+    if self.frameName ~= frameName then return end
+    
+    local racialSpell = Addon:GetRacialSpell()
+
+    if not racialSpell then return end
+
+    local newItem = {
+        type = "spell",
+        id = racialSpell
+    }
+
+    if track then
+        if not tblContains(self.itemList, newItem) then
+            table.insert(self.itemList, newItem)
+            self:OnShow()
+            EventRegistry:TriggerEvent("CDMCustomItemList.ItemAdded", self.itemList, self.frameName)
+        end
+    else
+        local index = tblContains(self.itemList, newItem)
+        if index then
+            table.remove(self.itemList, index)
+            self:OnShow()
+            EventRegistry:TriggerEvent("CDMCustomItemList.ItemRemoved", self.itemList, self.frameName)
+        end
+    end
+end
 function OptionsCDMCustomItemListMixin:OnAddItemBySlot(slotID, frameName, track)
     if self.frameName ~= frameName then return end
     if not slotID then return end
@@ -416,8 +447,10 @@ function OptionsCDMCustomItemListMixin:OpenFakeAuraSettings(item)
     local itemID = item:GetSpellID()
     self.FakeAuraFrame.Label:SetText(L.SetFakeAura)
     self.FakeAuraFrame.Desc:SetText(L.SetFakeAuraDesc)
+    self.FakeAuraFrame.Desc:Show()
 
     self.FakeAuraFrame.EditBox:SetText((item.fakeAura and item.fakeAura > 0) and item.fakeAura or "")
+    self.FakeAuraFrame.EditBox:Show()
     self.FakeAuraFrame:Show()
     self.FakeAuraFrame.Button:SetScript("OnClick", function()
         local newDuration = tonumber(self.FakeAuraFrame.EditBox:GetText())
@@ -442,8 +475,10 @@ function OptionsCDMCustomItemListMixin:OpenStagesSettings(item)
     local itemID = item:GetSpellID()
     self.FakeAuraFrame.Label:SetText(L.SetStages)
     self.FakeAuraFrame.Desc:SetText(L.SetStagesDesc)
+    self.FakeAuraFrame.Desc:Show()
 
     self.FakeAuraFrame.EditBox:SetText((item.stages and item.stages > 0) and item.stages or "")
+    self.FakeAuraFrame.EditBox:Show()
     self.FakeAuraFrame:Show()
     self.FakeAuraFrame.Button:SetScript("OnClick", function()
         local newStages = tonumber(self.FakeAuraFrame.EditBox:GetText())
@@ -459,6 +494,132 @@ function OptionsCDMCustomItemListMixin:OpenStagesSettings(item)
             frameTbl.stages[itemID] = newStages
             EventRegistry:TriggerEvent("CDMCustomItemList.StagesAdded", itemID, newStages)
         end
+        self.FakeAuraFrame:Hide()
+        self:OnShow()
+    end)
+end
+
+local function SetupGridLayout(parent, itemList, columns)
+    local padding = 2
+    local itemWidth = 105
+    local itemHeight = 20
+    
+    for _, item in ipairs(itemList) do
+        item:ClearAllPoints()
+        item:SetParent(parent)
+        item:SetSize(itemWidth, itemHeight)
+    end
+
+    local totalRows = math.ceil(#itemList / columns)
+    
+    for i, item in ipairs(itemList) do
+        local colIndex = (i - 1) % columns
+        local rowIndex = math.floor((i - 1) / columns)
+
+        local xOffset = padding + (colIndex * (itemWidth))
+        local yOffset = -(padding + (rowIndex * (itemHeight)))
+
+        item:SetPoint("TOPLEFT", parent, "TOPLEFT", xOffset, yOffset)
+    end
+end
+
+function OptionsCDMCustomItemListMixin:OpenRacialSettings(item)
+    self.FakeAuraFrame.Label:SetText("Configure Racials")
+    self.FakeAuraFrame.Label:SetPointsOffset(0, 75)
+    self.FakeAuraFrame.Desc:Hide()
+    self.FakeAuraFrame.EditBox:Hide()
+
+    if not self.FakeAuraFrame.Racials then
+        local racialFramesList = {}
+
+        self.FakeAuraFrame.Racials = CreateFramePool("FRAME", self.FakeAuraFrame)
+        local racialsPool = self.FakeAuraFrame.Racials
+
+        self.FakeAuraFrame.RacialContainer = CreateFrame("Frame", nil, self.FakeAuraFrame)
+        local racialContainer = self.FakeAuraFrame.RacialContainer
+        racialContainer:SetPoint("TOPLEFT", self.FakeAuraFrame, "TOPLEFT", 10, -60)
+        racialContainer:SetPoint("BOTTOMRIGHT", self.FakeAuraFrame, "BOTTOMRIGHT", -10, 10)
+        
+        local currentProfile = Addon:GetCurrentProfile()
+        local trackedTable = ABDB.Profiles.profilesList[currentProfile]["GlobalSettings"].RacialSpellsTracked
+
+        for i, raceID in ipairs(Addon.RacialsSort) do
+            local raceInfo = C_CreatureInfo.GetRaceInfo(raceID)
+            raceInfo.texture = Addon:GetRaceIcon(raceInfo.clientFileString, "Male")
+            local racialFrame = racialsPool:Acquire()
+            racialFrame:SetSize(100, 20)
+            racialFrame:SetPoint("TOPLEFT", self.FakeAuraFrame, "TOPLEFT", 10, -20)
+
+            racialFrame.chekbox = CreateFrame("CheckButton", nil, racialFrame, "UICheckButtonTemplate")
+            racialFrame.chekbox:SetSize(30,30)
+            racialFrame.chekbox:SetPoint("LEFT", racialFrame, "LEFT")
+            racialFrame.chekbox:SetAlpha(1)
+
+            if trackedTable then
+                if trackedTable[raceID] then
+                    racialFrame.chekbox:SetChecked(true)
+                else
+                    racialFrame.chekbox:SetChecked(false)
+                end
+            end
+
+            racialFrame.chekbox:SetScript("OnClick",function(button)
+                if not trackedTable then
+                    return
+                end
+
+                if raceID == 25 or raceID == 26 or raceID == 24 then
+                    trackedTable[24] = button:GetChecked()
+                    trackedTable[25] = button:GetChecked()
+                    trackedTable[26] = button:GetChecked()
+                elseif raceID == 70 or raceID == 52 then
+                    trackedTable[52] = button:GetChecked()
+                    trackedTable[70] = button:GetChecked()
+                elseif raceID == 85 or raceID == 84 then
+                    trackedTable[84] = button:GetChecked()
+                    trackedTable[85] = button:GetChecked()
+                elseif raceID == 91 or raceID == 86 then
+                    trackedTable[86] = button:GetChecked()
+                    trackedTable[91] = button:GetChecked()
+                else
+                    trackedTable[raceID] = button:GetChecked()
+                end
+            end)
+
+            racialFrame.icon = racialFrame:CreateTexture(nil, "BACKGROUND")
+            racialFrame.icon:SetSize(20,20)
+            racialFrame.icon:SetPoint("CENTER", racialFrame.chekbox, "CENTER", 0, 0)
+            racialFrame.icon:SetAtlas(raceInfo.texture)
+            
+            racialFrame.name = racialFrame:CreateFontString(nil, "BACKGROUND", "GameFontNormal")
+            racialFrame.name:SetSize(80,20)
+            racialFrame.name:SetPoint("LEFT", racialFrame.icon, "RIGHT", 4, 0)
+            racialFrame.name:SetText(raceInfo.raceName)
+            racialFrame.name:SetJustifyH("LEFT")
+
+            racialFrame:Show()
+
+            table.insert(racialFramesList, racialFrame)
+        end
+
+        SetupGridLayout(self.FakeAuraFrame.RacialContainer, racialFramesList, 5)
+    end
+    self.FakeAuraFrame:Show()
+
+    self.FakeAuraFrame.Button:SetPointsOffset(0, -80)
+
+    self.FakeAuraFrame.Button:SetScript("OnClick", function()
+        if self.FakeAuraFrame.Racials then
+            self.FakeAuraFrame.Racials:ReleaseAll()
+            self.FakeAuraFrame.Racials = nil
+            self.FakeAuraFrame.RacialContainer = nil
+        end
+
+        self.FakeAuraFrame.Button:SetPointsOffset(0, -60)
+        self.FakeAuraFrame.Label:SetPointsOffset(0, 60)
+
+        EventRegistry:TriggerEvent("CDMCustomItemList.UpdateFrame", self.frameName)
+
         self.FakeAuraFrame:Hide()
         self:OnShow()
     end)
@@ -707,6 +868,12 @@ function OptionsCDMCustomItemMixin:GetCustomColor()
     return color or { r=1, g=1, b=1, a=1 }
 end
 
+function OptionsCDMCustomItemMixin:IsRacialSpell()
+    if not self.spellID then return false end
+
+    return Addon:IsRacialSpell(self.spellID)
+end
+
 function OptionsCDMCustomItemMixin:DisplayContextMenu()
     MenuUtil.CreateContextMenu(self, function(owner, rootDescription)
         rootDescription:SetTag("CDMCustom ContextMenu")
@@ -742,6 +909,11 @@ function OptionsCDMCustomItemMixin:DisplayContextMenu()
             end,
             colorInfo
             )
+        end
+        if self:IsRacialSpell() then
+            rootDescription:CreateButton("Racial Settings", function()
+                self.parentFrame:OpenRacialSettings(self)
+            end)
         end
         rootDescription:CreateDivider()
         rootDescription:CreateButton(L.Delete, function()

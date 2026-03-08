@@ -19,11 +19,12 @@ function ABE_CDMCustomized:RefreshIconMask(child, frameName)
         mask:SetVertTile(false)
 
         Addon:SetTexture(mask, iconMaskAtlas.texture)
-    end
+        
+        if iconMaskAtlas.point then
+            mask:ClearAllPoints()
+            mask:SetPoint(iconMaskAtlas.point, mask:GetParent(), iconMaskAtlas.point)
+        end
 
-    if iconMaskAtlas.point then
-        mask:ClearAllPoints()
-        mask:SetPoint(iconMaskAtlas.point, mask:GetParent(), iconMaskAtlas.point)
     end
 
     if Addon:GetValue("UseIconScale", nil, frameName) then
@@ -33,11 +34,11 @@ function ABE_CDMCustomized:RefreshIconMask(child, frameName)
         icon:SetScale(Addon:GetValue("IconScale", nil, frameName))
     end
 
-    if Addon:GetValue("UseIconMaskScale", nil, frameName) then
-        local size = icon:GetSize()
+    if mask and Addon:GetValue("UseIconMaskScale", nil, frameName) then
+        local size = icon:GetParent():GetSize()
         mask:SetSize(size, size)
         mask:SetScale(Addon:GetValue("IconMaskScale", nil, frameName))
-    else
+    elseif mask then
         mask:ClearAllPoints()
         mask:SetAllPoints()
     end

@@ -31,6 +31,44 @@ Addon.InterruptMap = {
     ["DRUID"] = {38675, 78675, 106839},
     ["DEMONHUNTER"] = {183752},
 }
+Addon.CombatResIDs = {
+    [20707] = true,
+
+}
+Addon.RacialSpellsMap = {
+    [1] = {59752}, --Human
+    [2] = {20572, 33697, 33702}, --Orc
+    [3] = {20594}, --Dwarf
+    [4] = {58984}, --Elf
+    [5] = {7744}, --Undead
+    [6] = {20549}, --Tauren
+    [7] = {20589}, --Gnome
+    [8] = {26297}, --Troll
+    [9] = {69070, 69041}, --Goblin
+    [10] = {50613, 202719, 80483, 28730, 129597, 155145, 232633, 25046, 69179}, --Blood Elf
+    [11] = {28880, 59545, 59543, 59548, 121093, 416250, 59542, 59544, 370626, 59547}, --Draenei
+    [22] = {68992}, --Worgen
+    [24] = {107079}, --Pandaren
+    [25] = {107079}, --Pandaren
+    [26] = {107079}, --Pandaren
+    [27] = {260364}, --Nightborne
+    [28] = {255654}, --H. Tauren
+    [29] = {256948}, --Void Elf
+    [30] = {255647}, --Lightforged Draenei
+    [31] = {291944}, --Zandalari Troll
+    [32] = {287712}, --Kul Tiran
+    [34] = {265221}, --Dark Iron Dwarf
+    [35] = {312411}, --Vulpera
+    [36] = {274738}, --Mag'har Orc
+    [37] = {312924}, --Mechagnome
+    [52] = {357214}, --Dracthyr
+    [70] = {357214}, --Dracthyr
+    [84] = {436344}, --Earthen
+    [85] = {436344}, --Earthen
+    [86] = {1237885}, --Haranir
+    [91] = {1237885}, --Haranir
+}
+Addon.RacialsSort = {1,2,3,4,5,6,7,8,9,10,11,22,24,27,28,29,30,31,32,34,35,36,37,52,84,86}
 Addon.AttachPoints = {
     [1] = "TOPLEFT",
     [2] = "TOP",
@@ -111,8 +149,14 @@ do
     alphaCurve:AddPoint(0, 0.0)
     alphaCurve:AddPoint(0.001, 1.0)
 
+    local invertAlphaCurve = C_CurveUtil.CreateCurve()
+    invertAlphaCurve:SetType(Enum.LuaCurveType.Step)
+    invertAlphaCurve:AddPoint(0, 1.0)
+    invertAlphaCurve:AddPoint(0.001, 0.0)
+
     Addon.cooldownColorCurve = cooldownColorCurve
     Addon.alphaCurve = alphaCurve
+    Addon.invertAlphaCurve = invertAlphaCurve
 end
 
 Addon.Defaults = {

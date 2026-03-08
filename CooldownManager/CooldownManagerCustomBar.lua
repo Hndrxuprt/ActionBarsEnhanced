@@ -42,12 +42,14 @@ function ABE_CDMCustomBarMixin:GetStages()
 
     local spellID = self.itemID or self.baseSpellID or self.spellID
     local frameName = self.parentName
-    local frameIndex = _G[frameName]:GetFrameIndexByName(frameName)
-    local profileTable = Addon.CurrentProfileTbl or Addon:GetCurrentProfileTable()
-    if profileTable["CDMCustomFrames"] then
-        local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
-        if frameTbl and frameTbl.stages then
-            return frameTbl.stages[spellID]
+    if frameName then
+        local frameIndex = _G[frameName]:GetFrameIndexByName(frameName)
+        local profileTable = Addon.CurrentProfileTbl or Addon:GetCurrentProfileTable()
+        if profileTable["CDMCustomFrames"] then
+            local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
+            if frameTbl and frameTbl.stages then
+                return frameTbl.stages[spellID]
+            end
         end
     end
 end

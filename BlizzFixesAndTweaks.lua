@@ -133,6 +133,7 @@ local function ShowAnchorIcon(self)
             GameTooltip:Show()
         end)
         self.__anchorIcon:SetScript("OnLeave",function(icon)
+            GameTooltip:SetScale(1)
             GameTooltip:Hide()
         end)
     end

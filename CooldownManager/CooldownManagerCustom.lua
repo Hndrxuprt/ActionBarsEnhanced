@@ -358,15 +358,14 @@ function ABE_CDMCustomItemMixin:RefreshCount()
     elseif self.type == "spell" then
         if not self.spellID then return end
 
-        local charges = C_Spell.GetSpellCharges(self.spellID)
-        count = charges and charges.currentCharges or ""
-
         local charges = C_Spell.GetSpellCharges(self.spellID) or {}
+
+        count = charges and charges.currentCharges or ""
 
         self.auraData = self.auraInstanceID and C_UnitAuras.GetAuraDataByAuraInstanceID("player", self.auraInstanceID) or nil
         --Addon:DebugPrint("RefreshCount", self.auraData, self.auraInstanceID)
 
-        if self.auraData and not self.stages then
+        if self.auraData then
             charges.currentCharges = self.auraData.applications
         end
 
@@ -749,6 +748,7 @@ function ABE_CDMCustomFrameMixin:OnLoad()
     self:AddDynamicEventMethod(EventRegistry, "EditMode.Enter", self.OnEditModeEnter)
     self:AddDynamicEventMethod(EventRegistry, "EditMode.Exit", self.OnEditModeExit)
     self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.FakeAuraAdded", self.OnFakeAuraAdded)
+    self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.UpdateFrame", self.OnFrameUpdate)
 
     C_Timer.After(0.5, function()
         self:RefreshLayout()    
@@ -759,6 +759,10 @@ function ABE_CDMCustomFrameMixin:OnLoad()
     Addon:BarsFadeAnim(self)
 end
 
+function ABE_CDMCustomFrameMixin:OnFrameUpdate(frameName)
+    if self:GetName() ~= frameName then return end
+    self:RefreshLayout()
+end
 function ABE_CDMCustomFrameMixin:OnFakeAuraAdded(spellID, newDuration)
     for itemFrame in self.itemPool:EnumerateActive() do
         if itemFrame.itemID == spellID or itemFrame.spellID == spellID then
@@ -888,14 +892,12 @@ function ABE_CDMCustomFrameMixin:OnAuraAddedEvent(spellID, overrideSpellID, aura
             itemFrame.auraInstanceID = auraData.auraInstanceID
             itemFrame.auraDuration = auraData.duration
             local auraDurationObject = C_UnitAuras.GetAuraDuration("player", itemFrame.auraInstanceID)
-            if auraDurationObject then
-                itemFrame.__auraDurationObject = auraDurationObject
-                itemFrame.auraStartTime = auraDurationObject:GetStartTime()
-                itemFrame.isOnAuraTimer = true
-                local auraCooldown = itemFrame:GetAuraFrame()
-                auraCooldown:SetCooldown(itemFrame.auraStartTime, auraData.duration)
-                itemFrame:RefreshData()
-            end
+            itemFrame.__auraDurationObject = auraDurationObject
+            itemFrame.auraStartTime = auraDurationObject:GetStartTime()
+            itemFrame.isOnAuraTimer = true
+            local auraCooldown = itemFrame:GetAuraFrame()
+            auraCooldown:SetCooldown(itemFrame.auraStartTime, auraData.duration)
+            itemFrame:RefreshData()
         end
     end
 end
@@ -905,12 +907,10 @@ function ABE_CDMCustomFrameMixin:OnAuraUpdatedEvent(auraInstanceID)
         if itemFrame.auraInstanceID == auraInstanceID then
             itemFrame.isOnAuraTimer = true
             local auraDurationObject = C_UnitAuras.GetAuraDuration("player", itemFrame.auraInstanceID)
-            if auraDurationObject then
-                itemFrame.auraStartTime = auraDurationObject:GetStartTime()
-                local auraCooldown = itemFrame:GetAuraFrame()
-                auraCooldown:SetCooldown(itemFrame.auraStartTime, itemFrame.auraDuration or auraDurationObject:GetTotalDuration()) 
-                itemFrame:RefreshData()
-            end
+            itemFrame.auraStartTime = auraDurationObject:GetStartTime()
+            local auraCooldown = itemFrame:GetAuraFrame()
+            auraCooldown:SetCooldown(itemFrame.auraStartTime, itemFrame.auraDuration or auraDurationObject:GetTotalDuration()) 
+            itemFrame:RefreshData()
         end
     end
 end
@@ -981,11 +981,13 @@ function ABE_CDMCustomFrameMixin:OnEvent(event, ...)
                                 itemFrames = frame.auraInstanceIDToItemFramesMap[auraData.auraInstanceID]
                                 if itemFrames then
                                     for _, item in ipairs(itemFrames) do
-                                        local spellID = item.cooldownInfo.spellID
-                                        --print("addedAuras", spellID)
-                                        local overrideSpellID = item.cooldownInfo.overrideSpellID
-                                        self:OnAuraAddedEvent(spellID, overrideSpellID, auraData)
-                                        return
+                                        if item.cooldownInfo then
+                                            local spellID = item.cooldownInfo.spellID
+                                            --print("addedAuras", spellID)
+                                            local overrideSpellID = item.cooldownInfo.overrideSpellID
+                                            self:OnAuraAddedEvent(spellID, overrideSpellID, auraData)
+                                            return
+                                        end
                                     end
                                 end
                             end)
@@ -1120,7 +1122,14 @@ function ABE_CDMCustomFrameMixin:GetVisibleChildren()
 
     for index, data in ipairs(self.itemList) do
         local isKnown = false
-        if data.type == "spell" then
+        local isRacial = false
+        if data.type == "spell" and (data.baseID or data.id) then
+            if Addon:IsRacialSpell(data.id) then
+                Addon:LoadRacialTable()
+                isRacial = true
+                data.id = Addon:GetRacialSpell() or data.id
+            end
+            
             for i=1, 0, -1 do
                 if not isKnown then
                     isKnown = C_SpellBook.IsSpellKnownOrInSpellBook(data.baseID or data.id, i)
@@ -1128,6 +1137,26 @@ function ABE_CDMCustomFrameMixin:GetVisibleChildren()
             end
             if not isKnown then
                 isKnown = self:FindAuraForCurrentSpellID(data.baseID or data.id)
+            end
+
+            if isRacial then
+                local currentProfile = Addon:GetCurrentProfile()
+                local trackedTable = ABDB.Profiles.profilesList[currentProfile]["GlobalSettings"].RacialSpellsTracked
+                local raceID = select(3, UnitRace("player"))
+                
+                if raceID == 25 or raceID == 26 then
+                    raceID = 24
+                elseif raceID == 70 then
+                    raceID = 52
+                elseif raceID == 85 then
+                    raceID = 84
+                elseif raceID == 91 then
+                    raceID = 86
+                end
+
+                if trackedTable and not trackedTable[raceID] then
+                    isKnown = false
+                end
             end
         end
         if data.type == "slot" then
