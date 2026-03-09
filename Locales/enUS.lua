@@ -290,7 +290,7 @@ L.CDMCustomFrameTrackSlot13 = "Add Trinket #1 (Slot 13)"
 L.CDMCustomFrameTrackSlot14 = "Add Trinket #2 (Slot 14)"
 L.CDMCustomFrameTrackSlot16 = "Add Weapon #1 (Slot 16)"
 L.CDMCustomFrameTrackSlot17 = "Add Weapon #2 (Slot 17)"
-L.CDMCustomFrameTrackRacial = "Track Racial"
+L.CDMCustomFrameTrackRacial = "Add Racial spell"
 
 L.CDMCustomFrameHideWhen0 = "Hide when count is 0"
 

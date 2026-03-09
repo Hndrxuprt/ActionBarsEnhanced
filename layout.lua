@@ -821,6 +821,16 @@ Addon.CustomFrameBarsCooldownViewer = {
         }
     },
     {
+        name = "FadeOptionsContainer",
+        childs = {
+            {name = "FadeOutBars", template = "OptionsCheckboxSliderTemplate"},
+            {name = "FadeInOnCombat", template = "OptionsCheckboxTemplate"},
+            {name = "FadeInOnTarget", template = "OptionsCheckboxTemplate"},
+            {name = "FadeInOnCasting", template = "OptionsCheckboxTemplate"},
+            {name = "FadeInOnHover", template = "OptionsCheckboxTemplate"},
+        }
+    },
+    {
         name = "CDMCustomFrameBarIconOptionsContainer",
         childs = {
             {name = "CDMCustomFrametBarIconPosition", template = "OptionsDropdownTemplate"},

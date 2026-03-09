@@ -355,7 +355,7 @@ function ABE_CastingBarMixin.OnPlayInterruptAnims(self)
 
     barType.interrupted = true
 
-    local color = self.CASTBAR_COLORS["standard"]
+    local color = CopyTable(self.CASTBAR_COLORS["standard"])
 
     color.r, color.g, color.b, color.a = texture:GetVertexColor()
     texture:SetVertexColorFromBoolean(barType.interrupted, self.CASTBAR_COLORS["interrupted"], color)
@@ -373,11 +373,11 @@ function ABE_CastingBarMixin.SetCustomColor(self)
 
     local barType = self.__barType or {}
 
-    local color = self.CASTBAR_COLORS["standard"]
+    local color = CopyTable(self.CASTBAR_COLORS["standard"])
 
     texture:SetVertexColor(color.r, color.g, color.b, color.a)
     texture:SetAlpha(1)
-    
+
     if barType.channel ~= nil then
         texture:SetVertexColorFromBoolean(barType.channel, self.CASTBAR_COLORS["channel"], color)
         texture:SetAlpha(color.a)

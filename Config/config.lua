@@ -1939,7 +1939,7 @@ Addon.config.containers = {
             },
             ["CDMCustomTrackRacial"] = {
                 type            = "checkbox",
-                name            = "Track Racial",
+                name            = L.CDMCustomFrameTrackRacial,
                 value           = "CDMCustomTrackRacial",
                 callback        = function(checked)
                     local frameLabel = ABE_BarsListMixin:GetFrameLebel()
