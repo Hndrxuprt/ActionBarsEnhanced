@@ -906,8 +906,10 @@ function ABE_CDMCustomFrameMixin:OnAuraAddedEvent(spellID, overrideSpellID, aura
             itemFrame.auraStartTime = auraDurationObject:GetStartTime()
             itemFrame.isOnAuraTimer = true
             local auraCooldown = itemFrame:GetAuraFrame()
-            auraCooldown:SetCooldown(itemFrame.auraStartTime, auraData.duration)
-            itemFrame:RefreshData()
+            if auraDurationObject then
+                auraCooldown:SetCooldownFromDurationObject(auraDurationObject)
+                itemFrame:RefreshData()
+            end
         end
     end
 end
@@ -919,8 +921,10 @@ function ABE_CDMCustomFrameMixin:OnAuraUpdatedEvent(auraInstanceID)
             local auraDurationObject = C_UnitAuras.GetAuraDuration("player", itemFrame.auraInstanceID)
             itemFrame.auraStartTime = auraDurationObject:GetStartTime()
             local auraCooldown = itemFrame:GetAuraFrame()
-            auraCooldown:SetCooldown(itemFrame.auraStartTime, itemFrame.auraDuration or auraDurationObject:GetTotalDuration()) 
-            itemFrame:RefreshData()
+            if auraDurationObject then
+                auraCooldown:SetCooldownFromDurationObject(auraDurationObject)
+                itemFrame:RefreshData()
+            end
         end
     end
 end
