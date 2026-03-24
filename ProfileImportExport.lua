@@ -125,10 +125,82 @@ function ActionBarsEnhancedProfilesMixin:Init()
             end
             frame.Dropdown:SetupMenu(menuGenerator)
         end
+        local function SetupSpecProfiles()
+            local playerID = Addon:GetPlayerID()
+            local frame = profilesFrame.Content.SpecProfilesFrame
+            local checkBox = frame.EnableSpecProfiles
+
+            local numSpec = GetNumSpecializations()
+
+            if Addon.P.mapping[playerID].specEnabled then
+                checkBox:SetChecked(true)
+            else
+                checkBox:SetChecked(false)
+            end
+
+            checkBox:SetScript("OnClick", function(self)
+                for i=1, numSpec do
+                    if self:GetChecked() then
+                        frame["SpecDropdown"..i]:Enable()
+                    else
+                        frame["SpecDropdown"..i]:Disable()
+                    end
+                end
+                Addon.P.mapping[playerID].specEnabled = self:GetChecked()
+            end)
+
+            checkBox.Text:SetText("Enable Spec Profiles")
+            checkBox.Text:SetFontObject("GameFontNormal")
+
+            for i=1, numSpec do
+                local dropDown = frame["SpecDropdown"..i]
+                dropDown:Show()
+                local specID, specName, _, specIcon = GetSpecializationInfo(i)
+                local currentSpec = GetSpecialization()
+
+                if currentSpec == i then
+                    dropDown.Label:SetText(specName .. " - |cff0bbe76Active|r")
+                else
+                    dropDown.Label:SetText(specName)
+                end
+                if not checkBox:GetChecked() then
+                    dropDown:Disable()
+                end
+                
+                local IsSelected = function(id)
+                    return id == Addon.P.mapping[playerID].specProfiles[i]
+                end
+
+                local OnSelect = function(id)                    
+                    if currentSpec == i then
+                        ActionBarsEnhancedProfilesMixin:SetProfile(id, false)
+                        profilesFrame.Content.Header.CurrentProfile:SetText(id)
+                    else
+                        local playerID = Addon:GetPlayerID()
+                        Addon.P.mapping[playerID].specProfiles[i] = id
+                    end
+                end
+
+                local menuGenerator = function(_, rootDescription)
+                    rootDescription:CreateTitle("Select Spec Profile")
+                    local currProfile = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+
+                    for index, profileName in ipairs(Addon.P.profilesOrder) do
+                        local categoryID = profileName
+                        local categoryName = profileName
+                        rootDescription:CreateRadio(categoryName, IsSelected, OnSelect, categoryID)
+                    end
+
+                end
+
+                dropDown:SetupMenu(menuGenerator)
+            end
+        end
 
         SelectProfileSetup()
         CopyProfileSetup()
         DeleteProfileSetup()
+        SetupSpecProfiles()
     else
         ActionBarEnhancedProfilesFrame:Show()
     end
@@ -166,7 +238,7 @@ function ActionBarsEnhancedProfilesMixin:SetProfile(profileName, reload, config)
                 if profileData["GlobalSettings"][key] > 2 then
                     Addon.Print("EdgeSize in GlobalSettings set to 2" )
                     profileData["GlobalSettings"][key] = 2
-                end                
+                end
             end
             Addon.C["GlobalSettings"][key] = profileData["GlobalSettings"][key]
         else
@@ -187,12 +259,18 @@ function ActionBarsEnhancedProfilesMixin:SetProfile(profileName, reload, config)
                         profileData[catName][key] = 2
                     end
                 end
+                if key == "UseCDMBackdrop" then
+                    print(catName, key, value)
+                end
                 Addon.C[catName][key] = value
             end
         end
     end
-    
-    Addon.P.mapping[playerID] = currentProfile
+
+    local activeSpec = GetSpecialization()
+
+    Addon.P.mapping[playerID].globalProfile = currentProfile
+    Addon.P.mapping[playerID].specProfiles[activeSpec] = currentProfile
 
     if reload then
         if not StaticPopup_Visible("ABE_RELOAD") then
@@ -302,6 +380,25 @@ function ActionBarsEnhancedProfilesMixin:CheckProfiles15()
     end
 end
 
+function ActionBarsEnhancedProfilesMixin:CheckProfiles247()
+    local playerID = Addon:GetPlayerID()
+    local numSpec = GetNumSpecializations()
+    local mapping = Addon.P.mapping
+    if mapping and type(mapping[playerID]) == "string" then
+        Addon.Print("Character "..playerID.." need migrate to v2.4.7")
+        local currentProfile = mapping[playerID]
+        mapping[playerID] = {
+            globalProfile = currentProfile,
+            specEnabled = false,
+            specProfiles = {},
+        }
+        for i=1, numSpec do
+            mapping[playerID].specProfiles[i] = currentProfile
+        end
+        Addon.Print("Character "..playerID.." migrated to v2.4.7")
+    end
+end
+
 function ActionBarsEnhancedProfilesMixin:NeedMigrateProfile15(profileName)
     return not Addon.P.profilesList[profileName]["GlobalSettings"]
 end
@@ -352,7 +449,16 @@ function ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
         Addon.P.profilesOrder = {}
     end
     if Addon.P.mapping[playerID] == nil then
-        Addon.P.mapping[playerID] = "Default"
+        Addon.P.mapping[playerID] = {
+            globalProfile = "Default",
+            specEnabled = false,
+            specProfiles = {},
+        }
+        local numSpec = GetNumSpecializations()
+        for i=1, numSpec do
+            Addon.P.mapping[playerID].specProfiles[i] = "Default"
+        end
+        --Addon.P.mapping[playerID] = "Default"
     end
     if Addon.P.profilesList == nil then
         Addon.P.profilesList = {}
@@ -361,13 +467,18 @@ function ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
         Addon.P.profilesList["Default"] = { ["GlobalSettings"] = {} }
         self:AddProfileOrder("Default")
     end
-    if Addon.P.mapping[playerID] ~= "Default" then
-        if Addon.P.profilesList[Addon.P.mapping[playerID]] == nil then
-            Addon.P.mapping[playerID] = "Default"
+
+    local specProfileEnabled = Addon.P.mapping[playerID].specEnabled
+    local activeSpec = GetSpecialization()
+    local mappedProfile = specProfileEnabled and Addon.P.mapping[playerID].specProfiles[activeSpec] or Addon.P.mapping[playerID].globalProfile
+    if mappedProfile ~= "Default" then
+        if Addon.P.profilesList[mappedProfile] == nil then
+            Addon.P.mapping[playerID].globalProfile = "Default"
+            Addon.P.mapping[playerID].specProfiles[activeSpec] = "Default"
         end
     end
     
-    return Addon.P.mapping[playerID]
+    return specProfileEnabled and Addon.P.mapping[playerID].specProfiles[activeSpec] or Addon.P.mapping[playerID].globalProfile
 end
 
 function Addon.CompressData(data)
@@ -513,4 +624,26 @@ function Addon:GetCurrentProfileTable()
     local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
     local profileTable = Addon.P.profilesList[profileName]
     return profileTable
+end
+
+function ActionBarsEnhancedProfilesMixin:OnSpecChanged(profile)
+    local playerID = Addon:GetPlayerID()
+    local currentSpec = GetSpecialization()
+    local isSpecEnabled = Addon.P.mapping[playerID].specEnabled
+    
+    if not isSpecEnabled then return end
+
+    local specProfile = Addon.P.mapping[playerID].specProfiles[currentSpec]
+
+    --print(profile, specProfile, specProfile ~= profile)
+
+    if specProfile ~= profile then
+        --print("Set specProfile: ", profile, specProfile)
+        ActionBarsEnhancedProfilesMixin:SetProfile(specProfile, false)
+        C_Timer.After(1.0, function()
+            Addon:RefreshButtons()
+            ABE_CastingBarMixin.SetLook(PlayerCastingBarFrame)
+        end)
+    end
+
 end

@@ -494,7 +494,7 @@ function Addon:UpdateButtonFont(button, isStanceBar)
                 button.TextOverlayContainer.HotKey:SetFont(
                     font,
                     (Addon:GetValue("UseHotkeyFontSize", nil, configName) and Addon:GetValue("HotkeyFontSize", nil, configName) or 11),
-                    Addon:GetValue("CurrentHotkeyOutline", nil, configName) > 1 and Addon.FontOutlines[Addon:GetValue("CurrentHotkeyOutline", nil, configName)] or "OUTLINE"
+                    Addon:GetValue("CurrentHotkeyOutline", nil, configName) > 1 and Addon.FontOutlines[Addon:GetValue("CurrentHotkeyOutline", nil, configName)] or ""
                 )
             end)
         end
@@ -518,6 +518,9 @@ function Addon:UpdateButtonFont(button, isStanceBar)
             button.TextOverlayContainer.HotKey:SetShadowOffset(Addon:GetValue("HotkeyShadowOffsetX", nil, configName)*mult, Addon:GetValue("HotkeyShadowOffsetY", nil, configName)*mult)
         else
             button.TextOverlayContainer.HotKey:SetShadowOffset(0,0)
+        end
+        if Addon:GetValue("UseHotkeyColor", nil, configName) then
+            button.TextOverlayContainer.HotKey:SetVertexColor(Addon:GetRGBA("HotkeyColor", nil, configName))
         end
     end
 
@@ -1344,6 +1347,9 @@ local function InitializeSavedVariables()
         end
     end
 end
+
+local currentProfile
+
 local function ApplyProfile()
     ABDB = ABDB or {}
     ABDB.Profiles = ABDB.Profiles or {}
@@ -1360,7 +1366,9 @@ local function ApplyProfile()
         end
     end
 
-    local currentProfile = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+    ActionBarsEnhancedProfilesMixin:CheckProfiles247()
+    
+    currentProfile = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
 
     if not ActionBarsEnhancedImportDialogMixin:HasDefaultProfiles() then
         ActionBarsEnhancedProfilesMixin:InstallDefaultPresets()
@@ -1501,6 +1509,10 @@ local function ProcessEvent(self, event, ...)
     or event == "UNIT_SPELLCAST_STOP" then
         Addon:BarsFadeAnim()
     end
+    if event == "PLAYER_SPECIALIZATION_CHANGED" then
+        ActionBarsEnhancedProfilesMixin:OnSpecChanged(currentProfile)
+        currentProfile = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+    end
 end
 
 Addon.eventHandlerFrame = CreateFrame('Frame')
@@ -1513,3 +1525,4 @@ Addon.eventHandlerFrame:RegisterEvent('PLAYER_TARGET_CHANGED')
 Addon.eventHandlerFrame:RegisterUnitEvent('UNIT_SPELLCAST_START', "player")
 Addon.eventHandlerFrame:RegisterUnitEvent('UNIT_SPELLCAST_STOP', "player")
 Addon.eventHandlerFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
+Addon.eventHandlerFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", "player")

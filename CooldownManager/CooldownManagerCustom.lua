@@ -494,6 +494,8 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
     local chargeCooldownInfo = self:GetChargesCooldownInfo()
     local cooldownInfo = self:GetCooldownInfo()
 
+    local durationObj = self:GetCooldownDurationObj()
+
     --[[ cooldownFrame:SetScript("OnUpdate", function()
         local durationObj = self:GetCooldownDurationObj()
         if durationObj then
@@ -519,7 +521,11 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
         else
             self.isOnActualCooldown = false
         end
-        cooldownFrame:SetCooldown(chargeCooldownInfo.startTime, chargeCooldownInfo.duration)
+        if durationObj then
+            cooldownFrame:SetCooldownFromDurationObject(durationObj)
+        else
+            cooldownFrame:SetCooldown(chargeCooldownInfo.startTime, chargeCooldownInfo.duration)
+        end
 
         if cooldownFrame:IsVisible() then
             self.isOnChargeCooldown = true
@@ -538,7 +544,11 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
                 self.isOnActualCooldown = true
             end
             cooldownFrame:SetDrawSwipe(true)
-            cooldownFrame:SetCooldown(cooldownInfo.startTime, cooldownInfo.duration)
+            if durationObj then
+                cooldownFrame:SetCooldownFromDurationObject(durationObj)
+            else
+                cooldownFrame:SetCooldown(cooldownInfo.startTime, cooldownInfo.duration)
+            end
             cooldownFrame:Show()
 
             if cooldownInfo.enable == false then
@@ -851,7 +861,7 @@ function ABE_CDMCustomFrameMixin:OnShow()
 	self:RegisterEvent("PLAYER_LEVEL_CHANGED")
     self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
     self:RegisterEvent("PLAYER_TALENT_UPDATE")
-    self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+    self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", "player")
     self:RegisterEvent("TRAIT_CONFIG_UPDATED")
     self:RegisterEvent("CHALLENGE_MODE_START")
     self:RegisterEvent("FIRST_FRAME_RENDERED")

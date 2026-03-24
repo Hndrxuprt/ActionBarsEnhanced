@@ -164,7 +164,10 @@ Addon.config.containers = {
                 OnSelect    = function(id) Addon:SaveSetting("CurrentNormalTexture", id, true) end,
                 showNew     = false,
                 OnEnter     = function(id, frames) ActionBarEnhancedDropdownMixin:RefreshNormalTexture(frames.PreviewNormal, id) end,
-                OnClose     = function() ActionBarEnhancedDropdownMixin:RefreshAllPreview() end,
+                OnClose     = function() 
+                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    Addon:RefreshButtons()
+                end,
             },
             ["CustomColorNormal"] = {
                 type            = "colorSwatch",
@@ -172,7 +175,10 @@ Addon.config.containers = {
                 value           = "NormalTextureColor",
                 checkboxValues  = {"UseNormalTextureColor", "DesaturateNormal"},
                 alpha           = true,
-                callback        = function() ActionBarEnhancedDropdownMixin:RefreshAllPreview() end,
+                callback        = function() 
+                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    Addon:RefreshButtons()
+                end,
             },
             ["PreviewNormal"] = {
                 type = "preview",
@@ -191,7 +197,10 @@ Addon.config.containers = {
                 OnSelect    = function(id) Addon:SaveSetting("CurrentBackdropTexture", id, true) end,
                 showNew     = false,
                 OnEnter     = function(id, frames) ActionBarEnhancedDropdownMixin:RefreshBackdropTexture(frames.PreviewBackdrop, id) end,
-                OnClose     = function() ActionBarEnhancedDropdownMixin:RefreshAllPreview() end,
+                OnClose     = function()
+                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    Addon:RefreshButtons()
+                end,
             },
             ["CustomColorBackdrop"] = {
                 type            = "colorSwatch",
@@ -199,7 +208,10 @@ Addon.config.containers = {
                 value           = "BackdropColor",
                 checkboxValues  = {"UseBackdropColor", "DesaturateBackdrop"},
                 alpha           = true,
-                callback        = function() ActionBarEnhancedDropdownMixin:RefreshAllPreview() end,
+                callback        = function()
+                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    Addon:RefreshButtons()
+                end,
             },
             ["PreviewBackdrop"] = {
                 type = "preview",
@@ -219,7 +231,10 @@ Addon.config.containers = {
                 OnSelect    = function(id) Addon:SaveSetting("CurrentIconMaskTexture", id, true) end,
                 showNew     = false,
                 OnEnter     = function(id, frames) ActionBarEnhancedDropdownMixin:RefreshIconMaskTexture(frames.PreviewIcon, id) end,
-                OnClose     = function() ActionBarEnhancedDropdownMixin:RefreshAllPreview() end,
+                OnClose     = function()
+                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    Addon:RefreshButtons()
+                end,
             },
             ["MaskScale"] = {
                 type            = "checkboxSlider",
@@ -230,7 +245,10 @@ Addon.config.containers = {
                 max             = 1.5,
                 step            = 0.01,
                 sliderName      = {top = L.Scale},
-                callback        = function(_, frames) ActionBarEnhancedDropdownMixin:RefreshPreview(frames.PreviewIcon) end,
+                callback        = function(_, frames)
+                    ActionBarEnhancedDropdownMixin:RefreshPreview(frames.PreviewIcon)
+                    Addon:RefreshButtons()
+                end,
             },
             ["IconScale"] = {
                 type            = "checkboxSlider",
@@ -241,7 +259,10 @@ Addon.config.containers = {
                 max             = 1.5,
                 step            = 0.01,
                 sliderName      = {top = L.Scale},
-                callback        = function(_, frames) ActionBarEnhancedDropdownMixin:RefreshPreview(frames.PreviewIcon) end,
+                callback        = function(_, frames)
+                    ActionBarEnhancedDropdownMixin:RefreshPreview(frames.PreviewIcon)
+                    Addon:RefreshButtons()
+                end,
             },
             ["PreviewIcon"] = {
                 type = "preview",
@@ -260,7 +281,10 @@ Addon.config.containers = {
                 OnSelect    = function(id) Addon:SaveSetting("CurrentPushedTexture", id, true) end,
                 showNew     = false,
                 OnEnter     = function(id, frames) ActionBarEnhancedDropdownMixin:RefreshPushedTexture(frames.PreviewPushed, id) end,
-                OnClose     = function() ActionBarEnhancedDropdownMixin:RefreshAllPreview() end,
+                OnClose     = function()
+                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    Addon:RefreshButtons()
+                end,
             },
             ["CustomColorPushed"] = {
                 type            = "colorSwatch",
@@ -268,7 +292,10 @@ Addon.config.containers = {
                 value           = "PushedColor",
                 checkboxValues  = {"UsePushedColor", "DesaturatePushed"},
                 alpha           = false,
-                callback        = function() ActionBarEnhancedDropdownMixin:RefreshAllPreview() end,
+                callback        = function()
+                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    Addon:RefreshButtons()
+                end,
             },
             ["PreviewPushed"] = {
                 type = "preview",
@@ -290,7 +317,10 @@ Addon.config.containers = {
                 OnSelect    = function(id) Addon:SaveSetting("CurrentHighlightTexture", id, true) end,
                 showNew     = false,
                 OnEnter     = function(id, frames) ActionBarEnhancedDropdownMixin:RefreshHighlightTexture(frames.PreviewHighlight, id) end,
-                OnClose     = function() ActionBarEnhancedDropdownMixin:RefreshAllPreview() end,
+                OnClose     = function()
+                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    Addon:RefreshButtons()
+                end,
             },
             ["CustomColorHighlight"] = {
                 type            = "colorSwatch",
@@ -298,7 +328,10 @@ Addon.config.containers = {
                 value           = "HighlightColor",
                 checkboxValues  = {"UseHighlightColor", "DesaturateHighlight"},
                 alpha           = true,
-                callback        = function() ActionBarEnhancedDropdownMixin:RefreshAllPreview() end,
+                callback        = function()
+                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    Addon:RefreshButtons()
+                end,
             },
             ["PreviewHighlight"] = {
                 type = "preview",
@@ -320,7 +353,10 @@ Addon.config.containers = {
                 OnSelect    = function(id) Addon:SaveSetting("CurrentCheckedTexture", id, true) end,
                 showNew     = false,
                 OnEnter     = function(id, frames) ActionBarEnhancedDropdownMixin:RefreshCheckedTexture(frames.PreviewChecked, id) end,
-                OnClose     = function() ActionBarEnhancedDropdownMixin:RefreshAllPreview() end,
+                OnClose     = function()
+                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    Addon:RefreshButtons()
+                end,
             },
             ["CustomColorChecked"] = {
                 type            = "colorSwatch",
@@ -328,7 +364,10 @@ Addon.config.containers = {
                 value           = "CheckedColor",
                 checkboxValues  = {"UseCheckedColor","DesaturateChecked"},
                 alpha           = true,
-                callback        = function() ActionBarEnhancedDropdownMixin:RefreshAllPreview() end,
+                callback        = function()
+                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    Addon:RefreshButtons()
+                end,
             },
             ["PreviewChecked"] = {
                 type = "preview",
@@ -427,6 +466,7 @@ Addon.config.containers = {
                 value           = "EdgeAlwaysShow",
                 callback        = function()
                     ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["CooldownFont"] = {
@@ -442,6 +482,7 @@ Addon.config.containers = {
                 end,
                 OnClose     = function()
                     ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["CooldownFontSize"] = {
@@ -455,6 +496,7 @@ Addon.config.containers = {
                 sliderName      = {top = L.Size},
                 callback        = function()
                     ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["CooldownFontColor"] = {
@@ -463,7 +505,10 @@ Addon.config.containers = {
                 value           = "CooldownFontColor",
                 checkboxValues  = {"UseCooldownFontColor"},
                 alpha           = true,
-                callback        = function() ActionBarEnhancedDropdownMixin:RefreshCooldownPreview() end,
+                callback        = function()
+                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    Addon:RefreshButtons()
+                end,
             },
             ["ColorizedCooldownFont"] = {
                 type            = "checkbox",
@@ -472,6 +517,7 @@ Addon.config.containers = {
                 showNew         = true,
                 callback        = function()
                     ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["CooldownFontOffset"] = {
@@ -485,6 +531,7 @@ Addon.config.containers = {
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
                     ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["PreviewCooldownFont"] = {
@@ -627,6 +674,7 @@ Addon.config.containers = {
                 end,
                 OnClose     = function()
                     ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["HotkeyOutline"] = {
@@ -641,6 +689,7 @@ Addon.config.containers = {
                 end,
                 OnClose     = function()
                     ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["HotkeySize"] = {
@@ -654,6 +703,7 @@ Addon.config.containers = {
                 sliderName      = {top = L.Size},
                 callback        = function()
                     ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["HotkeyColor"] = {
@@ -662,7 +712,10 @@ Addon.config.containers = {
                 value           = "HotkeyColor",
                 checkboxValues  = {"UseHotkeyColor"},
                 alpha           = true,
-                callback        = function() ActionBarEnhancedDropdownMixin:RefreshFontPreview() end,
+                callback        = function()
+                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    Addon:RefreshButtons()
+                end,
             },
             ["HotkeyPoint"] = {
                 type        = "dropdown",
@@ -682,8 +735,14 @@ Addon.config.containers = {
                     function() ActionBarEnhancedDropdownMixin:RefreshFontPreview() end,
                 },
                 OnClose     = {
-                    function() ActionBarEnhancedDropdownMixin:RefreshFontPreview() end,
-                    function() ActionBarEnhancedDropdownMixin:RefreshFontPreview() end,
+                    function()
+                        ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                        Addon:RefreshButtons()
+                    end,
+                    function()
+                        ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                        Addon:RefreshButtons()
+                    end,
                 },
             },
             ["HotkeyOffset"] = {
@@ -697,6 +756,7 @@ Addon.config.containers = {
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
                     ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["HotkeyShadow"] = {
@@ -705,7 +765,10 @@ Addon.config.containers = {
                 value           = "HotkeyShadow",
                 checkboxValues  = {"UseHotkeyShadow"},
                 alpha           = true,
-                callback        = function() ActionBarEnhancedDropdownMixin:RefreshFontPreview() end,
+                callback        = function()
+                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    Addon:RefreshButtons()
+                end,
             },
             ["HotkeyShadowOffset"] = {
                 type            = "checkboxSlider",
@@ -718,6 +781,7 @@ Addon.config.containers = {
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
                     ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["HotkeyScale"] = {
@@ -731,6 +795,7 @@ Addon.config.containers = {
                 sliderName      = {top = L.Scale},
                 callback        = function()
                     ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["StacksFont"] = {
@@ -750,6 +815,7 @@ Addon.config.containers = {
                 end,
                 OnClose     = function()
                     ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["StacksOutline"] = {
@@ -764,6 +830,7 @@ Addon.config.containers = {
                 end,
                 OnClose     = function()
                     ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["StacksSize"] = {
@@ -777,6 +844,7 @@ Addon.config.containers = {
                 sliderName      = {top = L.Size},
                 callback        = function()
                     ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["StacksColor"] = {
@@ -785,7 +853,10 @@ Addon.config.containers = {
                 value           = "StacksColor",
                 checkboxValues  = {"UseStacksColor"},
                 alpha           = true,
-                callback        = function() ActionBarEnhancedDropdownMixin:RefreshFontPreview() end,
+                callback        = function()
+                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    Addon:RefreshButtons()
+                end,
             },
             ["StacksPoint"] = {
                 type        = "dropdown",
@@ -805,8 +876,14 @@ Addon.config.containers = {
                     function() ActionBarEnhancedDropdownMixin:RefreshFontPreview() end,
                 },
                 OnClose     = {
-                    function() ActionBarEnhancedDropdownMixin:RefreshFontPreview() end,
-                    function() ActionBarEnhancedDropdownMixin:RefreshFontPreview() end,
+                    function()
+                        ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                        Addon:RefreshButtons()
+                    end,
+                    function()
+                        ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                        Addon:RefreshButtons()
+                    end,
                 },
             },
             ["StacksOffset"] = {
@@ -820,6 +897,7 @@ Addon.config.containers = {
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
                     ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["StacksShadow"] = {
@@ -828,7 +906,10 @@ Addon.config.containers = {
                 value           = "StacksShadow",
                 checkboxValues  = {"UseStacksShadow"},
                 alpha           = true,
-                callback        = function() ActionBarEnhancedDropdownMixin:RefreshFontPreview() end,
+                callback        = function()
+                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    Addon:RefreshButtons()
+                end,
             },
             ["StacksShadowOffset"] = {
                 type            = "checkboxSlider",
@@ -841,6 +922,7 @@ Addon.config.containers = {
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
                     ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["StacksScale"] = {
@@ -854,6 +936,7 @@ Addon.config.containers = {
                 sliderName      = {top = L.Scale},
                 callback        = function()
                     ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["NameHide"] = {
@@ -862,6 +945,7 @@ Addon.config.containers = {
                 value           = "FontHideName",
                 callback        = function(_, frames) 
                     ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["NameScale"] = {
@@ -875,6 +959,7 @@ Addon.config.containers = {
                 sliderName      = {top = L.Scale},
                 callback        = function()
                     ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    Addon:RefreshButtons()
                 end,
             },
             ["PreviewFont05"] = {
@@ -1662,6 +1747,9 @@ Addon.config.containers = {
                 type            = "checkbox",
                 name            = L.Enable,
                 value           = "CDMEnable",
+                callback        = function()
+                    Addon:CDM_SetHooks()
+                end,
             },
             ["CDMBarVerticalGrowth"] = {
                 type        = "dropdown",

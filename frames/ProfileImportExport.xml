@@ -169,7 +169,7 @@
 		</Frames>
     </Frame>
     <Frame name="ActionBarsEnhancedProfilesTemplate" mixin="ActionBarsEnhancedProfilesMixin" frameStrata="HIGH" virtual="true" parent="UIParent" enableMouse="true" hidden="false">
-        <Size x="600" y="400"/>
+        <Size x="650" y="480"/>
         <Anchors>
             <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER"/>
         </Anchors>
@@ -279,14 +279,14 @@
                 </Anchors>
                 <Frames>
                     <Frame parentKey="Header" virtual="true">
-                        <Size x="550" y="70"/>
+                        <Size x="600" y="70"/>
                         <Anchors>
                             <Anchor point="TOP" relativeKey="$parent" relativePoint="TOP" x="0" y="-10"/>
                         </Anchors>
                         <Layers>
                             <Layer level="OVERLAY">
                                 <FontString parentKey="HeaderText" inherits="Number13Font" text="Profiles" justifyH="LEFT" justifyV="TOP">
-                                    <Size x="550"/>
+                                    <Size x="600"/>
                                     <Shadow x="1" y="-1">
                                         <Color r="0" g="0" b="0"/>
                                     </Shadow>
@@ -326,7 +326,7 @@
                         </Scripts>
                     </Button>
                     <Frame parentKey="NewProfileFrame" virtual="true">
-                        <Size x="550" y="50"/>
+                        <Size x="600" y="50"/>
                         <Anchors>
                             <Anchor point="TOPLEFT" relativeKey="$parent.Header" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
                         </Anchors>
@@ -397,16 +397,125 @@
                             </Frame>
                         </Frames>
                     </Frame>
-                    
-                    <Frame parentKey="CopyProfileFrame" virtual="true">
-                        <Size x="550" y="60"/>
+
+                    <Frame parentKey="SpecProfilesFrame" virtual="true">
+                        <Size x="600" y="90"/>
                         <Anchors>
                             <Anchor point="TOPLEFT" relativeKey="$parent.NewProfileFrame" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
                         </Anchors>
                         <Layers>
                             <Layer level="OVERLAY">
+                                <FontString parentKey="SpecProfilesDesc" inherits="Number13Font" text="Spec Profiles Text" justifyH="LEFT" justifyV="TOP">
+                                    <Size x="600"/>
+                                    <Shadow x="1" y="-1">
+                                        <Color r="0" g="0" b="0"/>
+                                    </Shadow>
+                                    <Anchors>
+                                        <Anchor point="TOP"/>
+                                    </Anchors>
+                                    <Color color="HIGHLIGHT_FONT_COLOR"/>
+                                </FontString>
+                            </Layer>
+                        </Layers>
+                        <Frames>
+                            <CheckButton parentKey="EnableSpecProfiles" inherits="UICheckButtonTemplate">
+                                <Anchors>
+                                    <Anchor point="TOPLEFT" relativeKey="$parent.SpecProfilesDesc" relativePoint="BOTTOMLEFT" x="0" y="-2"/>
+                                </Anchors>
+                                <NormalTexture atlas="checkbox-minimal" useAtlasSize="true"/>
+                                <PushedTexture atlas="checkbox-minimal" useAtlasSize="true"/>
+                                <CheckedTexture atlas="checkmark-minimal" useAtlasSize="true"/>
+                                <DisabledCheckedTexture atlas="checkmark-minimal-disabled" useAtlasSize="true"/>
+                            </CheckButton>
+                            <DropdownButton parentKey="SpecDropdown1" inherits="WowStyle2DropdownTemplate" hidden="true">
+                                <Size x="150" y="22"/>
+                                <Anchors>
+                                     <Anchor point="TOPLEFT" relativeKey="$parent.EnableSpecProfiles" relativePoint="BOTTOMLEFT" x="0" y="-20"/>
+                                </Anchors>
+                                <Layers>
+                                    <Layer level="ARTWORK">
+                                        <FontString parentKey="Label" font="GameFontNormalSmall" text="Spec 1" justifyH="LEFT">
+                                            <Size x="150"/>
+                                            <Shadow x="1" y="-1">
+                                                <Color r="0" g="0" b="0"/>
+                                            </Shadow>
+                                            <Anchors>
+                                                <Anchor point="BOTTOMLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="0" y="4"/>
+                                            </Anchors>
+                                        </FontString>
+                                    </Layer>
+                                </Layers>
+                            </DropdownButton>
+                            <DropdownButton parentKey="SpecDropdown2" inherits="WowStyle2DropdownTemplate" hidden="true">
+                                <Size x="150" y="22"/>
+                                <Anchors>
+                                     <Anchor point="LEFT" relativeKey="$parent.SpecDropdown1" relativePoint="RIGHT" x="4" y="0"/>
+                                </Anchors>
+                                <Layers>
+                                    <Layer level="ARTWORK">
+                                        <FontString parentKey="Label" font="GameFontNormalSmall" text="Spec 2" justifyH="LEFT">
+                                            <Size x="150"/>
+                                            <Shadow x="1" y="-1">
+                                                <Color r="0" g="0" b="0"/>
+                                            </Shadow>
+                                            <Anchors>
+                                                <Anchor point="BOTTOMLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="0" y="4"/>
+                                            </Anchors>
+                                        </FontString>
+                                    </Layer>
+                                </Layers>
+                            </DropdownButton>
+                            <DropdownButton parentKey="SpecDropdown3" inherits="WowStyle2DropdownTemplate" hidden="true">
+                                <Size x="150" y="22"/>
+                                <Anchors>
+                                     <Anchor point="LEFT" relativeKey="$parent.SpecDropdown2" relativePoint="RIGHT" x="4" y="0"/>
+                                </Anchors>
+                                <Layers>
+                                    <Layer level="ARTWORK">
+                                        <FontString parentKey="Label" font="GameFontNormalSmall" text="Spec 3" justifyH="LEFT">
+                                            <Size x="150"/>
+                                            <Shadow x="1" y="-1">
+                                                <Color r="0" g="0" b="0"/>
+                                            </Shadow>
+                                            <Anchors>
+                                                <Anchor point="BOTTOMLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="0" y="4"/>
+                                            </Anchors>
+                                        </FontString>
+                                    </Layer>
+                                </Layers>
+                            </DropdownButton>
+                            <DropdownButton parentKey="SpecDropdown4" inherits="WowStyle2DropdownTemplate" hidden="true">
+                                <Size x="150" y="22"/>
+                                <Anchors>
+                                     <Anchor point="LEFT" relativeKey="$parent.SpecDropdown3" relativePoint="RIGHT" x="4" y="0"/>
+                                </Anchors>
+                                <Layers>
+                                    <Layer level="ARTWORK">
+                                        <FontString parentKey="Label" font="GameFontNormalSmall" text="Spec 4" justifyH="LEFT">
+                                            <Size x="150"/>
+                                            <Shadow x="1" y="-1">
+                                                <Color r="0" g="0" b="0"/>
+                                            </Shadow>
+                                            <Anchors>
+                                                <Anchor point="BOTTOMLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="0" y="4"/>
+                                            </Anchors>
+                                        </FontString>
+                                    </Layer>
+                                </Layers>
+                            </DropdownButton>
+                        </Frames>
+
+                    </Frame>
+                    
+                    <Frame parentKey="CopyProfileFrame" virtual="true">
+                        <Size x="600" y="60"/>
+                        <Anchors>
+                            <Anchor point="TOPLEFT" relativeKey="$parent.SpecProfilesFrame" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
+                        </Anchors>
+                        <Layers>
+                            <Layer level="OVERLAY">
                                 <FontString parentKey="CopyText" inherits="Number13Font" text="COPY TEXT HERE" justifyH="LEFT" justifyV="TOP">
-                                    <Size x="550"/>
+                                    <Size x="600"/>
                                     <Shadow x="1" y="-1">
                                         <Color r="0" g="0" b="0"/>
                                     </Shadow>
@@ -441,14 +550,14 @@
                     </Frame>
 
                     <Frame parentKey="DeleteProfileFrame" virtual="true">
-                        <Size x="550" y="70"/>
+                        <Size x="600" y="70"/>
                         <Anchors>
                             <Anchor point="TOPLEFT" relativeKey="$parent.CopyProfileFrame" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
                         </Anchors>
                         <Layers>
                             <Layer level="OVERLAY">
                                 <FontString parentKey="DeleteText" inherits="Number13Font" text="DELETE TEXT HERE" justifyH="LEFT" justifyV="TOP">
-                                    <Size x="550"/>
+                                    <Size x="600"/>
                                     <Shadow x="1" y="-1">
                                         <Color r="0" g="0" b="0"/>
                                     </Shadow>
@@ -482,14 +591,14 @@
                         </Frames>
                     </Frame>
                     <Frame parentKey="ImportExportFrame" virtual="true">
-                        <Size x="550" y="70"/>
+                        <Size x="600" y="70"/>
                         <Anchors>
                             <Anchor point="TOPLEFT" relativeKey="$parent.DeleteProfileFrame" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
                         </Anchors>
                         <Layers>
                             <Layer level="OVERLAY">
                                 <FontString parentKey="ImportExportText" inherits="Number13Font" text="Import/Export text here" justifyH="LEFT" justifyV="TOP">
-                                    <Size x="550"/>
+                                    <Size x="600"/>
                                     <Shadow x="1" y="-1">
                                         <Color r="0" g="0" b="0"/>
                                     </Shadow>

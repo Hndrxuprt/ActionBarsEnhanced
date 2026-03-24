@@ -288,6 +288,10 @@ end
 local function OnButtonVisibilityChanged(child)
     local isVisible = child:IsVisible()
     local frame = child:GetParent()
+    local frameName = frame:GetName()
+    if not Addon:GetValue("CDMEnable", nil, frameName) then
+        return
+    end
 
     --BuffIconCooldownViewer doesn't have RefreshIconColor so put it here
     if frame:GetName() == "BuffIconCooldownViewer" then
@@ -495,6 +499,11 @@ local function Hook_Layout(self)
     end ]]
 
     local frameName = self:GetName()
+
+    if not Addon:GetValue("CDMEnable", nil, frameName) then
+        return
+    end
+
     if not frameName or not tContains(CooldownManagerFrames, frameName) then
         self.__locked = false
         return
@@ -603,6 +612,15 @@ local function Hook_Layout(self)
                     child.__barBorder:SetBackdropBorderColor(Addon:GetRGBA("CDMBackdropColor", nil, frameName))
                 end
                 child.__barBorder:Show()
+            end
+        else
+            if child.__barBorder then
+                child.__barBorder:Hide()
+                child.__barBorder = nil
+            end
+            if child.__iconBorder then
+                child.__iconBorder:Hide()
+                child.__iconBorder = nil
             end
         end
 
@@ -739,6 +757,10 @@ local function Hook_SetupPandemic(self, frame, cooldownItem)
         local button = frame:GetParent()
         local frameName = button:GetParent():GetName()
 
+        if not Addon:GetValue("CDMEnable", nil, frameName) then
+            return
+        end
+
         if not button.__isInPandemic then
             if Addon:GetValue("CDMRemovePandemic", nil, frameName) then
                 if not frame.__pandemicRemoved then
@@ -769,6 +791,10 @@ local function Hook_HidePandemic(self, frame)
     local button = frame:GetParent()
     local frameName = button:GetParent():GetName()
 
+    if not Addon:GetValue("CDMEnable", nil, frameName) then
+        return
+    end
+
     if button.__isInPandemic then
         if not button.__hidePandemicScheduled then
             button.__hidePandemicScheduled = true
@@ -789,26 +815,27 @@ local function Hook_HidePandemic(self, frame)
     end
 end
 
-local function Hook_RegisterAuraInstanceIDItemFrame(self, auraInstanceID, itemFrame)
-
+function Addon:CDM_SetHooks()
+    for _, frameName in ipairs(CooldownManagerFrames) do
+        local frame = _G[frameName]
+        if Addon:GetValue("CDMEnable", nil, frameName) and not frame.__HooksSet then
+            if frame and frame.Layout then
+                hooksecurefunc(frame, "Layout", Hook_Layout)
+            end
+            if frame and frame.SetupPandemicStateFrameForItem then
+                hooksecurefunc(frame, "AnchorPandemicStateFrame", Hook_SetupPandemic)
+            end
+            if frame and frame.HidePandemicStateFrame then
+                hooksecurefunc(frame, "HidePandemicStateFrame", Hook_HidePandemic)
+            end
+            frame.__HooksSet = true
+        end
+    end
 end
 
 local function ProcessEvent(self, event, ...)
     if event == "PLAYER_LOGIN" then
-        for _, frameName in ipairs(CooldownManagerFrames) do
-            local frame = _G[frameName]
-            if Addon:GetValue("CDMEnable", nil, frameName) then
-                if frame and frame.Layout then
-                    hooksecurefunc(frame, "Layout", Hook_Layout)
-                end
-                if frame and frame.SetupPandemicStateFrameForItem then
-                    hooksecurefunc(frame, "AnchorPandemicStateFrame", Hook_SetupPandemic)
-                end
-                if frame and frame.HidePandemicStateFrame then
-                    hooksecurefunc(frame, "HidePandemicStateFrame", Hook_HidePandemic)
-                end
-            end
-        end
+        Addon:CDM_SetHooks()
         --hooksecurefunc("CooldownFrame_Set", Hook_CooldownFrame_Set)
         --hooksecurefunc("CooldownFrame_Clear", Hook_CooldownFrame_Clear)
     end
