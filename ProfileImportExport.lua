@@ -259,9 +259,6 @@ function ActionBarsEnhancedProfilesMixin:SetProfile(profileName, reload, config)
                         profileData[catName][key] = 2
                     end
                 end
-                if key == "UseCDMBackdrop" then
-                    print(catName, key, value)
-                end
                 Addon.C[catName][key] = value
             end
         end
