@@ -293,8 +293,22 @@ end
 
 function ABE_CDMCustomItemMixin:GetCooldownDurationObj()
     if self.type == "spell" then
+        local forceSpellCD = false
+
+        local chargeCooldownInfo = self:GetChargesCooldownInfo()
+
         local spellID = self.overrideID or self.baseSpellID or self.spellID
-        self.durationObj = C_Spell.GetSpellChargeDuration(spellID) or C_Spell.GetSpellCooldownDuration(spellID)
+
+        if chargeCooldownInfo then
+            if chargeCooldownInfo.maxCharges == 1 then
+                forceSpellCD = true
+            end
+        end
+        if not chargeCooldownInfo or forceSpellCD then
+            self.durationObj = C_Spell.GetSpellCooldownDuration(spellID)
+        else
+            self.durationObj = C_Spell.GetSpellChargeDuration(spellID)
+        end
     end
     return self.durationObj or nil
 end
@@ -370,6 +384,10 @@ function ABE_CDMCustomItemMixin:RefreshCount()
         end
 
         count = charges.currentCharges or 0
+
+        if charges.maxCharges == 1 then
+            count = 0
+        end
 
         --self.Applications:SetAlphaFromBoolean(((charges.maxCharges > 1) and (charges.currentCharges ~= nil)), tonumber(charges.currentCharges), 0 )
         --applications:SetAlpha(charges.currentCharges ~= nil and tonumber(charges.currentCharges) or 1)
@@ -511,8 +529,6 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
         end
     end) ]]
 
-    local chargeDur = C_Spell.GetSpellChargeDuration(self.spellID)
-
     if chargeCooldownInfo and chargeCooldownInfo.startTime and chargeCooldownInfo.duration then
         cooldownFrame:SetDrawSwipe(false)
 
@@ -527,11 +543,13 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
             cooldownFrame:SetCooldown(chargeCooldownInfo.startTime, chargeCooldownInfo.duration)
         end
 
-        if cooldownFrame:IsVisible() then
+        if cooldownInfo.isActive then
             self.isOnChargeCooldown = true
+        elseif cooldownInfo.isOnGCD == false then
+            self.isOnChargeCooldown = false
         end
         if not self.isOnAuraTimer then
-            cooldownFrame:SetAlpha(chargeDur:GetRemainingDuration())
+            cooldownFrame:SetAlpha(durationObj:GetRemainingDuration())
         end
         
         
@@ -902,11 +920,11 @@ function ABE_CDMCustomFrameMixin:OnAuraAddedEvent(spellID, overrideSpellID, aura
             itemFrame.auraInstanceID = auraData.auraInstanceID
             itemFrame.auraDuration = auraData.duration
             local auraDurationObject = C_UnitAuras.GetAuraDuration("player", itemFrame.auraInstanceID)
-            itemFrame.__auraDurationObject = auraDurationObject
-            itemFrame.auraStartTime = auraDurationObject:GetStartTime()
-            itemFrame.isOnAuraTimer = true
-            local auraCooldown = itemFrame:GetAuraFrame()
             if auraDurationObject then
+                itemFrame.__auraDurationObject = auraDurationObject
+                itemFrame.auraStartTime = auraDurationObject:GetStartTime()
+                itemFrame.isOnAuraTimer = true
+                local auraCooldown = itemFrame:GetAuraFrame()
                 auraCooldown:SetCooldownFromDurationObject(auraDurationObject)
                 itemFrame:RefreshData()
             end
@@ -919,9 +937,9 @@ function ABE_CDMCustomFrameMixin:OnAuraUpdatedEvent(auraInstanceID)
         if itemFrame.auraInstanceID == auraInstanceID then
             itemFrame.isOnAuraTimer = true
             local auraDurationObject = C_UnitAuras.GetAuraDuration("player", itemFrame.auraInstanceID)
-            itemFrame.auraStartTime = auraDurationObject:GetStartTime()
-            local auraCooldown = itemFrame:GetAuraFrame()
             if auraDurationObject then
+                itemFrame.auraStartTime = auraDurationObject:GetStartTime()
+                local auraCooldown = itemFrame:GetAuraFrame()
                 auraCooldown:SetCooldownFromDurationObject(auraDurationObject)
                 itemFrame:RefreshData()
             end
