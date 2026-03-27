@@ -537,7 +537,7 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
         else
             self.isOnActualCooldown = false
         end
-        if durationObj then
+        if self.type == "spell" and durationObj then
             cooldownFrame:SetCooldownFromDurationObject(durationObj)
         else
             cooldownFrame:SetCooldown(chargeCooldownInfo.startTime, chargeCooldownInfo.duration)
@@ -551,8 +551,6 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
         if not self.isOnAuraTimer then
             cooldownFrame:SetAlpha(durationObj:GetRemainingDuration())
         end
-        
-        
         --cooldownFrame:SetAlphaFromBoolean((self.isOnAuraTimer == true) or (cooldownFrame.showGCDSwipe == false and (cooldownInfo.isOnGCD == true)), 0,1)
     elseif cooldownInfo and cooldownInfo.startTime and cooldownInfo.duration then
         if not self.isOnChargeCooldown then
@@ -562,7 +560,7 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
                 self.isOnActualCooldown = true
             end
             cooldownFrame:SetDrawSwipe(true)
-            if durationObj then
+            if self.type == "spell" and durationObj then
                 cooldownFrame:SetCooldownFromDurationObject(durationObj)
             else
                 cooldownFrame:SetCooldown(cooldownInfo.startTime, cooldownInfo.duration)
