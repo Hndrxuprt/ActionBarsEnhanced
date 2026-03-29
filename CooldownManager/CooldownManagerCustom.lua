@@ -81,8 +81,12 @@ function ABE_CDMCustomItemMixin:OnEvent(event, ...)
                 local frame = _G[self.parentName]
                 frame:UpdateAllTrinkets(self.slotID)
             end
-
             self:OnSpellUpdateCooldownEvent()
+        elseif startRecoveryCategory == 133 then
+            local cooldownFrame = self:GetCooldownFrame()
+            if cooldownFrame.showGCDSwipe then
+                self:OnSpellUpdateCooldownEvent()
+            end
         end
     elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
         local unitTarget, castGUID, spellID = ...
@@ -133,7 +137,7 @@ function ABE_CDMCustomItemMixin:OnEvent(event, ...)
         end
     elseif event == "SPELL_UPDATE_CHARGES" then
         if self.type == "spell" then
-            self:RefreshData()
+            --self:RefreshData()
         end
     end
 end
@@ -537,21 +541,29 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
         else
             self.isOnActualCooldown = false
         end
+        
         if self.type == "spell" and durationObj then
-            cooldownFrame:SetCooldownFromDurationObject(durationObj)
+            cooldownFrame:SetCooldownFromDurationObject(durationObj, true)
         else
             cooldownFrame:SetCooldown(chargeCooldownInfo.startTime, chargeCooldownInfo.duration)
         end
+        
+        -- Action/Spell cooldown APIs now return a new non-secret isActive boolean, which is set to true if the UI should render a cooldown display.
+        -- For regular cooldowns, it's true if isEnabled and startTime > 0 and duration > 0.
+        -- For charge cooldowns, it's true if maxCharges > 1 and currentCharges < maxCharges and startTime > 0 and duration > 0.
 
-        if cooldownInfo.isActive then
+        -- 12.0.5 We are adding a new ignoreGCD parameter to APIs that construct and return duration objects for cooldowns.
+
+        if cooldownInfo.isActive or cooldownFrame:IsVisible() then
             self.isOnChargeCooldown = true
-        elseif cooldownInfo.isOnGCD == false then
+        else
             self.isOnChargeCooldown = false
         end
-        if not self.isOnAuraTimer then
+
+        cooldownFrame:SetAlphaFromBoolean((self.isOnAuraTimer == true) or (cooldownFrame.showGCDSwipe == false and (cooldownInfo.isOnGCD == true)), 0,1)
+        --[[ if not self.isOnAuraTimer then
             cooldownFrame:SetAlpha(durationObj:GetRemainingDuration())
-        end
-        --cooldownFrame:SetAlphaFromBoolean((self.isOnAuraTimer == true) or (cooldownFrame.showGCDSwipe == false and (cooldownInfo.isOnGCD == true)), 0,1)
+        end ]]
     elseif cooldownInfo and cooldownInfo.startTime and cooldownInfo.duration then
         if not self.isOnChargeCooldown then
             if self.type == "spell" and cooldownInfo.isOnGCD == false then
@@ -561,7 +573,7 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
             end
             cooldownFrame:SetDrawSwipe(true)
             if self.type == "spell" and durationObj then
-                cooldownFrame:SetCooldownFromDurationObject(durationObj)
+                cooldownFrame:SetCooldownFromDurationObject(durationObj, true)
             else
                 cooldownFrame:SetCooldown(cooldownInfo.startTime, cooldownInfo.duration)
             end
@@ -646,6 +658,8 @@ function ABE_CDMCustomItemMixin:RefreshVisibility()
 end
 
 function ABE_CDMCustomItemMixin:OnSpellUpdateCooldownEvent()
+    self.isOnChargeCooldown = false
+    --self.isOnActualCooldown = false
     
     self:RefreshData()
 end
