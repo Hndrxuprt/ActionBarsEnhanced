@@ -158,6 +158,7 @@ local function ShouldFadeIn(frame, isHover)
     or (Addon:GetValue("FadeInOnTarget", nil, frame:GetName()) and UnitExists("target"))
     or (Addon:GetValue("FadeInOnCasting", nil, frame:GetName()) and UnitCastingInfo("player"))
     or (Addon:GetValue("FadeInOnHover", nil, frame:GetName()) and isHover)
+    or GetCursorInfo()
 end
 
 local function ShouldFadeInExternal(frame, options, isHover)

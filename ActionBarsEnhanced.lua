@@ -1506,8 +1506,13 @@ local function ProcessEvent(self, event, ...)
     or event == "PLAYER_REGEN_ENABLED"
     or event == "PLAYER_TARGET_CHANGED"
     or event == "UNIT_SPELLCAST_START"
-    or event == "UNIT_SPELLCAST_STOP" then
-        Addon:BarsFadeAnim()
+    or event == "UNIT_SPELLCAST_STOP" 
+    or event == "ACTIONBAR_SHOWGRID"
+    or event == "ACTIONBAR_HIDEGRID" then
+        C_Timer.After(0, function()
+        
+            Addon:BarsFadeAnim()
+        end)
     end
     if event == "PLAYER_SPECIALIZATION_CHANGED" then
         ActionBarsEnhancedProfilesMixin:OnSpecChanged(currentProfile)
@@ -1526,3 +1531,5 @@ Addon.eventHandlerFrame:RegisterUnitEvent('UNIT_SPELLCAST_START', "player")
 Addon.eventHandlerFrame:RegisterUnitEvent('UNIT_SPELLCAST_STOP', "player")
 Addon.eventHandlerFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
 Addon.eventHandlerFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", "player")
+Addon.eventHandlerFrame:RegisterEvent("ACTIONBAR_SHOWGRID")
+Addon.eventHandlerFrame:RegisterEvent("ACTIONBAR_HIDEGRID")

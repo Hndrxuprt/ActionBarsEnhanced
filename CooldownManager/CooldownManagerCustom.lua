@@ -47,6 +47,7 @@ function ABE_CDMCustomItemMixin:OnShow()
     self:RegisterEvent("SPELL_UPDATE_USABLE")
     self:RegisterEvent("ITEM_COUNT_CHANGED")
     self:RegisterEvent("BAG_UPDATE_DELAYED")
+    self:RegisterEvent("ENCOUNTER_END")
     self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player", "pet")
     
 end
@@ -137,7 +138,16 @@ function ABE_CDMCustomItemMixin:OnEvent(event, ...)
         end
     elseif event == "SPELL_UPDATE_CHARGES" then
         if self.type == "spell" then
-            --self:RefreshData()
+            self:RefreshData()
+        end
+    elseif event == "ENCOUNTER_END" then
+        local encounterID, encounterName, difficultyID, groupSize, success = ...
+        if difficultyID > 13 and difficultyID < 18 then
+            self.isOnActualCooldown = false
+            self.isOnChargeCooldown = false
+            RunNextFrame(function()
+                self:RefreshData()
+            end)
         end
     end
 end
@@ -534,7 +544,11 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
     end) ]]
 
     if chargeCooldownInfo and chargeCooldownInfo.startTime and chargeCooldownInfo.duration then
-        cooldownFrame:SetDrawSwipe(false)
+        if chargeCooldownInfo.maxCharges > 1 then
+            cooldownFrame:SetDrawSwipe(false)
+        else
+            cooldownFrame:SetDrawSwipe(true)
+        end
 
         if cooldownInfo.isOnGCD == false then
             self.isOnActualCooldown = true
@@ -560,10 +574,11 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
             self.isOnChargeCooldown = false
         end
 
-        cooldownFrame:SetAlphaFromBoolean((self.isOnAuraTimer == true) or (cooldownFrame.showGCDSwipe == false and (cooldownInfo.isOnGCD == true)), 0,1)
-        --[[ if not self.isOnAuraTimer then
-            cooldownFrame:SetAlpha(durationObj:GetRemainingDuration())
-        end ]]
+        --cooldownFrame:SetAlphaFromBoolean((self.isOnAuraTimer == true) or (cooldownFrame.showGCDSwipe == false and (cooldownInfo.isOnGCD == true)), 0,1)
+        if not self.isOnAuraTimer then
+            cooldownFrame:SetAlpha(durationObj:EvaluateRemainingDuration(Addon.alphaCurve, 0))
+        end
+        
     elseif cooldownInfo and cooldownInfo.startTime and cooldownInfo.duration then
         if not self.isOnChargeCooldown then
             if self.type == "spell" and cooldownInfo.isOnGCD == false then
