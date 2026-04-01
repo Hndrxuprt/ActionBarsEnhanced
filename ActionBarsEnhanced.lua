@@ -1446,6 +1446,60 @@ local function DisableTalkingHeadFrame()
     TalkingHeadFrame:Hide()
 end
 
+local function SetAprilDay()
+    Addon.AprilDayEnabled = Addon:GetValue("AprilDayEnabled", nil, "GlobalSettings")
+    Addon.AprilDayTicker = nil
+    ABE_AprilDay()
+end
+
+function ABE_AprilDay(checked)
+    
+    if checked ~= nil then
+        Addon.AprilDayEnabled = checked
+        Addon:SaveSetting("AprilDayEnabled", checked, true)
+
+        if checked then
+            ActionBarEnhancedOptionsFramePortrait:SetTexture("interface/AddOns/ActionBarsEnhanced/assets/icon_april.png")
+        else
+            ActionBarEnhancedOptionsFramePortrait:SetTexture("interface/AddOns/ActionBarsEnhanced/assets/icon2.tga")
+        end
+    end
+
+    if Addon.AprilDayEnabled then
+        if not Addon.AprilDayTicker then
+            local inAir = false 
+
+            Addon.AprilDayTicker = C_Timer.NewTicker(0.1, function()
+                if UnitIsDeadOrGhost("player") or UnitOnTaxi("player") then 
+                    return 
+                end
+
+                local falling = IsFalling()
+                local flying = IsFlying()
+                local mounted = IsMounted()
+                local swimming = IsSwimming()
+                local inVehicle = UnitInVehicle("player") or UnitControllingVehicle("player")
+
+                if falling then
+                    inAir = true
+                    
+                elseif inAir and not falling and not flying and not mounted and not swimming and not inVehicle then
+                    local rnd = math.random(1, 100)
+                    if rnd > 10 then
+                        PlaySound(227942, "SFX")
+                    end
+                    inAir = false
+                end
+            end)
+        end
+    else
+        if Addon.AprilDayTicker then
+            Addon.AprilDayTicker:Cancel()
+            Addon.AprilDayTicker = nil
+        end
+    end
+end
+
 local function ProcessEvent(self, event, ...)
     if event == "PLAYER_LOGIN" then
         hooksecurefunc(ActionButtonSpellAlertManager, "ShowAlert", Hook_UpdateFlipbook)
@@ -1494,6 +1548,10 @@ local function ProcessEvent(self, event, ...)
 
         Addon.CurrentProfileTbl = Addon.CurrentProfileTbl or Addon:GetCurrentProfileTable()
         Addon:BarsFadeAnim()
+
+        RunNextFrame(function()
+            SetAprilDay()
+        end)
     end
     if event == "TALKINGHEAD_REQUESTED" then
         DisableTalkingHeadFrame()
@@ -1533,3 +1591,4 @@ Addon.eventHandlerFrame:RegisterEvent('PLAYER_ENTERING_WORLD')
 Addon.eventHandlerFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", "player")
 Addon.eventHandlerFrame:RegisterEvent("ACTIONBAR_SHOWGRID")
 Addon.eventHandlerFrame:RegisterEvent("ACTIONBAR_HIDEGRID")
+Addon.eventHandlerFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")

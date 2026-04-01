@@ -653,6 +653,7 @@ Addon.Defaults = {
     CDMCustomFrameBarIconOffsetX = 0,
     CDMCustomFrameBarIconOffsetY = 0,
     
+    AprilDayEnabled = true,
 
 }
 

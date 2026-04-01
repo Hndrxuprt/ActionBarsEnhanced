@@ -1099,6 +1099,21 @@
 					<OnClick method="OpenProfileFrame"/>
 				</Scripts>
 			</Button>
+			<CheckButton parentKey="AprilButton" hidden="false" frameStrata="HIGH">
+				<Size x="70" y="70"/>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeKey="$parent.portrait" x="-10" y="12"/>
+				</Anchors>
+				
+				<PushedTexture atlas="dragonflight-landingbutton-circleglow"/>
+				<HighlightTexture atlas="dragonflight-landingbutton-circleglow"/>
+
+				<Scripts>
+					<OnClick>
+						ABE_AprilDay(self:GetChecked())
+					</OnClick>
+				</Scripts>
+			</CheckButton>
 		</Frames>
 		<Scripts>
 			<OnLoad>
