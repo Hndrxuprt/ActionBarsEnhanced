@@ -721,14 +721,15 @@ function ActionBarEnhancedMixin:InitOptions()
     optionsFrame.Inset.Bg:SetHorizTile(false)
     optionsFrame.Inset.Bg:SetVertTile(false)
     optionsFrame.Inset.Bg:SetAllPoints()
+    ActionBarEnhancedOptionsFramePortrait:SetTexture("interface/AddOns/ActionBarsEnhanced/assets/icon2.tga")
     
-    local aprilDayEnabled = Addon:GetValue("AprilDayEnabled")
+    --[[ local aprilDayEnabled = Addon:GetValue("AprilDayEnabled")
     optionsFrame.AprilButton:SetChecked(aprilDayEnabled)
     if aprilDayEnabled then
         ActionBarEnhancedOptionsFramePortrait:SetTexture("interface/AddOns/ActionBarsEnhanced/assets/icon_april.png")
     else
         ActionBarEnhancedOptionsFramePortrait:SetTexture("interface/AddOns/ActionBarsEnhanced/assets/icon2.tga")
-    end
+    end ]]
 
     optionsFrame.CloseButton:SetScript("OnClick", function()
         optionsFrame:Hide()

@@ -1099,7 +1099,7 @@
 					<OnClick method="OpenProfileFrame"/>
 				</Scripts>
 			</Button>
-			<CheckButton parentKey="AprilButton" hidden="false" frameStrata="HIGH">
+			<CheckButton parentKey="AprilButton" hidden="true" frameStrata="HIGH" virtual="true">
 				<Size x="70" y="70"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativePoint="TOPLEFT" relativeKey="$parent.portrait" x="-10" y="12"/>

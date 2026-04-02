@@ -1549,9 +1549,9 @@ local function ProcessEvent(self, event, ...)
         Addon.CurrentProfileTbl = Addon.CurrentProfileTbl or Addon:GetCurrentProfileTable()
         Addon:BarsFadeAnim()
 
-        RunNextFrame(function()
+        --[[ RunNextFrame(function()
             SetAprilDay()
-        end)
+        end) ]]
     end
     if event == "TALKINGHEAD_REQUESTED" then
         DisableTalkingHeadFrame()
