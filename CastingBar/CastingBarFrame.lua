@@ -586,10 +586,10 @@ function ABE_CastingBarMixin.ShowSpark(self)
     local pipHeight = Addon:GetValue("UseCastBarPipSize", nil, frameName) and Addon:GetValue("CastBarPipSizeY", nil, frameName) or 20
 
     local currentBarType = self.__barType
-    if currentBarType == "interrupted" then
+    if not issecretvalue(currentBarType.interrupted) and currentBarType.interrupted then
         Addon:SetTexture(self.Spark, sparkTexture, false)
 		self.Spark:SetSize(pipWidth, pipHeight)
-	elseif currentBarType == "empowered" then
+	elseif not issecretvalue(currentBarType.empowered) and currentBarType.empowered then
         Addon:SetTexture(self.Spark, sparkTexture, false)
         self.Spark.offsetY = 0
 		self.Spark:SetSize(pipWidth, pipHeight)

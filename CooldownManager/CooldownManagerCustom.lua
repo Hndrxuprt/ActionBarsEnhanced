@@ -47,6 +47,7 @@ function ABE_CDMCustomItemMixin:OnShow()
     self:RegisterEvent("SPELL_UPDATE_USABLE")
     self:RegisterEvent("ITEM_COUNT_CHANGED")
     self:RegisterEvent("BAG_UPDATE_DELAYED")
+    self:RegisterEvent("BAG_UPDATE_COOLDOWN")
     self:RegisterEvent("ENCOUNTER_END")
     self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player", "pet")
     
@@ -115,7 +116,7 @@ function ABE_CDMCustomItemMixin:OnEvent(event, ...)
         if self.itemID == itemID then
             self:RefreshCount()
         end
-    elseif event == "BAG_UPDATE_DELAYED" then
+    elseif event == "BAG_UPDATE_DELAYED" or event == "BAG_UPDATE_COOLDOWN" then
         if self.type == "item" then
             self:RefreshData()
         end
@@ -247,7 +248,8 @@ function ABE_CDMCustomItemMixin:FindAuraInstanceIDForCurrentSpellID()
         local auraInstanceID = itemFrame:GetAuraSpellInstanceID()
         local spellID = itemFrame:GetBaseSpellID()
         local cooldownID = itemFrame:GetCooldownID()
-        --Addon:DebugPrint("AuraInstanceID Set:", self.spellID, spellID, cooldownID)
+        local cooldownInfo = itemFrame:GetCooldownInfo()
+        --Addon:DebugPrint("AuraInstanceID Set:", self.spellID, self.overrideID, spellID, overrideID, auraInstanceID, cooldownID)
         if self.spellID == spellID then
             self.auraInstanceID = auraInstanceID
         end
@@ -444,7 +446,13 @@ local function IsFakeAuraExpired(spellID)
     else
         local startTime = ABE_FAKE_AURAS[spellID].startTime
         local duration = ABE_FAKE_AURAS[spellID].duration
+        local savedTime = ABE_FAKE_AURAS[spellID].savedTime
+        local currentTime = time()
         local time = GetTime()
+        if (currentTime - savedTime) >= duration then
+            ABE_FAKE_AURAS[spellID] = nil
+            return true
+        end
         if (time - startTime) < duration then
             return false
         elseif (time - startTime) >= duration then
@@ -473,7 +481,8 @@ function ABE_CDMCustomItemMixin:RefreshFakeAuraInfo()
             startTime = ABE_FAKE_AURAS[self.spellID].startTime
             duration = ABE_FAKE_AURAS[self.spellID].duration
         else
-            ABE_FAKE_AURAS[self.spellID] = { startTime = startTime, duration = self.fakeAura }
+            local savedTime = time()
+            ABE_FAKE_AURAS[self.spellID] = { startTime = startTime, duration = self.fakeAura, savedTime = savedTime }
         end
         self.isOnAuraTimer = true
         auraCooldown:SetCooldown(startTime, duration)

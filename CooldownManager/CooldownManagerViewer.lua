@@ -488,6 +488,10 @@ local function Hook_OnLeave(self)
         Addon:Fade(frame, false)
     end
 end
+local function Hook_OnAuraInstanceInfoSet(self, auraSpellID,  auraInstanceID )
+
+    --print("Hook_OnAuraInstanceInfoSet", self:GetBaseSpellID(), auraSpellID, auraInstanceID )
+end
 
 local function Hook_Layout(self)
     if self.__locked then
@@ -572,6 +576,9 @@ local function Hook_Layout(self)
             if child.OnLeave then
                 child:HookScript("OnLeave", Hook_OnLeave)
             end
+            --[[ if child.OnAuraInstanceInfoSet then
+                hooksecurefunc(child, "OnAuraInstanceInfoSet", Hook_OnAuraInstanceInfoSet)
+            end ]]
             child.__hooked = true
         end
         if not child.__onUpdateHooked and Addon:GetValue("ColorizedCooldownFont", nil, frameName) then
