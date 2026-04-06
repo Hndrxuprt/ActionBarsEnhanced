@@ -449,7 +449,7 @@ local function IsFakeAuraExpired(spellID)
         local savedTime = ABE_FAKE_AURAS[spellID].savedTime
         local currentTime = time()
         local time = GetTime()
-        if (currentTime - savedTime) >= duration then
+        if not savedTime or ((currentTime - savedTime) >= duration) then
             ABE_FAKE_AURAS[spellID] = nil
             return true
         end
@@ -1412,6 +1412,7 @@ function ABE_CDMCustomFrameMixin:CreateFrame(name, parent, point, relativePoint,
     local frame = CreateFrame("Frame", name, UIParent, template)
     frame:Show()
     frame:SetPoint(point, UIParent, relativePoint, math.ceil(offsetX) or 0, math.ceil(offsetY) or 0)
+    frame:SetFrameLevel(2)
     frame.template = template
 
     return frame, { x = offsetX, y = offsetY }
