@@ -138,6 +138,14 @@ local function OnCooldownClear(cooldownFrame, button)
 end
 
 local function CheckCooldownState(button)
+    local barFrame = button:GetParent()
+    local barName = barFrame:GetName()
+    if barName == "BuffIconCooldownViewer" then 
+        button.__isOnAura = true
+        --button:GetCooldownFrame():SetReverse(Addon:GetValue("CDMReverseSwipe", nil, barName))
+        --ABE_CDMCustomized:RefreshCooldownFrame(button, barName)
+        return
+    end
     if not button.cooldownUseAuraDisplayTime or button.__removeAura then
         if (button.isOnGCD and not button.isOnActualCooldown) then
             button.__isOnGCD = true
@@ -204,8 +212,6 @@ local function OnCooldownSet(cooldownFrame, button)
         if not button.__removeAura and Addon:GetValue("UseCDMBackdropAuraColor", nil, barName) and not button.__isInPandemic then
             Addon.SetBorderColor(button, {Addon:GetRGBA("CDMBackdropAuraColor", nil, barName)}, "aura")
         end
-
-        cooldownFrame:SetReverse(Addon:GetValue("CDMAuraReverseSwipe", nil, barName))
     else
         button.__isOnAura = false
         if Addon:GetValue("UseCooldownColor", nil, barName) then
@@ -224,8 +230,6 @@ local function OnCooldownSet(cooldownFrame, button)
             local showCountdonwNumbers =  Addon:GetValue("ShowCountdownNumbersForCharges", nil, barName)
             cooldownFrame:SetHideCountdownNumbers(not showCountdonwNumbers)
         end
-
-        cooldownFrame:SetReverse(Addon:GetValue("CDMReverseSwipe", nil, barName))
     end
 
     if not button.__removeAura and button.__isOnAura and Addon:GetValue("UseCDMAuraTimerColor", nil, barName) then
@@ -239,6 +243,23 @@ local function OnCooldownSet(cooldownFrame, button)
     end
     cooldownFrame:SetCountdownAbbrevThreshold(920)
 
+    ABE_CDMCustomized:RefreshCooldownFrame(button, barName)
+end
+
+local function OnRefreshCooldownInfo(button)
+    local barFrame = button:GetParent()
+    local barName = barFrame:GetName()
+
+    local cooldownFrame = button:GetCooldownFrame()
+
+    if not cooldownFrame then return end
+
+    if Addon:GetValue("UseCooldownColor", nil, barName) then
+        cooldownFrame:SetSwipeColor(Addon:GetRGBA("CooldownColor", nil, barName))
+    end
+    if Addon:GetValue("UseCDMBackdrop", nil, barName) then
+        Addon.SetBorderColor(button, {Addon:GetRGBA("CDMBackdropColor", nil, barName)}, "reset")
+    end
     ABE_CDMCustomized:RefreshCooldownFrame(button, barName)
 end
 
@@ -340,7 +361,7 @@ function Addon.OnButtonRefreshIconColor(self)
     end
     
     local OORColor = CooldownManagerEnhanced.constants.OORColor
-    local OOMColor = CooldownManagerEnhanced.constants.OOMColor  
+    local OOMColor = CooldownManagerEnhanced.constants.OOMColor
     local NUColor = CooldownManagerEnhanced.constants.NUColor
 
     local isUsable, notEnoughMana = C_Spell.IsSpellUsable(self:GetSpellID())
@@ -569,6 +590,9 @@ local function Hook_Layout(self)
                 hooksecurefunc(child.Cooldown, "Clear", function(self)
                     OnCooldownClear(self, child)
                 end)
+            end
+            if child.RefreshCooldownInfo then
+                hooksecurefunc(child, "RefreshCooldownInfo", OnRefreshCooldownInfo)
             end
             if child.OnEnter then
                 child:HookScript("OnEnter", Hook_OnEnter)

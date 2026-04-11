@@ -550,7 +550,7 @@ Addon.BuffIconCooldownViewer = {
             --{name = "CustomColorOOM", template = "OptionsColorOverrideTemplate"},
             --{name = "CustomColorNotUsable", template = "OptionsColorOverrideTemplate"},
             --{name = "CustomColorOnGCD", template = "OptionsColorOverrideTemplate"},
-            {name = "CustomColorOnActualCD", template = "OptionsColorOverrideTemplate"},
+            --{name = "CustomColorOnActualCD", template = "OptionsColorOverrideTemplate"},
             {name = "CustomColorOnAura", template = "OptionsColorOverrideTemplate"},
         }
     },

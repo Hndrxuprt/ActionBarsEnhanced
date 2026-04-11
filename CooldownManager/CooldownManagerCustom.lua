@@ -118,7 +118,9 @@ function ABE_CDMCustomItemMixin:OnEvent(event, ...)
         end
     elseif event == "BAG_UPDATE_DELAYED" or event == "BAG_UPDATE_COOLDOWN" then
         if self.type == "item" then
-            self:RefreshData()
+            RunNextFrame(function()
+                self:RefreshData()
+            end)
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" or event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
         local spellID = ...
@@ -636,14 +638,15 @@ function ABE_CDMCustomItemMixin:RefreshData()
     if self.type == "item" and IsHealthstoneItem(self.itemID) then
         C_Timer.After(0.5, function()
             self:RefreshCount()
+            self:RefreshVisibility()
         end)
     else
         self:RefreshCount()
+        self:RefreshVisibility()
     end
     self:RefreshBackdrop()
     --self:RefreshProcAnim()
-    
-    self:RefreshVisibility()
+    --self:RefreshVisibility()
     self:RefreshIconColor()
 end
 
@@ -662,6 +665,8 @@ function ABE_CDMCustomItemMixin:RefreshVisibility()
     end ]]
     local hideType = parentFrame.Container.hideInactiveType
 
+    local hideEmpty = Addon:GetValue("CDMCustomHideEmpty", nil, self.parentName)
+
     if hideType == 3 then
         if self.isOnActualCooldown or self.isOnAuraTimer or self.isOnChargeCooldown then
             self.__isActive = true
@@ -679,12 +684,22 @@ function ABE_CDMCustomItemMixin:RefreshVisibility()
     elseif hideType == 1 then
         self.__isActive = nil
     end
+
+    if hideEmpty and self.type == "item" then
+        if not self.isOnAuraTimer and self.count == 0 then
+            self.__isActive = false
+            self.__shouldBeVisible = false
+        else
+            self.__shouldBeVisible = true
+        end
+        parentFrame:RefreshVisibileOnCD()
+    end
 end
 
 function ABE_CDMCustomItemMixin:OnSpellUpdateCooldownEvent()
     self.isOnChargeCooldown = false
     --self.isOnActualCooldown = false
-    
+
     self:RefreshData()
 end
 
@@ -1260,10 +1275,10 @@ function ABE_CDMCustomFrameMixin:GetVisibleChildren()
             local spellName, spellID = C_Item.GetItemSpell(data.id)
             local count = C_Item.GetItemCount(data.id, nil, true) or 0
             local isUsable = C_Item.IsUsableItem(data.id)
-            local hideEmpty = Addon:GetValue("CDMCustomHideEmpty", nil, self.frameName)
+            --[[ local hideEmpty = Addon:GetValue("CDMCustomHideEmpty", nil, self.frameName)
             if not spellID or ( count == 0 and hideEmpty ) then
                 isKnown = false
-            end
+            end ]]
         end
         if isKnown then
             local item = self.itemPool:Acquire()

@@ -103,6 +103,11 @@ function ABE_CDMCustomized:RefreshCooldownFrame(child, frameName)
             cooldownFrame:SetEdgeColor(Addon:GetRGBA("EdgeColor", nil, frameName))
         end
     end
+    if not child.__removeAura and child.__isOnAura and frameName ~= "BuffIconCooldownViewer" then
+        cooldownFrame:SetReverse(Addon:GetValue("CDMAuraReverseSwipe", nil, frameName))
+    else
+        cooldownFrame:SetReverse(Addon:GetValue("CDMReverseSwipe", nil, frameName))
+    end
 end
 
 function ABE_CDMCustomized:RefreshCooldownFont(child, frameName)
