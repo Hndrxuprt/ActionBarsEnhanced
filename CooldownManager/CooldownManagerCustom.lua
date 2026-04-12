@@ -77,8 +77,8 @@ end
 function ABE_CDMCustomItemMixin:OnEvent(event, ...)
     if event == "SPELL_UPDATE_COOLDOWN" then
 		local spellID, baseSpellID, category, startRecoveryCategory = ...
-        if self.spellID == spellID or (baseSpellID and (self.baseSpellID == baseSpellID))
-        or (self.overrideID == spellID) then
+        if spellID and (self.spellID == spellID or (baseSpellID and (self.baseSpellID == baseSpellID))
+        or (self.overrideID == spellID)) then
             if self.slotID == 13 or self.slotID == 14 then
                 local frame = _G[self.parentName]
                 frame:UpdateAllTrinkets(self.slotID)
@@ -116,11 +116,13 @@ function ABE_CDMCustomItemMixin:OnEvent(event, ...)
         if self.itemID == itemID then
             self:RefreshCount()
         end
-    elseif event == "BAG_UPDATE_DELAYED" or event == "BAG_UPDATE_COOLDOWN" then
+    elseif event == "BAG_UPDATE_DELAYED" then
         if self.type == "item" then
-            RunNextFrame(function()
-                self:RefreshData()
-            end)
+            self:RefreshData()
+        end
+    elseif event == "BAG_UPDATE_COOLDOWN" then
+        if self.type == "item" then
+            self:RefreshCount()
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" or event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
         local spellID = ...

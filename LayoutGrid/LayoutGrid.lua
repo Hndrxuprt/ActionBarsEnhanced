@@ -114,7 +114,9 @@ local function HideInactiveChildren(layoutChildren, keepEmpty)
             end
         else
             if (frame:IsVisible() or frame.__shouldBeVisible) or frame.__isEditing or EditModeManagerFrame:IsEditModeActive() or CooldownViewerSettings:IsVisible() then
-                frame:Show()
+                if not frame:IsVisible() then
+                    frame:Show()
+                end
                 table.insert(visible, frame)
             else
                 if keepEmpty then

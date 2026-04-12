@@ -250,15 +250,19 @@ local function OnRefreshCooldownInfo(button)
     local barFrame = button:GetParent()
     local barName = barFrame:GetName()
 
+    if barName == "BuffBarCooldownViewer" then return end
+
     local cooldownFrame = button:GetCooldownFrame()
 
     if not cooldownFrame then return end
 
-    if Addon:GetValue("UseCooldownColor", nil, barName) then
-        cooldownFrame:SetSwipeColor(Addon:GetRGBA("CooldownColor", nil, barName))
+    if barName ~= "BuffIconCooldownViewer" then
+        if not button.__removeAura and button.__isOnAura and Addon:GetValue("UseCooldownAuraColor", nil, barName) then
+            cooldownFrame:SetSwipeColor(Addon:GetRGBA("CooldownAuraColor", nil, barName))
+        end
     end
-    if Addon:GetValue("UseCDMBackdrop", nil, barName) then
-        Addon.SetBorderColor(button, {Addon:GetRGBA("CDMBackdropColor", nil, barName)}, "reset")
+    if not button.__isOnAura and Addon:GetValue("UseCooldownColor", nil, barName) then
+        cooldownFrame:SetSwipeColor(Addon:GetRGBA("CooldownColor", nil, barName))
     end
     ABE_CDMCustomized:RefreshCooldownFrame(button, barName)
 end
@@ -593,6 +597,9 @@ local function Hook_Layout(self)
             end
             if child.RefreshCooldownInfo then
                 hooksecurefunc(child, "RefreshCooldownInfo", OnRefreshCooldownInfo)
+            end
+            if child.RefreshSpellCooldownInfo then
+                hooksecurefunc(child, "RefreshSpellCooldownInfo", OnRefreshCooldownInfo)
             end
             if child.OnEnter then
                 child:HookScript("OnEnter", Hook_OnEnter)
