@@ -443,6 +443,53 @@ function OptionsCDMCustomItemListMixin:OnGlobalMouseUp(button)
 	end
 end
 
+local function SetupDropdown(dropdown, itemID)
+    local function IsSelected(id)
+        local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+        local profileTable = Addon.P.profilesList[profileName]
+        local index = ABE_BarsListMixin:GetFrameIndex()
+        if profileTable["CDMCustomFrames"] then
+            frameTbl = profileTable["CDMCustomFrames"][index]
+            if frameTbl.fakeAuras and frameTbl.fakeAuras[itemID] then
+                return frameTbl.fakeAuras[itemID].type == id
+            end
+        end
+        return id == 1
+    end
+    local function OnSelect(id)
+        local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+        local profileTable = Addon.P.profilesList[profileName]
+        local index = ABE_BarsListMixin:GetFrameIndex()
+        if profileTable["CDMCustomFrames"] then
+            local frameTbl = profileTable["CDMCustomFrames"][index]
+            if not frameTbl.fakeAuras then
+                frameTbl.fakeAuras = {}
+            end
+            if not frameTbl.fakeAuras[itemID] then
+                frameTbl.fakeAuras[itemID] = {
+                    duration = 0,
+                    type = id
+                }
+            else
+                frameTbl.fakeAuras[itemID].type = id
+            end
+            EventRegistry:TriggerEvent("CDMCustomItemList.FakeAuraTypeChanged", itemID, id)
+        end
+    end
+    local menuGenerator = function(_, rootDescription)
+        rootDescription:CreateTitle(L.FakeAuraTypesTitle)
+        local auraTypes = Addon.FakeAuraType
+        for i=1, #auraTypes do
+            local categoryName = auraTypes[i]
+            local categoryID = i
+            local radio = rootDescription:CreateRadio(categoryName, IsSelected, OnSelect, categoryID)
+        end
+    end
+    dropdown.Dropdown:SetupMenu(menuGenerator)
+    dropdown.IncrementButton:Hide()
+    dropdown.DecrementButton:Hide()
+end
+
 function OptionsCDMCustomItemListMixin:OpenFakeAuraSettings(item)
     local itemID = item:GetSpellID()
     self.FakeAuraFrame.Label:SetText(L.SetFakeAura)
@@ -451,6 +498,9 @@ function OptionsCDMCustomItemListMixin:OpenFakeAuraSettings(item)
 
     self.FakeAuraFrame.EditBox:SetText((item.fakeAura and item.fakeAura > 0) and item.fakeAura or "")
     self.FakeAuraFrame.EditBox:Show()
+    SetupDropdown(self.FakeAuraFrame.Dropdown, itemID)
+    self.FakeAuraFrame.Dropdown:Show()
+
     self.FakeAuraFrame:Show()
     self.FakeAuraFrame.Button:SetScript("OnClick", function()
         local newDuration = tonumber(self.FakeAuraFrame.EditBox:GetText())
@@ -463,7 +513,15 @@ function OptionsCDMCustomItemListMixin:OpenFakeAuraSettings(item)
             if not frameTbl.fakeAuras then
                 frameTbl.fakeAuras = {}
             end
-            frameTbl.fakeAuras[itemID] = newDuration
+            if not frameTbl.fakeAuras[itemID] then
+                frameTbl.fakeAuras[itemID] = {
+                    duration = newDuration,
+                    type = 1,
+                }
+                EventRegistry:TriggerEvent("CDMCustomItemList.FakeAuraTypeChanged", itemID, 1)
+            else
+                frameTbl.fakeAuras[itemID].duration = newDuration
+            end
             EventRegistry:TriggerEvent("CDMCustomItemList.FakeAuraAdded", itemID, newDuration)
         end
         self.FakeAuraFrame:Hide()
@@ -476,6 +534,7 @@ function OptionsCDMCustomItemListMixin:OpenStagesSettings(item)
     self.FakeAuraFrame.Label:SetText(L.SetStages)
     self.FakeAuraFrame.Desc:SetText(L.SetStagesDesc)
     self.FakeAuraFrame.Desc:Show()
+    self.FakeAuraFrame.Dropdown:Hide()
 
     self.FakeAuraFrame.EditBox:SetText((item.stages and item.stages > 0) and item.stages or "")
     self.FakeAuraFrame.EditBox:Show()
@@ -528,6 +587,7 @@ function OptionsCDMCustomItemListMixin:OpenRacialSettings(item)
     self.FakeAuraFrame.Label:SetPointsOffset(0, 75)
     self.FakeAuraFrame.Desc:Hide()
     self.FakeAuraFrame.EditBox:Hide()
+    self.FakeAuraFrame.Dropdown:Hide()
 
     if not self.FakeAuraFrame.Racials then
         local racialFramesList = {}
@@ -974,8 +1034,8 @@ function OptionsCDMCustomItemMixin:GetFakeAura()
 
     if profileTable["CDMCustomFrames"] then
         local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
-        if frameTbl and frameTbl.fakeAuras then
-            return frameTbl.fakeAuras[itemID]
+        if frameTbl and frameTbl.fakeAuras and frameTbl.fakeAuras[itemID] then
+            return frameTbl.fakeAuras[itemID].duration
         end
     end
 end

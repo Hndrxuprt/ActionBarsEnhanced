@@ -481,3 +481,8 @@ L.SetStagesDesc = "Максимальное количество стаков, �
 L.Stages = "Использовать заряды"
 
 L.ConfigureRacials = "Отслеживание Расовых"
+
+L.FakeAuraTypesTitle = "Поведение при повторной активации"
+L.FakeAuraTypeNone = "Ничего (Ничего не делать)"
+L.FakeAuraTypeAdd = "Добавление (Добавить полный таймер к текущему)"
+L.FakeAuraTypeReset = "Сброс (Заускает таймер заново)"

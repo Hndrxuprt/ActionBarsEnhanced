@@ -133,6 +133,11 @@ Addon.CustomBarType = {
     [2] = "Aura Only",
     [3] = "Aura than CD",
 }
+Addon.FakeAuraType = {
+    [1] = L.FakeAuraTypeNone,
+    [2] = L.FakeAuraTypeAdd,
+    [3] = L.FakeAuraTypeReset,
+}
 
 do
     local cooldownColorCurve = C_CurveUtil.CreateColorCurve()

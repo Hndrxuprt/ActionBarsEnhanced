@@ -472,3 +472,8 @@ L.SetStagesDesc = "Maximum number of Charges for this Aura."
 L.Stages = "Custom Charges"
 
 L.ConfigureRacials = "Configure Racials"
+
+L.FakeAuraTypesTitle = "Aura refresh behavior"
+L.FakeAuraTypeNone = "None (Do nothing)"
+L.FakeAuraTypeAdd = "Add (Adds full timer to remaining duration)"
+L.FakeAuraTypeReset = "Reset (Reset to full duration)"

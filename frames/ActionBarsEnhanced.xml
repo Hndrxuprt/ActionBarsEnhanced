@@ -887,6 +887,11 @@
 							<OnEditFocusGained method="OnEditFocusGained"/>
 						</Scripts>
 					</EditBox>
+					<Frame parentKey="Dropdown" inherits="Metal2DropdownWithSteppersAndLabelTemplate">
+						<Anchors>
+							<Anchor point="LEFT" relativeKey="$parent.EditBox" relativePoint="RIGHT" x="-47"/>
+						</Anchors>
+					</Frame>
 					<Button parentKey="Button" mixin="ABE_FakeAuraConfirmButtonMixin" virtual="true" scale="1" hidden="false">
 						<Size x="150" y="28"/>
 						<Anchors>

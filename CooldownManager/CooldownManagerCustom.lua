@@ -94,7 +94,7 @@ function ABE_CDMCustomItemMixin:OnEvent(event, ...)
         local unitTarget, castGUID, spellID = ...
         if self.spellID == spellID or self.baseSpellID == spellID or self.overrideID == spellID then
             if self.fakeAura then
-                self:RefreshFakeAuraInfo()
+                self:RefreshFakeAuraInfo(true)
                 self:RefreshData()
             end
             -- HACK for spells withour GCD at all, interrupts for example
@@ -453,7 +453,7 @@ local function IsFakeAuraExpired(spellID)
         local savedTime = ABE_FAKE_AURAS[spellID].savedTime
         local currentTime = time()
         local time = GetTime()
-        if not savedTime or ((currentTime - savedTime) >= duration) then
+        if not savedTime or not duration or ((currentTime - savedTime) >= duration) then
             ABE_FAKE_AURAS[spellID] = nil
             return true
         end
@@ -467,29 +467,44 @@ local function IsFakeAuraExpired(spellID)
     return true
 end
 
-function ABE_CDMCustomItemMixin:RefreshFakeAuraInfo()
-    if not self.fakeAura then return false end
+function ABE_CDMCustomItemMixin:RefreshFakeAuraInfo(reset)
+    if not self.fakeAura or not self.fakeAura.duration then return false end
 
     local auraCooldown = self:GetAuraFrame()
 
     local startTime = GetTime()
-    local duration = self.fakeAura
+    local duration = self.fakeAura.duration
     local isExpired = IsFakeAuraExpired(self.spellID)
 
     local cooldownFrame = self:GetCooldownFrame()
     cooldownFrame:SetAlpha(0)
     cooldownFrame:Show()
 
+    if ABE_FAKE_AURAS[self.spellID] then
+        startTime = ABE_FAKE_AURAS[self.spellID].startTime
+        duration = ABE_FAKE_AURAS[self.spellID].duration
+    end
+
+    if not self.auraDurationObj then
+        self.auraDurationObj = C_DurationUtil.CreateDuration()
+    end
     if not self.isOnAuraTimer then
-        if ABE_FAKE_AURAS[self.spellID] then
-            startTime = ABE_FAKE_AURAS[self.spellID].startTime
-            duration = ABE_FAKE_AURAS[self.spellID].duration
-        else
-            local savedTime = time()
-            ABE_FAKE_AURAS[self.spellID] = { startTime = startTime, duration = self.fakeAura, savedTime = savedTime }
-        end
         self.isOnAuraTimer = true
+        self.auraDurationObj:SetTimeFromStart(startTime, duration)
         auraCooldown:SetCooldown(startTime, duration)
+        ABE_FAKE_AURAS[self.spellID] = { startTime = startTime, duration = duration, savedTime = time() }
+    elseif reset and self.fakeAura.type > 1 then
+        if self.fakeAura.type == 2 then
+            local curDur = self.auraDurationObj:GetRemainingDuration()
+            local newDuration = curDur + self.fakeAura.duration
+            self.auraDurationObj:SetTimeFromStart(GetTime(), newDuration)
+            auraCooldown:SetCooldown(GetTime(), newDuration)
+            ABE_FAKE_AURAS[self.spellID] = { startTime = GetTime(), duration = newDuration, savedTime = time() }
+        elseif self.fakeAura.type == 3 then
+            self.auraDurationObj:SetTimeFromStart(GetTime(), duration)
+            auraCooldown:SetCooldown(GetTime(), duration)
+            ABE_FAKE_AURAS[self.spellID] = { startTime = GetTime(), duration = duration, savedTime = time() }
+        end
     end
 end
 
@@ -761,7 +776,7 @@ function ABE_CDMCustomItemMixin:GetFakeAura()
     local frameIndex = _G[frameName]:GetFrameIndexByName(frameName)
     if profileTable["CDMCustomFrames"] then
         local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
-        if frameTbl and frameTbl.fakeAuras then
+        if frameTbl and frameTbl.fakeAuras and frameTbl.fakeAuras[self.itemID or self.spellID] then
             return frameTbl.fakeAuras[self.itemID or self.spellID]
         end
     end
@@ -829,6 +844,7 @@ function ABE_CDMCustomFrameMixin:OnLoad()
     self:AddDynamicEventMethod(EventRegistry, "EditMode.Enter", self.OnEditModeEnter)
     self:AddDynamicEventMethod(EventRegistry, "EditMode.Exit", self.OnEditModeExit)
     self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.FakeAuraAdded", self.OnFakeAuraAdded)
+    self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.FakeAuraTypeChanged", self.OnFakeAuraTypeChanged)
     self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.UpdateFrame", self.OnFrameUpdate)
 
     C_Timer.After(0.5, function()
@@ -844,10 +860,31 @@ function ABE_CDMCustomFrameMixin:OnFrameUpdate(frameName)
     if self:GetName() ~= frameName then return end
     self:RefreshLayout()
 end
+function ABE_CDMCustomFrameMixin:OnFakeAuraTypeChanged(spellID, newType)
+    for itemFrame in self.itemPool:EnumerateActive() do
+        if itemFrame.itemID == spellID or itemFrame.spellID == spellID then
+            if itemFrame.fakeAura then
+                itemFrame.fakeAura.type = newType
+            else
+                itemFrame.fakeAura = {
+                    duration = 0,
+                    type = newType,
+                }
+            end
+        end
+    end
+end
 function ABE_CDMCustomFrameMixin:OnFakeAuraAdded(spellID, newDuration)
     for itemFrame in self.itemPool:EnumerateActive() do
         if itemFrame.itemID == spellID or itemFrame.spellID == spellID then
-            itemFrame.fakeAura = newDuration
+            if itemFrame.fakeAura then
+                itemFrame.fakeAura.duration = newDuration
+            else
+                itemFrame.fakeAura = {
+                    duration = newDuration,
+                    type = 1
+                }
+            end
         end
     end
 end

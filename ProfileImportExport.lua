@@ -221,6 +221,8 @@ function ActionBarsEnhancedProfilesMixin:SetProfile(profileName, reload, config)
     if not profileData then
         return
     end
+
+    ActionBarsEnhancedProfilesMixin:CheckProfile2420(currentProfile)
     
     if profileData.FontHotKeyScale and profileData.FontHotKeyScale < 1.0 then
         profileData.FontHotKeyScale = 1.0
@@ -393,6 +395,26 @@ function ActionBarsEnhancedProfilesMixin:CheckProfiles247()
             mapping[playerID].specProfiles[i] = currentProfile
         end
         Addon.Print("Character "..playerID.." migrated to v2.4.7")
+    end
+end
+function ActionBarsEnhancedProfilesMixin:CheckProfile2420(profileName) -- convert fakeAuras[id] = duration to fakeAuras[id] = {duration, type}
+    if Addon.P.profilesList[profileName] and Addon.P.profilesList[profileName]["CDMCustomFrames"] then
+        local customFrames = Addon.P.profilesList[profileName]["CDMCustomFrames"]
+        for i, customFrame in ipairs(customFrames) do
+            local fakeAuras = customFrame["fakeAuras"]
+            local numFakeAuras = 0
+            if fakeAuras then
+                for id, duration in pairs(fakeAuras) do
+                    if type(duration) == "number" then
+                        fakeAuras[id] = {
+                            duration = duration,
+                            type = 1,
+                        }
+                        numFakeAuras = numFakeAuras + 1
+                    end
+                end
+            end
+        end
     end
 end
 
