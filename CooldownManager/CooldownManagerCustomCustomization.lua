@@ -204,6 +204,23 @@ function ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName)
 
         local fontString = cooldownFrame:GetCountdownFontString()
 
+        local color = { r=1, g=1, b=1, a=1 }
+        if Addon:GetValue("UseCooldownFontColor", nil, frameName) then
+            color.r,color.g,color.b,color.a = Addon:GetRGBA("CooldownFontColor", nil, frameName)
+        end
+        if Addon:GetValue("ColorizedCooldownFont", nil, frameName) then
+            if not frame.__numberFormatterColored then
+                frame.__numberFormatterColored = Addon:GetNumberFormatter(color)
+            end
+            cooldownFrame:SetCountdownFormatter(frame.__numberFormatterColored)
+        else
+            if not frame.__numberFormater then
+                frame.__numberFormater = Addon:GetNumberFormatter(color, color, color)
+            end
+            cooldownFrame:SetCountdownFormatter(frame.__numberFormater)
+        end
+
+
         if Addon:GetValue("UseCooldownFontOffset", nil, frameName) then
             local offsetX = Addon:GetValue("CooldownFontOffsetX", nil, frameName)
             local offsetY = Addon:GetValue("CooldownFontOffsetY", nil, frameName)

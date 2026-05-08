@@ -108,6 +108,7 @@ function ABE_CDMCustomized:RefreshCooldownFrame(child, frameName)
     else
         cooldownFrame:SetReverse(Addon:GetValue("CDMReverseSwipe", nil, frameName))
     end
+
 end
 
 function ABE_CDMCustomized:RefreshCooldownFont(child, frameName)

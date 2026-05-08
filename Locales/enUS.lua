@@ -407,6 +407,7 @@ L.CastBarReadyColor = "Color when interrupt not on CD"
 L.CastTimeCurrent = "Current"
 L.CastTimeMax = "Total"
 L.CastTimeCurrentAndMax = "Current / Total"
+L.CastTimeRemaining = "Remaining"
 
 L.CastTimeFormat = "Timer Format"
 

@@ -112,11 +112,13 @@ Addon.CastingBarCastTimeFormat = {
     [1] = L.CastTimeCurrent,
     [2] = L.CastTimeMax,
     [3] = L.CastTimeCurrentAndMax,
+    [4] = L.CastTimeRemaining,
 }
 Addon.GridLayoutHideActive = {
     [1] = L.AlwaysShow,
     [2] = L.ShowOnAura,
     [3] = L.ShowOnAuraAndCD,
+    --[4] = "Show when NOT on CD"
 }
 Addon.BarTextJustifyH = {
     [1] = "LEFT",

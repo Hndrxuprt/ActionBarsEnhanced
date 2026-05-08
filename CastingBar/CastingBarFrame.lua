@@ -514,7 +514,23 @@ function ABE_CastingBarMixin.OnUpdate(self, elapsed)
     if not self.__valueText then return end
 
     local timerText = 0
-    if self.__timerFormat == 3 then
+    if self.__timerFormat == 4 then
+        if self.unit == "player" then
+            if (self.__barType and self.__barType.channel) then
+                timerText = string.format("%.1f", self.value)
+            else
+                timerText = string.format("%.1f", math.abs(self.value - self.maxValue))
+            end
+        else
+            local durObj = UnitChannelDuration(self.unit) or UnitEmpoweredChannelDuration(self.unit) or UnitCastingDuration(self.unit)
+            local remainingTime = durObj and durObj:GetRemainingDuration() or 0
+            if not (self.__barType and self.__barType.channel) then
+                timerText = string.format("%.1f", remainingTime)
+            else
+                timerText = string.format("%.1f", self.value)
+            end
+        end
+    elseif self.__timerFormat == 3 then
         timerText = string.format("%.1f", self.value).. " / " .. string.format("%.1f",self.maxValue)
     elseif self.__timerFormat == 2 then
         timerText = string.format("%.1f",self.maxValue)

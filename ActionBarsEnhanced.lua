@@ -878,6 +878,7 @@ function Addon:UpdateIcon(button, isStanceBar, previewValue)
     button.icon:SetScale(scale)
 end
 
+local cooldownColor = { r=1, g=1, b=1, a=1 }
 function Addon:UpdateCooldown(button, isStanceBar, previewValue)
 
     local config, configName = Addon:GetConfig(button)
@@ -896,22 +897,6 @@ function Addon:UpdateCooldown(button, isStanceBar, previewValue)
 
     local color = {r = 1.0, g = 1.0, b = 1.0, a = 1.0}
     local bar = button.bar
-
-    if Addon:GetValue("UseCooldownFontColor", nil, configName) then
-        color.r,color.g,color.b,color.a = Addon:GetRGBA("CooldownFontColor", nil, configName)
-        if bar and not bar.cooldownColorCurve then
-            bar.cooldownColorCurve = C_CurveUtil.CreateColorCurve()
-            bar.cooldownColorCurve:SetType(Enum.LuaCurveType.Linear)
-            bar.cooldownColorCurve:AddPoint(0, CreateColor(1, 1, 1, color.a))
-            bar.cooldownColorCurve:AddPoint(0.01, CreateColor(1, 0, 0, color.a))
-            bar.cooldownColorCurve:AddPoint(5, CreateColor(1, 0, 0, color.a))
-            bar.cooldownColorCurve:AddPoint(5.2, CreateColor(1, 1, 0, color.a))
-            bar.cooldownColorCurve:AddPoint(10, CreateColor(1, 1, 0, color.a))
-            bar.cooldownColorCurve:AddPoint(10.2, CreateColor(color.r, color.g, color.b, color.a))
-        end
-    elseif bar then
-        bar.cooldownColorCurve = Addon.cooldownColorCurve
-    end
 
     local fontSize = Addon:GetValue("UseCooldownFontSize", nil, configName) and Addon:GetValue("CooldownFontSize", nil, configName) or 17
     local _, fontName = Addon:GetFontObject(
@@ -944,7 +929,6 @@ function Addon:UpdateCooldown(button, isStanceBar, previewValue)
     if button.chargeCooldown then
         button.chargeCooldown:SetCountdownFont(fontName)
     end
-    button.cooldown:SetCountdownAbbrevThreshold(920)
 
     if button.cooldown:IsUsingParentLevel() then
         button.cooldown:SetUsingParentLevel(false)
@@ -955,6 +939,31 @@ function Addon:UpdateCooldown(button, isStanceBar, previewValue)
 
     button.cooldown:SetFrameLevel(510)
     button.chargeCooldown:SetFrameLevel(510)
+
+    if bar then
+        local needUpdateFormatter = false
+        if Addon:GetValue("UseCooldownFontColor", nil, configName) then
+            local color = { r=1, g=1, b=1, a=1 }
+            color.r,color.g,color.b,color.a = Addon:GetRGBA("CooldownFontColor", nil, configName)
+            if color ~= cooldownColor then
+                needUpdateFormatter = true
+                cooldownColor = color
+            end
+        end
+        if Addon:GetValue("ColorizedCooldownFont", nil, configName) then
+            if not bar.__numberFormatterColored or needUpdateFormatter then
+                bar.__numberFormatterColored = Addon:GetNumberFormatter(cooldownColor)
+            end
+            button.cooldown:SetCountdownFormatter(bar.__numberFormatterColored)
+            button.chargeCooldown:SetCountdownFormatter(bar.__numberFormatterColored)
+        else
+            if not bar.__numberFormater or needUpdateFormatter then
+                bar.__numberFormater = Addon:GetNumberFormatter(cooldownColor, cooldownColor, cooldownColor)
+            end
+            button.cooldown:SetCountdownFormatter(bar.__numberFormater)
+            button.chargeCooldown:SetCountdownFormatter(bar.__numberFormater)
+        end
+    end
 
 end
 
@@ -978,15 +987,6 @@ local function Hook_ButtonOnUpdate(button)
 
     if not bar then return end
 
-    local durationObj = C_Spell.GetSpellChargeDuration(actionID) or C_Spell.GetSpellCooldownDuration(actionID)
-    if durationObj then
-        local EvaluateDuration = durationObj.EvaluateRemainingDuration and durationObj:EvaluateRemainingDuration(bar.cooldownColorCurve) or nil
-
-        if EvaluateDuration then
-            fontString:SetVertexColor(EvaluateDuration:GetRGBA())
-        end
-        
-    end
 end
 
 local function Hook_UpdateButton(button, isStanceBar)
@@ -1093,12 +1093,12 @@ local function Hook_UpdateButton(button, isStanceBar)
         button.__hookedUpdateHotkeys = true
     end
 
-    if Addon:GetValue("ColorizedCooldownFont", nil, configName) and not button.__hookedOnUpdate then
+    --[[ if Addon:GetValue("ColorizedCooldownFont", nil, configName) and not button.__hookedOnUpdate then
         if button.OnUpdate then
             button:HookScript("OnUpdate", Hook_ButtonOnUpdate)
         end
         button.__hookedOnUpdate = true
-    end
+    end ]]
 end
 
 local function Hook_RangeCheckButton(slot, inRange, checksRange)

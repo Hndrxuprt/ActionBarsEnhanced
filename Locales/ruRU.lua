@@ -416,6 +416,7 @@ L.CastBarReadyColor = "Цвет заклинания если кик не в к�
 L.CastTimeCurrent = "Текущее"
 L.CastTimeMax = "Общее"
 L.CastTimeCurrentAndMax = "Текущее / Общее"
+L.CastTimeRemaining = "Оставшееся"
 
 L.CastTimeFormat = "Формат таймера"
 

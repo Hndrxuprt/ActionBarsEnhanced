@@ -159,6 +159,8 @@ local function CheckCooldownState(button)
     end
 end
 
+local auraColor = {r=1,g=1,b=1,a=1}
+local cooldownColor = {r=1,g=1,b=1,a=1}
 local function OnCooldownSet(cooldownFrame, button)
     if not cooldownFrame or not button then return end
 
@@ -231,17 +233,44 @@ local function OnCooldownSet(cooldownFrame, button)
             cooldownFrame:SetHideCountdownNumbers(not showCountdonwNumbers)
         end
     end
+    --cooldownFrame:SetCountdownFormatter(Addon.numberFormatter)
 
     if not button.__removeAura and button.__isOnAura and Addon:GetValue("UseCDMAuraTimerColor", nil, barName) then
-        timerString:SetVertexColor(Addon:GetRGBA("CDMAuraTimerColor", nil, barName))
-    else
         local color = { r=1, g=1, b=1, a=1 }
-        if Addon:GetValue("UseCooldownFontColor", nil, barName) then
-            color.r,color.g,color.b,color.a = Addon:GetRGBA("CooldownFontColor", nil, barName)
+        local needUpdAuraFormatter = false
+        color.r,color.g,color.b,color.a = Addon:GetRGBA("CDMAuraTimerColor", nil, barName)
+        if color ~= auraColor then
+            auraColor = color
+            needUpdAuraFormatter = true
         end
-        timerString:SetVertexColor(color.r,color.g,color.b,color.a)
+        if not barFrame.__auraFormatter or needUpdAuraFormatter then
+            barFrame.__auraFormatter = Addon:GetNumberFormatter(auraColor, auraColor, auraColor)
+        end
+        cooldownFrame:SetCountdownFormatter(barFrame.__auraFormatter)
+        --timerString:SetVertexColor(Addon:GetRGBA("CDMAuraTimerColor", nil, barName))
+    else
+        local needUpdCooldownFormatter = false
+        if Addon:GetValue("UseCooldownFontColor", nil, barName) then
+            local color = { r=1, g=1, b=1, a=1 }
+            color.r,color.g,color.b,color.a = Addon:GetRGBA("CooldownFontColor", nil, barName)
+            if color ~= cooldownColor then
+                cooldownColor = color
+                needUpdCooldownFormatter = true
+            end
+        end
+        if Addon:GetValue("ColorizedCooldownFont", nil, barName) then
+            if not barFrame.__numberFormatterColored or needUpdCooldownFormatter then
+                barFrame.__numberFormatterColored = Addon:GetNumberFormatter(cooldownColor)
+            end
+            cooldownFrame:SetCountdownFormatter(barFrame.__numberFormatterColored)
+        else
+            if not barFrame.__numberFormater or needUpdCooldownFormatter then
+                barFrame.__numberFormater = Addon:GetNumberFormatter(cooldownColor, cooldownColor, cooldownColor)
+            end
+            cooldownFrame:SetCountdownFormatter(barFrame.__numberFormater)
+        end
+        --timerString:SetVertexColor(color.r,color.g,color.b,color.a)
     end
-    cooldownFrame:SetCountdownAbbrevThreshold(920)
 
     ABE_CDMCustomized:RefreshCooldownFrame(button, barName)
 end
@@ -612,12 +641,12 @@ local function Hook_Layout(self)
             end ]]
             child.__hooked = true
         end
-        if not child.__onUpdateHooked and Addon:GetValue("ColorizedCooldownFont", nil, frameName) then
+        --[[ if not child.__onUpdateHooked and Addon:GetValue("ColorizedCooldownFont", nil, frameName) then
             if child.OnUpdate and frameName ~= "BuffIconCooldownViewer" then --"BuffIconCooldownViewer" have weird behavior right now
                 child:HookScript("OnUpdate", OnUpdateButton)
             end
             child.__onUpdateHooked = true
-        end
+        end ]]
 
         if not child.__refreshIconHook then
             if child.RefreshIconColor then

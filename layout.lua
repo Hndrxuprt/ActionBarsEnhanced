@@ -260,7 +260,7 @@ Addon.layout = {
             {name = "CooldownFontSize", template = "OptionsCheckboxSliderTemplate"},
             {name = "CooldownFontOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
             {name = "CooldownFontColor", template = "OptionsColorOverrideTemplate"},
-            --{name = "ColorizedCooldownFont", template = "OptionsCheckboxTemplate"},
+            {name = "ColorizedCooldownFont", template = "OptionsCheckboxTemplate"},
             {name = "PreviewSwipe", template = "OptionsButtonCooldownPreviewTemplate", point = {"TOP", "desc", "BOTTOM", 180, -10}, scale="1.8"},
             {name = "PreviewEdge", template = "OptionsButtonCooldownPreviewTemplate", point = {"TOP", "desc", "BOTTOM", 180, -90}, scale="1.8"},
             {name = "PreviewCooldownFont", template = "OptionsButtonCooldownPreviewTemplate", point = {"TOP", "desc", "BOTTOM", 180, -170}, scale="1.8"},

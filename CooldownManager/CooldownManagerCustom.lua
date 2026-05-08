@@ -32,24 +32,30 @@ function ABE_CDMCustomItemMixin:OnLoad()
 end
 
 function ABE_CDMCustomItemMixin:OnShow()
-    if self:GetSpellID() then
+    --[[ if self:GetSpellID() then
         C_Timer.After(0, function()
+            Addon:DebugPrint("OnShow", self.spellID)
             self:RefreshData()
         end)
-    end
+    end ]]
 
-    self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
-    self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
-    self:RegisterEvent("SPELL_UPDATE_ICON")
-    self:RegisterEvent("SPELL_UPDATE_CHARGES")
-    self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-    self:RegisterEvent("SPELL_UPDATE_USES")
-    self:RegisterEvent("SPELL_UPDATE_USABLE")
-    self:RegisterEvent("ITEM_COUNT_CHANGED")
-    self:RegisterEvent("BAG_UPDATE_DELAYED")
-    self:RegisterEvent("BAG_UPDATE_COOLDOWN")
-    self:RegisterEvent("ENCOUNTER_END")
-    self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player", "pet")
+    
+    if not self.registeredEvents then
+        self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
+        self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
+        self:RegisterEvent("SPELL_UPDATE_ICON")
+        self:RegisterEvent("SPELL_UPDATE_CHARGES")
+        self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+        self:RegisterEvent("SPELL_UPDATE_USES")
+        self:RegisterEvent("SPELL_UPDATE_USABLE")
+        self:RegisterEvent("ITEM_COUNT_CHANGED")
+        self:RegisterEvent("BAG_UPDATE_DELAYED")
+        self:RegisterEvent("BAG_UPDATE_COOLDOWN")
+        --self:RegisterEvent("PLAYER_IN_COMBAT_CHANGED")
+        self:RegisterEvent("ENCOUNTER_END")
+        self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player", "pet")
+        self.registeredEvents = true
+    end
     
 end
 
@@ -154,6 +160,9 @@ function ABE_CDMCustomItemMixin:OnEvent(event, ...)
                 self:RefreshData()
             end)
         end
+    elseif event == "PLAYER_IN_COMBAT_CHANGED" then
+        local inCombat = ...
+        self:RefreshProcAnim(inCombat)
     end
 end
 
@@ -313,6 +322,8 @@ end
 
 function ABE_CDMCustomItemMixin:GetCooldownDurationObj()
     if self.type == "spell" then
+        local cooldownFrame = self:GetCooldownFrame()
+        local ignoreGCD = not cooldownFrame.showGCDSwipe
         local forceSpellCD = false
 
         local chargeCooldownInfo = self:GetChargesCooldownInfo()
@@ -325,9 +336,9 @@ function ABE_CDMCustomItemMixin:GetCooldownDurationObj()
             end
         end
         if not chargeCooldownInfo or forceSpellCD then
-            self.durationObj = C_Spell.GetSpellCooldownDuration(spellID)
+            self.durationObj = C_Spell.GetSpellCooldownDuration(spellID, ignoreGCD)
         else
-            self.durationObj = C_Spell.GetSpellChargeDuration(spellID)
+            self.durationObj = C_Spell.GetSpellChargeDuration(spellID, ignoreGCD)
         end
     end
     return self.durationObj or nil
@@ -539,6 +550,7 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
         self:RefreshFakeAuraInfo()
     end
     
+    --Addon:DebugPrint("RefreshSpellCooldownInfo", self.spellID)
     local cooldownFrame = self:GetCooldownFrame()
     local auraCooldown = self:GetAuraFrame()
 
@@ -632,8 +644,6 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
                 or 
                 (
                     not self.isOnActualCooldown == true
-                    and cooldownFrame.showGCDSwipe == false
-                    and (cooldownInfo.isOnGCD == true)
                 ),
                 0,1
             )
@@ -647,7 +657,6 @@ end
 
 function ABE_CDMCustomItemMixin:RefreshData()
     self:FindAuraInstanceIDForCurrentSpellID()
-    --Addon:DebugPrint("RefreshData")
     --if not self:IsVisible() then return end
     self:RefreshSpellCooldownInfo()
     --self:RefreshAuraInstance()
@@ -662,9 +671,8 @@ function ABE_CDMCustomItemMixin:RefreshData()
         self:RefreshVisibility()
     end
     self:RefreshBackdrop()
-    --self:RefreshProcAnim()
-    --self:RefreshVisibility()
     self:RefreshIconColor()
+    --self:RefreshProcAnim()
 end
 
 function ABE_CDMCustomItemMixin:RefreshVisibility()
@@ -684,7 +692,15 @@ function ABE_CDMCustomItemMixin:RefreshVisibility()
 
     local hideEmpty = Addon:GetValue("CDMCustomHideEmpty", nil, self.parentName)
 
-    if hideType == 3 then
+    if hideType == 4 then
+        
+        if not self.isOnActualCooldown or self.isOnAuraTimer then
+            self.__isActive = true
+        else
+            self.__isActive = false
+        end
+        parentFrame:RefreshVisibileOnCD()
+    elseif hideType == 3 then
         if self.isOnActualCooldown or self.isOnAuraTimer or self.isOnChargeCooldown then
             self.__isActive = true
         else
@@ -716,7 +732,7 @@ end
 function ABE_CDMCustomItemMixin:OnSpellUpdateCooldownEvent()
     self.isOnChargeCooldown = false
     --self.isOnActualCooldown = false
-
+    
     self:RefreshData()
 end
 
@@ -756,18 +772,18 @@ function ABE_CDMCustomItemMixin:HideProcGlow()
 end ]]
 
 
-function ABE_CDMCustomItemMixin:RefreshProcAnim()
+function ABE_CDMCustomItemMixin:RefreshProcAnim(inCombat)
     if not self:IsVisible() then return end
-    --Addon:DebugPrint("RefreshProcAnim", self.isOnAuraTimer,self.isOnActualCooldown, self.ProcGlow.ProcLoop:IsPlaying())
-    if self.isOnAuraTimer or self.isOnActualCooldown then
-        self.ProcGlow.ProcLoop:Stop()
-        self.ProcGlow:Hide()
-    elseif not self.isOnAuraTimer and not self.isOnActualCooldown then
+    local inCombat = inCombat or InCombatLockdown()
+    local count
+    if self.item then
+        count = self.count
+    end
+    if self.isOnAuraTimer or self.isOnActualCooldown or not inCombat or (count == 0) then
+        ActionButtonSpellAlertManager:HideAlert(self)
+    elseif not self.isOnAuraTimer and not self.isOnActualCooldown and inCombat then
         --Addon:DebugPrint("RefreshProcAnim Playing", self.ProcGlow.ProcLoop:IsPlaying() )
-        if not self.ProcGlow.ProcLoop:IsPlaying() then
-            self.ProcGlow:Show()
-            self.ProcGlow.ProcStartAnim:Play()
-        end
+        ActionButtonSpellAlertManager:ShowAlert(self)
     end
 end
 function ABE_CDMCustomItemMixin:GetFakeAura()
@@ -834,6 +850,7 @@ function ABE_CDMCustomFrameMixin:OnLoad()
         CooldownFrame_Clear(cooldownFrame)
         CooldownFrame_Clear(auraCooldown)
         itemFrame:UnregisterAllEvents()
+        itemFrame.registeredEvents = nil
 	end
 
     self.itemPool = CreateFramePool("Frame", self.Container, self.itemTemplate, itemResetCallback)
@@ -946,26 +963,9 @@ function ABE_CDMCustomFrameMixin:RegisterUnitAura()
     end
 end
 
-function ABE_CDMCustomFrameMixin:OnShow()
-    self:RegisterEvent("PLAYER_IN_COMBAT_CHANGED")
-	self:RegisterEvent("PLAYER_LEVEL_CHANGED")
-    self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
-    self:RegisterEvent("PLAYER_TALENT_UPDATE")
-    self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
-    self:RegisterEvent("TRAIT_CONFIG_UPDATED")
-    self:RegisterEvent("CHALLENGE_MODE_START")
-    self:RegisterEvent("FIRST_FRAME_RENDERED")
-    self:RegisterEvent("UNIT_DIED")
-    if self.hasSpellElement then
-        self:RegisterUnitEvent("UNIT_AURA", "player")
-        --self:RegisterUnitEvent("UNIT_AURA", "player", "target")
-    else
-        self:UnregisterEvent("UNIT_AURA")
-    end
-end
 
 function ABE_CDMCustomFrameMixin:OnShow()
-    self:RegisterEvent("PLAYER_IN_COMBAT_CHANGED")
+    --self:RegisterEvent("PLAYER_IN_COMBAT_CHANGED")
 	self:RegisterEvent("PLAYER_LEVEL_CHANGED")
     self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
     self:RegisterEvent("PLAYER_TALENT_UPDATE")
