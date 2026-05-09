@@ -180,7 +180,7 @@ L.StacksCustomColor = "Custom color for Stacks"
 -- Profiles
 -- ==========================================
 L.ProfilesHeaderText = "You can change the active database profile, so you can have different settings for every character.\nReset the current profile back to its default values, in case your configuration is broken, or you simply want to start over."
-L.ProfilesCopyText = "Copy the settings frome one existing profile into the currently active profile."
+L.ProfilesCopyText = "Copy the settings from one existing profile into the currently active profile."
 L.ProfilesDeleteText = "Delete existing and unused profiles from the database to save space, and cleanup the SavedVariables file."
 L.ProfilesImportText = "Share your profile or import someone else's with a simple string."
 
@@ -189,7 +189,7 @@ L.ProfilesImportText = "Share your profile or import someone else's with a simpl
 -- ==========================================
 L.WAIntTitle = "WeakAuras Integration"
 L.WAIntDesc = "Choose the Proc and Loop override for WA's Glow effect.\nThis will affect the aura glow effect with type 'Proc Glow'"
-L.ModifyWAGlow = "Mody WA Glow"
+L.ModifyWAGlow = "Modify WA Glow"
 L.WAProcType = "WA Proc Type"
 L.WALoopType = "WA Loop Type"
 L.AddWAMask = "Add mask to WA icons"

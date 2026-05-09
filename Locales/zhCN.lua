@@ -291,6 +291,7 @@ L.CDMCustomFrameTrackSlot13 = "添加饰品 #1（栏位 13）"
 L.CDMCustomFrameTrackSlot14 = "添加饰品 #2（栏位 14）"
 L.CDMCustomFrameTrackSlot16 = "添加武器 #1（栏位 16）"
 L.CDMCustomFrameTrackSlot17 = "添加武器 #2（栏位 17）"
+L.CDMCustomFrameTrackRacial = "添加种族技能"
 
 L.CDMCustomFrameHideWhen0 = "数量为 0 时隐藏"
 
@@ -407,6 +408,7 @@ L.CastBarReadyColor = "打断技能可用时颜色"
 L.CastTimeCurrent = "当前"
 L.CastTimeMax = "总计"
 L.CastTimeCurrentAndMax = "当前 / 总计"
+L.CastTimeRemaining = "剩余"
 
 L.CastTimeFormat = "计时器格式"
 
@@ -448,3 +450,32 @@ L.JustifyH = "水平文本对齐"
 L.AlwaysShow = "始终显示"
 L.ShowOnAura = "仅在有光环时显示"
 L.ShowOnAuraAndCD = "有光环或冷却时显示"
+
+L.AttachTitle = "框架附着选项"
+L.AttachDesc = "选择要附着的框架和锚点"
+
+L.EnableAttach = "启用框架附着"
+L.CDMCustomFrameAttachFrameName = "附着到框架："
+L.CDMCutomFrameAttachPoint = "附着点"
+L.CDMCutomFrameAttachOffset = "附着点偏移"
+
+L.ShowCountdownNumbersForCharges = "显示充能倒计时数字"
+
+L.AnchorPosOK = "锚点位置 |cff0bbe76正常"
+L.AnchorPosUNSAVED = "|cffff0000未保存！|r\n退出编辑模式以保存锚点"
+L.AnchorPosAttached = "已附着到框架：|cff0bbe76"
+
+L.CreateIconsFrame = "创建图标框架"
+L.CreateBarsFrame = "创建状态条框架"
+L.CreateChargeBarsFrame = "创建充能条框架"
+
+L.SetStages = "最大充能数"
+L.SetStagesDesc = "此光环的最大充能数量。"
+L.Stages = "自定义充能"
+
+L.ConfigureRacials = "配置种族技能"
+
+L.FakeAuraTypesTitle = "光环刷新行为"
+L.FakeAuraTypeNone = "无（不执行任何操作）"
+L.FakeAuraTypeAdd = "累加（将完整计时器添加到剩余持续时间）"
+L.FakeAuraTypeReset = "重置（重置为完整持续时间）"
