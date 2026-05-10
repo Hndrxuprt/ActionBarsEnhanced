@@ -160,14 +160,20 @@ function Addon:GetNumberFormatter(mColor, sColor, tColor)
         {
             threshold = 0,
             format = CreateColor(tColor.r, tColor.g, tColor.b, tColor.a):WrapTextInColorCode("%d"),
+            step = 1,
+            rounding = 1,
         },
         {
             threshold = 3.99,
             format = CreateColor(sColor.r, sColor.g, sColor.b, sColor.a):WrapTextInColorCode("%d"),
+            step = 1,
+            rounding = 1,
         },
         {
             threshold = 11.01,
             format = CreateColor(mColor.r, mColor.g, mColor.b, mColor.a):WrapTextInColorCode("%d"),
+            step = 1,
+            rounding = 1,
         },
         {
             threshold = 60,
@@ -179,7 +185,9 @@ function Addon:GetNumberFormatter(mColor, sColor, tColor)
                 {
                     mod = 60,
                 },
-            }
+            },
+            step = 1,
+            rounding = 1,
         },
         {
             threshold = 600, -- 10 minutes
@@ -188,7 +196,9 @@ function Addon:GetNumberFormatter(mColor, sColor, tColor)
                 {
                     div = 60,
                 },
-            }
+            },
+            step = 1,
+            rounding = 1,
         },
         {
             threshold = 3600, -- 1 hour
@@ -197,7 +207,9 @@ function Addon:GetNumberFormatter(mColor, sColor, tColor)
                 {
                     div = 3600,
                 },
-            }
+            },
+            step = 1,
+            rounding = 1,
         },
         {
             threshold = 86400, -- 1 day
@@ -206,7 +218,9 @@ function Addon:GetNumberFormatter(mColor, sColor, tColor)
                 {
                     div = 86400,
                 },
-            }
+            },
+            step = 1,
+            rounding = 1,
         },
     })
     return numberFormatter
