@@ -377,6 +377,10 @@ function ABE_CDMCustomItemMixin:RefreshIconDesaturation(desaturated)
     end
     if desaturated == nil then return end
     icon:SetDesaturated(desaturated)
+    --[[ local durationObj = self:GetCooldownDurationObj()
+    if durationObj then
+        icon:SetDesaturation(durationObj:EvaluateRemainingDuration(Addon.alphaCurve, 0))
+    end ]]
 end
 
 function ABE_CDMCustomItemMixin:RefreshIconColor()
@@ -549,7 +553,6 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
         --Addon:DebugPrint("RefreshSpellCooldownInfo check RefreshFakeAuraInfo", self.spellID, self.layoutIndex)
         self:RefreshFakeAuraInfo()
     end
-    
     --Addon:DebugPrint("RefreshSpellCooldownInfo", self.spellID)
     local cooldownFrame = self:GetCooldownFrame()
     local auraCooldown = self:GetAuraFrame()
@@ -618,7 +621,6 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
         if not self.isOnAuraTimer then
             cooldownFrame:SetAlpha(durationObj:EvaluateRemainingDuration(Addon.alphaCurve, 0))
         end
-        
     elseif cooldownInfo and cooldownInfo.startTime and cooldownInfo.duration then
         if not self.isOnChargeCooldown then
             if self.type == "spell" and cooldownInfo.isOnGCD == false then
@@ -1135,8 +1137,8 @@ function ABE_CDMCustomFrameMixin:OnEvent(event, ...)
         end
     end
     
-    if event == "PLAYER_SPECIALIZATION_CHANGED" or event == "PLAYER_TALENT_UPDATE"
-    or event == "TRAIT_CONFIG_UPDATED" or event == "CHALLENGE_MODE_START"
+    if event == "PLAYER_SPECIALIZATION_CHANGED" or event == "TRAIT_CONFIG_UPDATED" 
+    or event == "CHALLENGE_MODE_START"
     or event == "UNIT_PET" then
         self:RefreshLayout()
     end
