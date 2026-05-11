@@ -569,8 +569,16 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
     local chargeCooldownInfo = self:GetChargesCooldownInfo()
     local cooldownInfo = self:GetCooldownInfo()
 
-    local durationObj = self:GetCooldownDurationObj()
+    local durationObj
 
+    if self.type == "spell" then
+        durationObj = self:GetCooldownDurationObj()
+    else
+        durationObj = C_DurationUtil.CreateDuration()
+        if cooldownInfo then
+            durationObj:SetTimeFromStart(cooldownInfo.startTime or 0, cooldownInfo.duration or 0)
+        end
+    end
     --[[ cooldownFrame:SetScript("OnUpdate", function()
         local durationObj = self:GetCooldownDurationObj()
         if durationObj then
@@ -623,8 +631,10 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
         end
     elseif cooldownInfo and cooldownInfo.startTime and cooldownInfo.duration then
         if not self.isOnChargeCooldown then
-            if self.type == "spell" and cooldownInfo.isOnGCD == false then
+            if self.type == "spell" and (cooldownInfo.isActive and cooldownInfo.isOnGCD ~= true) then
                 self.isOnActualCooldown = true
+            elseif self.type == "spell" and cooldownInfo.isOnGCD then
+                self.isOnActualCooldown = false
             elseif self.type ~="spell" and cooldownInfo.duration > 0 then
                 self.isOnActualCooldown = true
             end
@@ -641,14 +651,15 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
             else
                 cooldownFrame:Resume()
             end
-            cooldownFrame:SetAlphaFromBoolean(
-                (self.isOnAuraTimer == true)
-                or 
-                (
-                    not self.isOnActualCooldown == true
-                ),
-                0,1
-            )
+            
+            if not self.isOnAuraTimer and durationObj then
+                cooldownFrame:SetAlpha(durationObj:EvaluateRemainingDuration(Addon.alphaCurve, 0))
+            end
+            --[[ cooldownFrame:SetAlphaFromBoolean(self.isOnActualCooldown or cooldownInfo.isOnGCD == true,1,0)
+            if self.spellID == 322101 then
+                print(self.isOnActualCooldown, cooldownInfo.isOnGCD, cooldownInfo.isActive)
+                print(cooldownFrame:GetAlpha())
+            end ]]
         end
     else
         CooldownFrame_Clear(cooldownFrame)
@@ -873,6 +884,8 @@ function ABE_CDMCustomFrameMixin:OnLoad()
     self:SetMouseClickEnabled(false)
 
     Addon:BarsFadeAnim(self)
+
+    self.lastRunTime = 0
 end
 
 function ABE_CDMCustomFrameMixin:OnFrameUpdate(frameName)
@@ -971,7 +984,7 @@ function ABE_CDMCustomFrameMixin:OnShow()
 	self:RegisterEvent("PLAYER_LEVEL_CHANGED")
     self:RegisterEvent("PLAYER_EQUIPMENT_CHANGED")
     self:RegisterEvent("PLAYER_TALENT_UPDATE")
-    self:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", "player")
+    self:RegisterUnitEvent("PLAYER_SPECIALIZATION_CHANGED", "player")
     self:RegisterEvent("TRAIT_CONFIG_UPDATED")
     self:RegisterEvent("CHALLENGE_MODE_START")
     self:RegisterEvent("FIRST_FRAME_RENDERED")
@@ -1140,7 +1153,11 @@ function ABE_CDMCustomFrameMixin:OnEvent(event, ...)
     if event == "PLAYER_SPECIALIZATION_CHANGED" or event == "TRAIT_CONFIG_UPDATED" 
     or event == "CHALLENGE_MODE_START"
     or event == "UNIT_PET" then
-        self:RefreshLayout()
+        local currentTime = GetTime()
+        if currentTime - self.lastRunTime > 0.1 then
+            self:RefreshLayout()
+        end
+        self.lastRunTime = currentTime
     end
     if event == "FIRST_FRAME_RENDERED" then
         ABE_CDMCustomFrameCustomized:RefreshAnchors(self, self.frameName)
