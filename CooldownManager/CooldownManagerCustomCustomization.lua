@@ -125,7 +125,7 @@ function ABE_CDMCustomFrameCustomized:RefreshBarTextures(frame, frameName)
     end
 end
 
-function ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName)
+function ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, forceUpdate)
     frameName = frameName or frame.frameName
 
     for itemFrame in frame.itemPool:EnumerateActive() do
@@ -209,13 +209,15 @@ function ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName)
             color.r,color.g,color.b,color.a = Addon:GetRGBA("CooldownFontColor", nil, frameName)
         end
         if Addon:GetValue("ColorizedCooldownFont", nil, frameName) then
-            if not frame.__numberFormatterColored then
-                frame.__numberFormatterColored = Addon:GetNumberFormatter(color)
+            if not frame.__numberFormatterColored or forceUpdate then
+                local formatType = Addon:GetValue("CDMCooldownFormatType", nil, frameName)
+                frame.__numberFormatterColored = Addon:GetNumberFormatter(color,nil,nil,formatType)
             end
             cooldownFrame:SetCountdownFormatter(frame.__numberFormatterColored)
         else
-            if not frame.__numberFormater then
-                frame.__numberFormater = Addon:GetNumberFormatter(color, color, color)
+            if not frame.__numberFormater or forceUpdate then
+                local formatType = Addon:GetValue("CDMCooldownFormatType", nil, frameName)
+                frame.__numberFormater = Addon:GetNumberFormatter(color, color, color,formatType)
             end
             cooldownFrame:SetCountdownFormatter(frame.__numberFormater)
         end

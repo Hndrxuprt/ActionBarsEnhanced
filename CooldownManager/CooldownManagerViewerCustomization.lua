@@ -120,18 +120,6 @@ function ABE_CDMCustomized:RefreshCooldownFont(child, frameName)
 
     if Addon:GetValue("UseCooldownFontColor", nil, frameName) then
         color.r,color.g,color.b,color.a = Addon:GetRGBA("CooldownFontColor", nil, frameName)
-        if not parentFrame.cooldownColorCurve or forceUpdate then
-            parentFrame.cooldownColorCurve = C_CurveUtil.CreateColorCurve()
-            parentFrame.cooldownColorCurve:SetType(Enum.LuaCurveType.Linear)
-            parentFrame.cooldownColorCurve:AddPoint(0, CreateColor(1, 1, 1, color.a))
-            parentFrame.cooldownColorCurve:AddPoint(0.01, CreateColor(1, 0, 0, color.a))
-            parentFrame.cooldownColorCurve:AddPoint(5, CreateColor(1, 0, 0, color.a))
-            parentFrame.cooldownColorCurve:AddPoint(5.2, CreateColor(1, 1, 0, color.a))
-            parentFrame.cooldownColorCurve:AddPoint(10, CreateColor(1, 1, 0, color.a))
-            parentFrame.cooldownColorCurve:AddPoint(10.2, CreateColor(color.r, color.g, color.b, color.a))
-        end
-    else
-        parentFrame.cooldownColorCurve = Addon.cooldownColorCurve
     end
 
     local fontSize = Addon:GetValue("UseCooldownFontSize", nil, frameName) and Addon:GetValue("CooldownFontSize", nil, frameName) or 17

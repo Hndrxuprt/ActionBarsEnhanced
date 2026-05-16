@@ -520,6 +520,19 @@ Addon.config.containers = {
                     Addon:RefreshButtons()
                 end,
             },
+            ["CooldownFormatType"] = {
+                type            = "dropdown",
+                name            = L.CooldownFormatType,
+                setting         = Addon.CooldownFormatType,
+                IsSelected  = function(id) return id == Addon:GetValue("CooldownFormatType", nil, true) end,
+                OnSelect    = function(id) Addon:SaveSetting("CooldownFormatType", id, true) end,
+                showNew     = true,
+                OnEnter     = false,
+                OnClose     = function()
+                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    Addon:RefreshButtons()
+                end,
+            },
             ["CooldownFontOffset"] = {
                 type            = "checkboxSlider",
                 name            = L.Offset,
@@ -1533,6 +1546,19 @@ Addon.config.containers = {
                 value           = "ColorizedCooldownFont",
                 showNew         = true,
                 callback        = function()
+                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    CooldownManagerEnhanced:ForceUpdate(frameName)
+                end,
+            },
+            ["CDMCooldownFormatType"] = {
+                type            = "dropdown",
+                name            = L.CooldownFormatType,
+                setting         = Addon.CooldownFormatType,
+                IsSelected  = function(id) return id == Addon:GetValue("CDMCooldownFormatType", nil, true) end,
+                OnSelect    = function(id) Addon:SaveSetting("CDMCooldownFormatType", id, true) end,
+                showNew     = true,
+                OnEnter     = false,
+                OnClose     = function()
                     local frameName = ABE_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
@@ -2868,6 +2894,20 @@ Addon.config.containers = {
                     local frameName = ABE_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
                     ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
+                end,
+            },
+            ["CDMCooldownFormatType"] = {
+                type            = "dropdown",
+                name            = L.CooldownFormatType,
+                setting         = Addon.CooldownFormatType,
+                IsSelected  = function(id) return id == Addon:GetValue("CDMCooldownFormatType", nil, true) end,
+                OnSelect    = function(id) Addon:SaveSetting("CDMCooldownFormatType", id, true) end,
+                showNew     = true,
+                OnEnter     = false,
+                OnClose     = function()
+                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, true)
                 end,
             },
 

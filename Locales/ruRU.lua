@@ -487,3 +487,9 @@ L.FakeAuraTypesTitle = "Поведение при повторной актив�
 L.FakeAuraTypeNone = "Ничего (Ничего не делать)"
 L.FakeAuraTypeAdd = "Добавление (Добавить полный таймер к текущему)"
 L.FakeAuraTypeReset = "Сброс (Заускает таймер заново)"
+
+L.CooldownFormatType = "Формат отображения кулдауна"
+L.CDFormatFloor = "Округлять вниз"
+L.CDFormatFloorWithDecimals = "Округлять вниз, показывать десятичные <1 сек"
+L.CDFormatCeil = "Округлять вверх"
+L.CDFormatCeilWithDecimals = "Округлять вверх, показывать десятичные <1 сек"

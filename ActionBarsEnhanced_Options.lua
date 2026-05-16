@@ -150,30 +150,46 @@ function Addon:GetStatusBarTextures()
     return tbl
 end
 
-function Addon:GetNumberFormatter(mColor, sColor, tColor)
+function Addon:GetNumberFormatter(mColor, sColor, tColor, formatType)
     mColor = mColor or {r=1,g=1,b=1,a=1}
     sColor = sColor or {r=1,g=0.85,b=0.25,a=1}
     tColor = tColor or {r=1,g=0.35,b=0.35,a=1}
+
+    formatType = formatType or 3
+    
+    local showDecimals = (formatType == 2 or formatType == 4)
+    local roundUp = (formatType > 2)
+    local rounding = roundUp and 1 or 2
+
+    local rounding = roundUp and 1 or 2
+    local step = not showDecimals and 1 or nil
+    local format = showDecimals and "%.1f" or "%d"
 
     local numberFormatter = C_StringUtil.CreateNumericRuleFormatter()
     numberFormatter:SetBreakpoints({
         {
             threshold = 0,
+            format = CreateColor(tColor.r, tColor.g, tColor.b, tColor.a):WrapTextInColorCode(format),
+            step = step,
+            rounding = rounding,
+        },
+        {
+            threshold = 0.99,
             format = CreateColor(tColor.r, tColor.g, tColor.b, tColor.a):WrapTextInColorCode("%d"),
             step = 1,
-            rounding = 1,
+            rounding = rounding,
         },
         {
             threshold = 3.99,
             format = CreateColor(sColor.r, sColor.g, sColor.b, sColor.a):WrapTextInColorCode("%d"),
             step = 1,
-            rounding = 1,
+            rounding = rounding,
         },
         {
             threshold = 11.01,
             format = CreateColor(mColor.r, mColor.g, mColor.b, mColor.a):WrapTextInColorCode("%d"),
             step = 1,
-            rounding = 1,
+            rounding = rounding,
         },
         {
             threshold = 60,
@@ -187,7 +203,7 @@ function Addon:GetNumberFormatter(mColor, sColor, tColor)
                 },
             },
             step = 1,
-            rounding = 1,
+            rounding = rounding,
         },
         {
             threshold = 600, -- 10 minutes
@@ -198,7 +214,7 @@ function Addon:GetNumberFormatter(mColor, sColor, tColor)
                 },
             },
             step = 1,
-            rounding = 1,
+            rounding = rounding,
         },
         {
             threshold = 3600, -- 1 hour
@@ -209,7 +225,7 @@ function Addon:GetNumberFormatter(mColor, sColor, tColor)
                 },
             },
             step = 1,
-            rounding = 1,
+            rounding = rounding,
         },
         {
             threshold = 86400, -- 1 day
@@ -220,7 +236,7 @@ function Addon:GetNumberFormatter(mColor, sColor, tColor)
                 },
             },
             step = 1,
-            rounding = 1,
+            rounding = rounding,
         },
     })
     return numberFormatter

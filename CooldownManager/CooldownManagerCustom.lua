@@ -377,10 +377,6 @@ function ABE_CDMCustomItemMixin:RefreshIconDesaturation(desaturated)
     end
     if desaturated == nil then return end
     icon:SetDesaturated(desaturated)
-    --[[ local durationObj = self:GetCooldownDurationObj()
-    if durationObj then
-        icon:SetDesaturation(durationObj:EvaluateRemainingDuration(Addon.alphaCurve, 0))
-    end ]]
 end
 
 function ABE_CDMCustomItemMixin:RefreshIconColor()
@@ -427,9 +423,6 @@ function ABE_CDMCustomItemMixin:RefreshCount()
         --self.Applications:SetAlphaFromBoolean(((charges.maxCharges > 1) and (charges.currentCharges ~= nil)), tonumber(charges.currentCharges), 0 )
         --applications:SetAlpha(charges.currentCharges ~= nil and tonumber(charges.currentCharges) or 1)
     end
-    --[[ if self.spellID == 1966 then
-        Addon:DebugPrint("RefreshCount: ", count)
-    end ]]
     self.count = count
     applications.Applications:SetText(count)
     applications:SetAlpha(count)
@@ -579,20 +572,6 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
             durationObj:SetTimeFromStart(cooldownInfo.startTime or 0, cooldownInfo.duration or 0)
         end
     end
-    --[[ cooldownFrame:SetScript("OnUpdate", function()
-        local durationObj = self:GetCooldownDurationObj()
-        if durationObj then
-            local timerString = cooldownFrame:GetCountdownFontString()
-            if not timerString:IsVisible() then return end
-
-            local EvaluateDuration = durationObj.EvaluateRemainingDuration and durationObj:EvaluateRemainingDuration(Addon.cooldownColorCurve) or nil
-    
-            if EvaluateDuration then
-                timerString:SetVertexColor(EvaluateDuration:GetRGBA())
-            end
-            
-        end
-    end) ]]
 
     if chargeCooldownInfo and chargeCooldownInfo.startTime and chargeCooldownInfo.duration then
         if chargeCooldownInfo.maxCharges > 1 then

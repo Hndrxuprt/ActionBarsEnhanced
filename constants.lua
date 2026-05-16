@@ -140,6 +140,12 @@ Addon.FakeAuraType = {
     [2] = L.FakeAuraTypeAdd,
     [3] = L.FakeAuraTypeReset,
 }
+Addon.CooldownFormatType = {
+    [1] = L.CDFormatFloor,
+    [2] = L.CDFormatFloorWithDecimals,
+    [3] = L.CDFormatCeil,
+    [4] = L.CDFormatCeilWithDecimals,
+}
 
 do
     local cooldownColorCurve = C_CurveUtil.CreateColorCurve()
@@ -661,6 +667,9 @@ Addon.Defaults = {
     CDMCustomFrameBarIconOffsetY = 0,
     
     AprilDayEnabled = true,
+
+    CooldownFormatType = 3,
+    CDMCooldownFormatType = 3,
 
 }
 
