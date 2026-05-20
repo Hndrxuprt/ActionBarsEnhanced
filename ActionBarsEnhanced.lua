@@ -944,24 +944,27 @@ function Addon:UpdateCooldown(button, isStanceBar, previewValue)
         if not bar.__cooldownColor then
             bar.__cooldownColor = { r=1, g=1, b=1, a=1 }
         end
+        local formatType = Addon:GetValue("CooldownFormatType", nil, configName)
+        if not bar.__formatType or (bar.__formatType ~= formatType) then
+            needUpdateFormatter = true
+            bar.__formatType = formatType
+        end
+        local color = { r=1, g=1, b=1, a=1 }
         if Addon:GetValue("UseCooldownFontColor", nil, configName) then
-            local color = { r=1, g=1, b=1, a=1 }
             color.r,color.g,color.b,color.a = Addon:GetRGBA("CooldownFontColor", nil, configName)
-            if not tCompare(color, bar.__cooldownColor) then
-                needUpdateFormatter = true
-                bar.__cooldownColor = color
-            end
+        end
+        if not tCompare(color, bar.__cooldownColor) then
+            needUpdateFormatter = true
+            bar.__cooldownColor = color
         end
         if Addon:GetValue("ColorizedCooldownFont", nil, configName) then
             if not bar.__numberFormatterColored or needUpdateFormatter then
-                local formatType = Addon:GetValue("CooldownFormatType", nil, configName)
                 bar.__numberFormatterColored = Addon:GetNumberFormatter(bar.__cooldownColor,nil,nil, formatType)
             end
             button.cooldown:SetCountdownFormatter(bar.__numberFormatterColored)
             button.chargeCooldown:SetCountdownFormatter(bar.__numberFormatterColored)
         else
             if not bar.__numberFormater or needUpdateFormatter then
-                local formatType = Addon:GetValue("CooldownFormatType", nil, configName)
                 bar.__numberFormater = Addon:GetNumberFormatter(bar.__cooldownColor, bar.__cooldownColor, bar.__cooldownColor, formatType)
             end
             button.cooldown:SetCountdownFormatter(bar.__numberFormater)

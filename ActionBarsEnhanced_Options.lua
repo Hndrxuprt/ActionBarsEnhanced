@@ -162,6 +162,7 @@ function Addon:GetNumberFormatter(mColor, sColor, tColor, formatType)
     local rounding = roundUp and 1 or 2
 
     local rounding = roundUp and 1 or 2
+    local comp = roundUp and 0 or 0.99
     local step = not showDecimals and 1 or nil
     local format = showDecimals and "%.1f" or "%d"
 
@@ -180,13 +181,13 @@ function Addon:GetNumberFormatter(mColor, sColor, tColor, formatType)
             rounding = rounding,
         },
         {
-            threshold = 3.99,
+            threshold = 3 + comp,
             format = CreateColor(sColor.r, sColor.g, sColor.b, sColor.a):WrapTextInColorCode("%d"),
             step = 1,
             rounding = rounding,
         },
         {
-            threshold = 11.01,
+            threshold = 10 + comp,
             format = CreateColor(mColor.r, mColor.g, mColor.b, mColor.a):WrapTextInColorCode("%d"),
             step = 1,
             rounding = rounding,

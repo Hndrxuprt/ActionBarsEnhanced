@@ -204,10 +204,19 @@ function ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, for
 
         local fontString = cooldownFrame:GetCountdownFontString()
 
+        if not frame.__cooldownColor then
+            frame.__cooldownColor = { r=1, g=1, b=1, a=1 }
+        end
+
         local color = { r=1, g=1, b=1, a=1 }
         if Addon:GetValue("UseCooldownFontColor", nil, frameName) then
             color.r,color.g,color.b,color.a = Addon:GetRGBA("CooldownFontColor", nil, frameName)
         end
+        if not tCompare(color, frame.__cooldownColor) then
+            frame.__cooldownColor = color
+            forceUpdate = true
+        end
+
         if Addon:GetValue("ColorizedCooldownFont", nil, frameName) then
             if not frame.__numberFormatterColored or forceUpdate then
                 local formatType = Addon:GetValue("CDMCooldownFormatType", nil, frameName)

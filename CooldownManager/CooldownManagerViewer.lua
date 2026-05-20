@@ -258,16 +258,16 @@ local function OnCooldownSet(cooldownFrame, button)
         --timerString:SetVertexColor(Addon:GetRGBA("CDMAuraTimerColor", nil, barName))
     else
         local needUpdCooldownFormatter = false
+        if not barFrame.__cooldownColor then
+            barFrame.__cooldownColor = { r=1, g=1, b=1, a=1 }
+        end
+        local color = { r=1, g=1, b=1, a=1 }
         if Addon:GetValue("UseCooldownFontColor", nil, barName) then
-            local color = { r=1, g=1, b=1, a=1 }
-            if not barFrame.__cooldownColor then
-                barFrame.__cooldownColor = { r=1, g=1, b=1, a=1 }
-            end
             color.r,color.g,color.b,color.a = Addon:GetRGBA("CooldownFontColor", nil, barName)
-            if not tCompare(color, barFrame.__cooldownColor) then
-                barFrame.__cooldownColor = color
-                needUpdCooldownFormatter = true
-            end
+        end
+        if not tCompare(color, barFrame.__cooldownColor) then
+            barFrame.__cooldownColor = color
+            needUpdCooldownFormatter = true
         end
         if Addon:GetValue("ColorizedCooldownFont", nil, barName) then
             if not barFrame.__numberFormatterColored or needUpdCooldownFormatter or forceUpdate then

@@ -2883,6 +2883,7 @@ Addon.config.containers = {
                     local frameName = ABE_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
                     ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
+                    ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, true)
                 end,
             },
             ["CDMColorizedCooldownFont"] = {
@@ -2894,6 +2895,7 @@ Addon.config.containers = {
                     local frameName = ABE_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
                     ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
+                    ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, true)
                 end,
             },
             ["CDMCooldownFormatType"] = {
