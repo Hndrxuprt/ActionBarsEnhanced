@@ -1,8 +1,8 @@
-## Interface: 120001, 120005
+## Interface: 120007
 ## Title: |cFF30D1FFActionBars Enhanced|r (Retail)
 ## IconTexture: Interface\AddOns\ActionBarsEnhanced\assets\icon
 ## Category: Action Bars
-## Version: 2.4.26
+## Version: 2.4.27
 ## SavedVariables: ABDB
 ## SavedVariablesPerCharacter: ABE_FAKE_AURAS
 ## Notes: Enhance Blizzard Action Bars
