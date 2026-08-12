@@ -924,7 +924,7 @@ function ABE_CDMCustomItemMixin:ConfigureAuraContainer(auraButton)
     ABE_CDMCustomFrameCustomized:SetupBackdrop(self.realAuraFrame.pandemicBorder, frameName, self.realAuraFrame.pColor)
 
     auraButton:SetIcon(self.realAuraFrame.icon)
-    auraButton:SetApplicationCount(self.realAuraFrame.overlayFrame.count, {formatter = Addon.defaultCountFormatter})
+    auraButton:SetApplicationCount(self.realAuraFrame.overlayFrame.count, {})
     auraButton:SetDurationCooldown(self.realAuraCooldownFrame)
     auraButton:SetSize(auraCooldown:GetSize())
 

@@ -200,7 +200,7 @@ function ABE_CDMCustomAuraBarMixin:ConfigureAuraButton(auraButton, spellID)
 
 	self:CustomizeAuraButton(auraButton, spellID)
 
-	auraButton:SetApplicationCount(auraButton.countText, {formatter = Addon.defaultCountFormatter})
+	auraButton:SetApplicationCount(auraButton.countText, {})
 	auraButton:SetSpellName(auraButton.nameText)
 
 	auraButton:SetMouseMotionEnabled(false)

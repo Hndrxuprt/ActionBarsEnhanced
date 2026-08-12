@@ -207,7 +207,8 @@ do
     local defaultCountFormatter = C_StringUtil.CreateNumericRuleFormatter()
     defaultCountFormatter:SetBreakpoints({
         {
-            threshold = 1,
+            threshold = 0,
+            min = 1,
             format = "%d"
         },
     })

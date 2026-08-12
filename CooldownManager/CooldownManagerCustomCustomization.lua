@@ -288,9 +288,9 @@ function ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, for
         self:RefreshCooldownColor(cooldownFrame, frameName)
         self:ColorizeCooldownFont(cooldownFrame, cdColor, frame, frameName, forceUpdate)
 
+        self:CustomizeCooldownFrame(auraFrame, frameName)
         self:RefreshAuraColor(auraFrame, frameName)
         self:RefreshAuraTimer(auraFrame, frameName)
-        self:ColorizeCooldownFont(auraFrame, auraColor, frame, frameName, forceUpdate)
     end
 
 end
