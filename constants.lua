@@ -203,6 +203,15 @@ do
     defaultDurationFormatter:SetDefaultAbbreviation(Enum.SecondsFormatterAbbreviation.OneLetter)
     defaultDurationFormatter:SetStripIntervalWhitespace(Enum.SecondsFormatterIntervalWhitespace.Strip)
     defaultDurationFormatter:SetMillisecondsThreshold(5)
+
+    local defaultCountFormatter = C_StringUtil.CreateNumericRuleFormatter()
+    defaultCountFormatter:SetBreakpoints({
+        {
+            threshold = 1,
+            format = "%d"
+        },
+    })
+    Addon.defaultCountFormatter = defaultCountFormatter
 end
 
 Addon.Defaults = {

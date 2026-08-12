@@ -196,7 +196,7 @@ function ABE_CDMCustomFrameCustomized:CustomizeCooldownFrame(cooldownFrame, fram
         local size = Addon:GetValue("SwipeSize", nil, frameName)
         cooldownFrame:SetSize(size, size)
     else
-        cooldownFrame:SetAllPoints()
+        cooldownFrame:SetAllPoints(cdParent)
     end
 
     if not cooldownFrame:GetDrawEdge() then
@@ -243,17 +243,15 @@ function ABE_CDMCustomFrameCustomized:RefreshAuraTimer(cooldownFrame, frameName)
     end
 end
 
-function ABE_CDMCustomFrameCustomized:ColorizeCooldownFont(cooldownFrame, frame, frameName, forceUpdate)
+function ABE_CDMCustomFrameCustomized:ColorizeCooldownFont(cooldownFrame, color, frame, frameName, forceUpdate)
     local fontString = cooldownFrame:GetCountdownFontString()
 
     if not frame.__cooldownColor then
         frame.__cooldownColor = { r=1, g=1, b=1, a=1 }
     end
 
-    local color = { r=1, g=1, b=1, a=1 }
-    if Addon:GetValue("UseCooldownFontColor", nil, frameName) then
-        color.r,color.g,color.b,color.a = Addon:GetRGBA("CooldownFontColor", nil, frameName)
-    end
+    color = color or { r=1, g=1, b=1, a=1 }
+
     if not tCompare(color, frame.__cooldownColor) then
         frame.__cooldownColor = color
         forceUpdate = true
@@ -280,14 +278,19 @@ function ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, for
     for itemFrame in frame.itemPool:EnumerateActive() do
         local cooldownFrame = itemFrame.Icon.Cooldown or itemFrame.Cooldown
         local auraFrame = itemFrame.Icon.AuraCooldown or itemFrame.AuraCooldown
-        
+
+        local cdColor
+        if Addon:GetValue("UseCooldownFontColor", nil, frameName) then
+            cdColor.r,cdColor.g,cdColor.b,cdColor.a = Addon:GetRGBA("CooldownFontColor", nil, frameName)
+        end
+
         self:CustomizeCooldownFrame(cooldownFrame, frameName)
         self:RefreshCooldownColor(cooldownFrame, frameName)
-        self:ColorizeCooldownFont(cooldownFrame, frame, frameName, forceUpdate)
+        self:ColorizeCooldownFont(cooldownFrame, cdColor, frame, frameName, forceUpdate)
 
-        self:CustomizeCooldownFrame(auraFrame, frameName)
         self:RefreshAuraColor(auraFrame, frameName)
         self:RefreshAuraTimer(auraFrame, frameName)
+        self:ColorizeCooldownFont(auraFrame, auraColor, frame, frameName, forceUpdate)
     end
 
 end
@@ -400,10 +403,10 @@ function ABE_CDMCustomFrameCustomized:RefreshBackdrop(frame, frameName)
 
                 if not itemFrame.iconBorder then
                     itemFrame.iconBorder = Addon.CreateBorder(itemFrame.Icon, frameName)
-                    itemFrame.iconBorder:SetShown(self.__isActive)
+                    itemFrame.iconBorder:SetShown(self.__isActive == nil and true or self.__isActive)
                 elseif itemFrame.iconBorder then
                     self:SetupBackdrop(itemFrame.iconBorder, frameName)
-                    itemFrame.iconBorder:SetShown(self.__isActive)
+                    itemFrame.iconBorder:SetShown(self.__isActive == nil and true or self.__isActive)
                 end
                 if itemFrame.Bar and not itemFrame.BarBorder then
                     itemFrame.BarBorder = Addon.CreateBorder(itemFrame.Bar, frameName)

@@ -713,8 +713,8 @@ local function Hook_Layout(self)
         --CheckItemVisibility(child, child:IsVisible(), self)
 
         if not child.__hooked and Addon:GetValue("CDMEnable", nil, frameName) then
-            --[[ if child.OnActiveStateChanged then
-                hooksecurefunc(child, "OnActiveStateChanged", OnButtonVisibilityChanged)
+            --[[ if child.UpdateShownState then
+                hooksecurefunc(child, "UpdateShownState", OnButtonVisibilityChanged)
             end
             if child.OnUnitAuraAddedEvent then
                 hooksecurefunc(child, "OnUnitAuraAddedEvent", OnButtonVisibilityChanged)

@@ -33,7 +33,7 @@ function ABE_CDMCustomAuraFrameMixin:ConfigureAuraButton(auraButton)
 	self:CustomizeAuraButton(auraButton)
 
 	auraButton:SetIcon(auraButton.iconTexture)
-	auraButton:SetApplicationCount(auraButton.countText, {})
+	auraButton:SetApplicationCount(auraButton.countText, {formatter = Addon.defaultCountFormatter})
 	auraButton:SetDurationCooldown(auraButton.cooldownFrame)
 
     auraButton:SetMouseMotionEnabled(false)
