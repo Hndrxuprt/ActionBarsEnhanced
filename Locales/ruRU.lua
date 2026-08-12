@@ -417,6 +417,7 @@ L.CastTimeCurrent = "Текущее"
 L.CastTimeMax = "Общее"
 L.CastTimeCurrentAndMax = "Текущее / Общее"
 L.CastTimeRemaining = "Оставшееся"
+L.CastTimeRemainingAndMax = "Оставшееся / Общее"
 
 L.CastTimeFormat = "Формат таймера"
 
@@ -447,7 +448,7 @@ L.CastBarsFontDesc = "Настройка шрифтов для названия 
 
 L.AlwaysShow = "Всегда отображать"
 L.ShowOnAura = "Только во время ауры"
-L.ShowOnAuraAndCD = "Во время ауры и кд"
+L.ShowOnAuraAndCD = "Во время Фейк ауры и кд"
 
 L.TimerFont = "Шрифт Таймера"
 
@@ -474,6 +475,7 @@ L.AttachTitle = "Настройка привязки фрейма"
 L.AttachDesc = "Выбор фрейма и точки для крепления."
 
 L.CreateIconsFrame = "Создать фрейм Иконок"
+L.CreateAuraFrame = "Создать фрейм Аур"
 L.CreateBarsFrame = "Создать фрейм Полосок"
 L.CreateChargeBarsFrame = "Создать фрейм Полосок стаков"
 
@@ -493,3 +495,22 @@ L.CDFormatFloor = "Округлять вниз"
 L.CDFormatFloorWithDecimals = "Округлять вниз, показывать десятичные <1 сек"
 L.CDFormatCeil = "Округлять вверх"
 L.CDFormatCeilWithDecimals = "Округлять вверх, показывать десятичные <1 сек"
+
+L.BarDisplayTitle = "Тип отображения"
+L.BarDisplayDesc = "Эта полоска будет отображать:"
+L.BarDisplayOnCD = "Только КД"
+L.BarDisplayOnAura = "Только Ауру"
+L.BarDisplayOnAuraAndCD = "Ауру, затем КД"
+
+L.EnableName = "Показывать Название"
+L.EnableStacks = "Показывать Стаки"
+L.EnableTimer = "Показывать Таймер"
+
+L.RealAuraDisabled = "Аура отключена так как установлена Фейк-аура"
+
+L.ConfigureAura = "Настройка Ауры"
+
+L.FakeAuraTimer = "Таймер Фейк ауры:"
+L.RealAuraID = "SpellID Ауры"
+
+L.LockedInCombat = "Настройки заблокированы во время боя"

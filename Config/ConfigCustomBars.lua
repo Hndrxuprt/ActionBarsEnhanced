@@ -143,6 +143,363 @@ Addon.config.containers["CDMCustomFrameBarGridContainer"] = {
     
 }
 
+Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
+    title = L.FontTitle,
+    desc = L.FontDesc,
+    childs = {
+        ["CDMCustomFrameBarNameEnable"] = {
+            type            = "checkbox",
+            name            = L.EnableName,
+            value           = "CustomFrameBarNameEnable",
+            callback        = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshName(frame, frameName)
+            end,
+        },
+        ["CDMCustomFrameBarNameFont"] = {
+            type        = "dropdown",
+            fontOption  = true,
+            setting     = function() return Addon.Fonts end,
+            name        = L.NameFont,
+            IsSelected  = function(id) return id == Addon:GetValue("CurrentCustomFrameBarNameFont", nil, true) end,
+            OnSelect    = function(id) Addon:SaveSetting("CurrentCustomFrameBarNameFont", id, true) end,
+            showNew     = false,
+            OnEnter     = false,
+            OnClose     = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshName(frame, frameName)
+            end,
+        },
+        ["CDMCustomFrameBarNameSize"] = {
+            type            = "checkboxSlider",
+            name            = L.FontNameSize,
+            checkboxValue   = "UseCustomFrameBarNameSize",
+            sliderValue     = "CustomFrameBarNameSize",
+            min             = 5,
+            max             = 40,
+            step            = 1,
+            sliderName      = {top = L.Size},
+            callback        = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshName(frame, frameName)
+            end,
+        },
+        ["CDMCustomFrameBarNameColor"] = {
+            type            = "colorSwatch",
+            name            = L.FontColor,
+            value           = "CustomFrameBarNameColor",
+            checkboxValues  = {"UsCustomFrameBarNameColor"},
+            alpha           = true,
+            callback        = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshName(frame, frameName)
+            end,
+        },
+        ["CDMCustomFrameBarNamePoint"] = {
+            type        = "dropdown",
+            setting     = {Addon.AttachPoints, Addon.AttachPoints},
+            name        = L.AttachPoint,
+            IsSelected  = {
+                function(id) return id == Addon:GetValue("CustomFrameBarNamePoint", nil, true) end,
+                function(id) return id == Addon:GetValue("CustomFrameBarNameRelativePoint", nil, true) end,
+            },
+            OnSelect    = {
+                function(id) Addon:SaveSetting("CustomFrameBarNamePoint", id, true) end,
+                function(id) Addon:SaveSetting("CustomFrameBarNameRelativePoint", id, true) end,
+            },
+            showNew     = false,
+            OnEnter     = {
+                false,
+                false,
+            },
+            OnClose     = {
+                function()
+                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    ABE_CDMCustomFrameCustomized:RefreshName(frame, frameName)
+                end,
+                function()
+                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    ABE_CDMCustomFrameCustomized:RefreshName(frame, frameName)
+                end,
+            },
+        },
+        ["CDMCustomFrameBarNameOffset"] = {
+            type            = "checkboxSlider",
+            name            = L.Offset,
+            checkboxValue   = "UseCustomFrameBarNameOffset",
+            sliderValue     = {"CustomFrameBarNameOffsetX", "CustomFrameBarNameOffsetY"},
+            min             = -40,
+            max             = 40,
+            step            = 1,
+            sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
+            callback        = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshName(frame, frameName)
+            end,
+        },
+        ["CDMCustomFrameBarNameJustifyH"] = {
+            type        = "dropdown",
+            setting     = Addon.BarTextJustifyH,
+            name        = L.JustifyH,
+            IsSelected  = function(id) return id == Addon:GetValue("CurrentCustomFrameBarNameJustifyH", nil, true) end,
+            OnSelect    = function(id) Addon:SaveSetting("CurrentCustomFrameBarNameJustifyH", id, true) end,
+            showNew     = false,
+            OnEnter     = false,
+            OnClose     = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshName(frame, frameName)
+            end,
+        },
+
+        ["CDMCustomFrameBarStacksEnable"] = {
+            type            = "checkbox",
+            name            = L.EnableStacks,
+            value           = "CustomFrameBarStacksEnable",
+            callback        = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
+            end,
+        },
+        ["CDMCustomFrameBarStacksFont"] = {
+            type        = "dropdown",
+            fontOption  = true,
+            setting     = function() return Addon.Fonts end,
+            name        = L.StacksFont,
+            IsSelected  = function(id) return id == Addon:GetValue("CurrentCustomFrameBarStacksFont", nil, true) end,
+            OnSelect    = function(id) Addon:SaveSetting("CurrentCustomFrameBarStacksFont", id, true) end,
+            showNew     = false,
+            OnEnter     = false,
+            OnClose     = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
+            end,
+        },
+        ["CDMCustomFrameBarStacksSize"] = {
+            type            = "checkboxSlider",
+            name            = L.FontStacksSize,
+            checkboxValue   = "UseCustomFrameBarStacksSize",
+            sliderValue     = "CustomFrameBarStacksSize",
+            min             = 5,
+            max             = 40,
+            step            = 1,
+            sliderName      = {top = L.Size},
+            callback        = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
+            end,
+        },
+        ["CDMCustomFrameBarStacksColor"] = {
+            type            = "colorSwatch",
+            name            = L.FontColor,
+            value           = "CustomFrameBarStacksColor",
+            checkboxValues  = {"UsCustomFrameBarStacksColor"},
+            alpha           = true,
+            callback        = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
+            end,
+        },
+        ["CDMCustomFrameBarStacksPoint"] = {
+            type        = "dropdown",
+            setting     = {Addon.AttachPoints, Addon.AttachPoints},
+            name        = L.AttachPoint,
+            IsSelected  = {
+                function(id) return id == Addon:GetValue("CustomFrameBarStacksPoint", nil, true) end,
+                function(id) return id == Addon:GetValue("CustomFrameBarStacksRelativePoint", nil, true) end,
+            },
+            OnSelect    = {
+                function(id) Addon:SaveSetting("CustomFrameBarStacksPoint", id, true) end,
+                function(id) Addon:SaveSetting("CustomFrameBarStacksRelativePoint", id, true) end,
+            },
+            showNew     = false,
+            OnEnter     = {
+                false,
+                false,
+            },
+            OnClose     = {
+                function()
+                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    ABE_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
+                end,
+                function()
+                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    ABE_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
+                end,
+            },
+        },
+        ["CDMCustomFrameBarStacksOffset"] = {
+            type            = "checkboxSlider",
+            name            = L.Offset,
+            checkboxValue   = "UseCustomFrameBarStacksOffset",
+            sliderValue     = {"CustomFrameBarStacksOffsetX", "CustomFrameBarStacksOffsetY"},
+            min             = -40,
+            max             = 40,
+            step            = 1,
+            sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
+            callback        = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
+            end,
+        },
+        ["CDMCustomFrameBarStacksJustifyH"] = {
+            type        = "dropdown",
+            setting     = Addon.BarTextJustifyH,
+            name        = L.JustifyH,
+            IsSelected  = function(id) return id == Addon:GetValue("CurrentCustomFrameBarStacksJustifyH", nil, true) end,
+            OnSelect    = function(id) Addon:SaveSetting("CurrentCustomFrameBarStacksJustifyH", id, true) end,
+            showNew     = false,
+            OnEnter     = false,
+            OnClose     = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
+            end,
+        },
+
+
+        ["CDMCustomFrameBarTimeEnable"] = {
+            type            = "checkbox",
+            name            = L.EnableTimer,
+            value           = "CustomFrameBarTimeEnable",
+            callback        = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
+            end,
+        },
+        ["CDMCustomFrameBarTimeFormat"] = {
+            type        = "dropdown",
+            setting     = Addon.AuraTimeFormat,
+            name        = L.CastTimeFormat,
+            IsSelected  = function(id) return id == Addon:GetValue("CurrentCustomFrameBarTimeFormat", nil, true) end,
+            OnSelect    = function(id) Addon:SaveSetting("CurrentCustomFrameBarTimeFormat", id, true) end,
+            showNew     = false,
+            OnEnter     = false,
+            OnClose     = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
+            end,
+        },
+        ["CDMCustomFrameBarTimeFont"] = {
+            type        = "dropdown",
+            fontOption  = true,
+            setting     = function() return Addon.Fonts end,
+            name        = L.TimerFont,
+            IsSelected  = function(id) return id == Addon:GetValue("CurrentCustomFrameBarTimeFont", nil, true) end,
+            OnSelect    = function(id) Addon:SaveSetting("CurrentCustomFrameBarTimeFont", id, true) end,
+            showNew     = false,
+            OnEnter     = false,
+            OnClose     = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
+            end,
+        },
+        ["CDMCustomFrameBarTimeSize"] = {
+            type            = "checkboxSlider",
+            name            = L.FontTimerSize,
+            checkboxValue   = "UseCustomFrameBarTimeSize",
+            sliderValue     = "CustomFrameBarTimeSize",
+            min             = 5,
+            max             = 40,
+            step            = 1,
+            sliderName      = {top = L.Size},
+            callback        = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
+            end,
+        },
+        ["CDMCustomFrameBarTimeColor"] = {
+            type            = "colorSwatch",
+            name            = L.FontColor,
+            value           = "CustomFrameBarTimeColor",
+            checkboxValues  = {"UseCustomFrameBarTimeColor"},
+            alpha           = true,
+            callback        = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
+            end,
+        },
+        ["CDMCustomFrameBarTimePoint"] = {
+            type        = "dropdown",
+            setting     = {Addon.AttachPoints, Addon.AttachPoints},
+            name        = L.AttachPoint,
+            IsSelected  = {
+                function(id) return id == Addon:GetValue("CurrentCustomFrameBarTimePoint", nil, true) end,
+                function(id) return id == Addon:GetValue("CurrentCustomFrameBarTimeRelativePoint", nil, true) end,
+            },
+            OnSelect    = {
+                function(id) Addon:SaveSetting("CurrentCustomFrameBarTimePoint", id, true) end,
+                function(id) Addon:SaveSetting("CurrentCustomFrameBarTimeRelativePoint", id, true) end,
+            },
+            showNew     = false,
+            OnEnter     = {
+                false,
+                false,
+            },
+            OnClose     = {
+                function()
+                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    ABE_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
+                end,
+                function()
+                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    ABE_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
+                end,
+            },
+        },
+        ["CDMCustomFrameBarTimeOffset"] = {
+            type            = "checkboxSlider",
+            name            = L.Offset,
+            checkboxValue   = "UseCustomFrameBarTimeOffset",
+            sliderValue     = {"CustomFrameBarTimeOffsetX", "CustomFrameBarTimeOffsetY"},
+            min             = -40,
+            max             = 40,
+            step            = 1,
+            sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
+            callback        = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
+            end,
+        },
+        ["CDMCustomFrameBarTimeJustifyH"] = {
+            type        = "dropdown",
+            setting     = Addon.BarTextJustifyH,
+            name        = L.JustifyH,
+            IsSelected  = function(id) return id == Addon:GetValue("CurrentCustomFrameBarTimeJustifyH", nil, true) end,
+            OnSelect    = function(id) Addon:SaveSetting("CurrentCustomFrameBarTimeJustifyH", id, true) end,
+            showNew     = false,
+            OnEnter     = false,
+            OnClose     = function()
+                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frame = _G[frameName]
+                ABE_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
+            end,
+        },
+    }
+}
+
 Addon.config.containers["CDMCustomFrameBarIconOptionsContainer"] = {
     title = L.CastBarsIconOptionsTitle,
     desc = L.CastBarsIconOptionsDesc,

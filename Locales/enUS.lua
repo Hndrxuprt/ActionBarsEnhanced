@@ -408,6 +408,7 @@ L.CastTimeCurrent = "Current"
 L.CastTimeMax = "Total"
 L.CastTimeCurrentAndMax = "Current / Total"
 L.CastTimeRemaining = "Remaining"
+L.CastTimeRemainingAndMax = "Remaining / Total"
 
 L.CastTimeFormat = "Timer Format"
 
@@ -448,7 +449,7 @@ L.JustifyH = "Horizontal text Justification"
 
 L.AlwaysShow = "Always Show"
 L.ShowOnAura = "Show only with Aura"
-L.ShowOnAuraAndCD = "Show with Aura or CD"
+L.ShowOnAuraAndCD = "Show with Fake Aura or CD"
 
 L.AttachTitle = "Frame Attach Options"
 L.AttachDesc = "Select the frame and anchor point to attach to"
@@ -465,6 +466,7 @@ L.AnchorPosUNSAVED = "|cffff0000UNSAVED!|r\nEXIT Edit Mode to save Anchor"
 L.AnchorPosAttached = "Attached to frame:|cff0bbe76"
 
 L.CreateIconsFrame = "Create Icons frame"
+L.CreateAuraFrame = "Create Aura frame"
 L.CreateBarsFrame = "Create Bars frame"
 L.CreateChargeBarsFrame = "Create Charge Bars frame"
 
@@ -484,3 +486,22 @@ L.CDFormatFloor = "Round down"
 L.CDFormatFloorWithDecimals = "Round down, show decimals <1s"
 L.CDFormatCeil = "Round up"
 L.CDFormatCeilWithDecimals = "Round up, show decimals <1s"
+
+L.BarDisplayTitle = "Bar Display Type"
+L.BarDisplayDesc = "This bar will display:"
+L.BarDisplayOnCD = "Only Cooldown"
+L.BarDisplayOnAura = "Only Aura"
+L.BarDisplayOnAuraAndCD = "Aura, then Cooldown"
+
+L.EnableName = "Enable Name"
+L.EnableStacks = "Enable Stacks"
+L.EnableTimer = "Enable Timer"
+
+L.RealAuraDisabled = "Real Aura disabled because FakeAura was set"
+
+L.ConfigureAura = "Configure Aura"
+
+L.FakeAuraTimer = "Fake Aura Timer:"
+L.RealAuraID = "Aura SpellID"
+
+L.LockedInCombat = "Settings are locked in combat"

@@ -679,6 +679,47 @@
 			</Layer>
 		</Layers>
 	</Frame>
+	<EditBox name="CDMCustomItemEditBox" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Left" atlas="Options_ListExpand_Left" useAtlasSize="false" alpha="1">
+					<Size x="12" y="22"/>
+					<Anchors>
+						<Anchor point="LEFT" x="0" y="0"/>
+					</Anchors>
+					<Color r="1" g="0.95" b="0.9" a="1"/>
+				</Texture>
+				<Texture parentKey="Right" atlas="Options_ListExpand_Left" useAtlasSize="false" alpha="1">
+					<Size x="12" y="22"/>
+					<Anchors>
+						<Anchor point="RIGHT" x="0" y="0"/>
+					</Anchors>
+					<Color r="1" g="0.95" b="0.9" a="1"/>
+					<TexCoords left="1" right="0" top="0" bottom="1"/>
+				</Texture>
+				<Texture parentKey="Middle" atlas="_Options_ListExpand_Middle" useAtlasSize="false" alpha="1">
+					<Size x="2" y="22"/>
+					<Anchors>
+						<Anchor point="TOPLEFT" relativeKey="$parent.Left" relativePoint="TOPRIGHT"/>
+						<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Right" relativePoint="BOTTOMLEFT"/>
+					</Anchors>
+					<Color r="1" g="0.95" b="0.9" a="1"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<FontString inherits="SystemFont_Large" justifyV="MIDDLE" justifyH="CENTER">
+			<Anchors>
+				<Anchor point="LEFT" relativeKey="$parent.Left" relativePoint="LEFT"/>
+				<Anchor point="RIGHT" relativeKey="$parent.Right" relativePoint="RIGHT"/>
+			</Anchors>
+		</FontString>
+		<Scripts>
+			<OnEnterPressed method="OnEnterPressed"/>
+			<OnEditFocusLost method="OnEditFocusLost"/>
+			<OnEditFocusGained method="OnEditFocusGained"/>
+			<OnTextChanged method="OnTextChanged"/>
+		</Scripts>
+	</EditBox>
 	<Frame name="OptionsCDMCustomItemListTemplate" inherits="CallbackRegistrantTemplate" mixin="OptionsCDMCustomItemListMixin" virtual="true">
 		<Size x="600" y="200"/>
 		<Anchors>
@@ -817,6 +858,135 @@
 					<Anchor point="BOTTOMRIGHT" x="16" y="-10" relativeKey="$parent.Text" relativePoint="LEFT"/>
 				</Anchors>
 			</Frame>
+			<Frame parentKey="AuraSettings" frameStrata="HIGH" frameLevel="200" hidden="true" enableMouse="true">
+				<Size x="586" y="240"/>
+				<Anchors>
+					<Anchor point="CENTER" x="0" y="0" relativeKey="$parent" relativePoint="CENTER"/>
+				</Anchors>
+				<Layers>
+					<Layer level="ARTWORK">
+						<Texture parentKey="Bg" atlas="housing-floor-container-bg" setAllPoints="true" desaturated="true">
+							<Color r="0.8" g="0.7" b="0.6" a="1"/>
+						</Texture>
+						<FontString parentKey="Label" inherits="ObjectiveTrackerFont20" justifyH="CENTER">
+							<Anchors>
+								<Anchor point="TOP" relativePoint="TOP" x="0" y="-32"/>
+							</Anchors>
+							<Color r="1" g="0.87" b="0.72" a="1"/>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Frame parentKey="FakeAuraContainer">
+						<Size x="586" y="40"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="0" y="-80" relativeKey="$parent" relativePoint="TOPLEFT"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString parentKey="Name" inherits="ObjectiveTrackerFont14" justifyH="LEFT" text="Fake Aura Timer:">
+									<Size x="150"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="15" y="-5"/>
+									</Anchors>
+									<Color r="0.792" g="0.776" b="0.741" a="1"/>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Frames>
+							<EditBox parentKey="EditBox" inherits="CDMCustomItemEditBox" mixin="ABE_FakeAuraEditBoxMixin" autoFocus="false" virtual="true" letters="4" numeric="true" multiLine="false" >
+								<Size x="150" y="28"/>
+								<Anchors>
+									<Anchor point="LEFT" relativeKey="$parent.Name" relativePoint="RIGHT" x="0" y="0"/>
+								</Anchors>
+							</EditBox>
+							<Frame parentKey="Dropdown" inherits="Metal2DropdownWithSteppersAndLabelTemplate">
+								<Size x="340" y="28"/>
+								<Anchors>
+									<Anchor point="LEFT" relativeKey="$parent.EditBox" relativePoint="RIGHT" x="15"/>
+								</Anchors>
+								<Layers>
+									<Layer level="ARTWORK">
+										<FontString parentKey="Name" inherits="ObjectiveTrackerFont14" justifyH="LEFT" text="Поведение:">
+											<Size x="150"/>
+											<Anchors>
+												<Anchor point="LEFT" relativeKey="$parent" relativePoint="LEFT" x="0" y="0"/>
+											</Anchors>
+											<Color r="0.792" g="0.776" b="0.741" a="1"/>
+										</FontString>
+									</Layer>
+								</Layers>
+							</Frame>
+						</Frames>
+					</Frame>
+					<Frame parentKey="AuraContainer">
+						<Size x="586" y="40"/>
+						<Anchors>
+							<Anchor point="TOPLEFT" x="0" y="0" relativeKey="$parent.FakeAuraContainer" relativePoint="BOTTOMLEFT"/>
+						</Anchors>
+						<Layers>
+							<Layer level="ARTWORK">
+								<FontString parentKey="Name" inherits="ObjectiveTrackerFont14" justifyH="LEFT" text="Aura SpellID:">
+									<Size x="150"/>
+									<Anchors>
+										<Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="15" y="-5"/>
+									</Anchors>
+									<Color r="0.792" g="0.776" b="0.741" a="1"/>
+								</FontString>
+							</Layer>
+						</Layers>
+						<Frames>
+							<Frame parentKey="InactiveAuraFrame" setAllPoints="true" enableMouse="true">
+								<Layers>
+									<Layer level="OVERLAY" textureSubLevel="2">
+										<Texture parentKey="Bg" atlas="plunderstorm-spectate-background" setAllPoints="true" alpha="1" desaturated="true"/>
+
+										<FontString parentKey="Name" inherits="ObjectiveTrackerFont14" justifyH="CENTER" text="Real Aura disabled because FakeAura was set.">
+											<Anchors>
+												<Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER" x="0" y="0"/>
+											</Anchors>
+											<Color r="0.792" g="0.776" b="0.741" a="1"/>
+										</FontString>
+									</Layer>
+								</Layers>
+							</Frame>
+							<EditBox parentKey="EditBox" inherits="CDMCustomItemEditBox" mixin="ABE_RealAuraEditBoxMixin" autoFocus="false" virtual="true" letters="100" multiLine="false" >
+								<Size x="300" y="28"/>
+								<Anchors>
+									<Anchor point="LEFT" relativeKey="$parent.Name" relativePoint="RIGHT" x="0" y="0"/>
+								</Anchors>
+							</EditBox>
+						</Frames>
+					</Frame>
+					<Button parentKey="Button" mixin="ABE_FakeAuraConfirmButtonMixin" virtual="true" scale="0.9" hidden="false">
+						<Size x="150" y="28"/>
+						<Anchors>
+							<Anchor point="BOTTOM" relativePoint="BOTTOM" x="0" y="40"/>
+						</Anchors>
+						<NormalFont style="UserScaledFontGameNormal"/>
+						<HighlightFont style="UserScaledFontGameHighlight"/>
+						<DisabledFont style="UserScaledFontGameDisable"/>
+						<NormalTexture atlas="UI-Journeys-Delve-Level-Bar" desaturated="true"/>
+						<PushedTexture atlas="UI-Journeys-Delve-Level-Bar" desaturated="true">
+							<Color r="0.5" g="0.5" b="0.5" a="1"/>
+						</PushedTexture>
+						<HighlightTexture atlas="plunderstorm-spectate-background" alpha="1" alphaMode="ADD" desaturated="true">
+							<Size x="160" y="24"/>
+							<Anchors>
+								<Anchor point="CENTER" x="0" y="1"/>
+							</Anchors>
+							<Color r="0.1" g="0.9" b="0.4" a="1"/>
+						</HighlightTexture>
+						<DisabledTexture atlas="evergreen-weeklyrewards-reward-coin-unselected"/>
+						<Scripts>
+							<OnLoad method="OnLoad"/>
+							<OnShow method="OnShow"/>
+							<OnClick method="OnClick"/>
+						</Scripts>
+					</Button>
+				</Frames>
+
+			</Frame>
 			<Frame parentKey="FakeAuraFrame" frameStrata="HIGH" frameLevel="200" hidden="true" enableMouse="true">
 				<Size x="586" y="240"/>
 				<Anchors>
@@ -843,49 +1013,11 @@
 					</Layer>
 				</Layers>
 				<Frames>
-					<EditBox parentKey="EditBox" mixin="ABE_FakeAuraEditBoxMixin" autoFocus="false" virtual="true" letters="4" numeric="true" multiLine="false" >
+					<EditBox parentKey="EditBox" inherits="CDMCustomItemEditBox" mixin="ABE_FakeAuraEditBoxMixin" autoFocus="false" virtual="true" letters="4" numeric="true" multiLine="false" >
 						<Size x="300" y="28"/>
 						<Anchors>
 							<Anchor point="CENTER" relativePoint="CENTER" x="0" y="0"/>
 						</Anchors>
-						<Layers>
-							<Layer level="BACKGROUND">
-								<Texture parentKey="Left" atlas="Options_ListExpand_Left" useAtlasSize="false" alpha="1">
-									<Size x="12" y="28"/>
-									<Anchors>
-										<Anchor point="LEFT" x="0" y="0"/>
-									</Anchors>
-									<Color r="1" g="0.95" b="0.9" a="1"/>
-								</Texture>
-								<Texture parentKey="Right" atlas="Options_ListExpand_Left" useAtlasSize="false" alpha="1">
-									<Size x="12" y="28"/>
-									<Anchors>
-										<Anchor point="RIGHT" x="0" y="0"/>
-									</Anchors>
-									<Color r="1" g="0.95" b="0.9" a="1"/>
-									<TexCoords left="1" right="0" top="0" bottom="1"/>
-								</Texture>
-								<Texture parentKey="Middle" atlas="_Options_ListExpand_Middle" useAtlasSize="false" alpha="1">
-									<Size x="2" y="28"/>
-									<Anchors>
-										<Anchor point="TOPLEFT" relativeKey="$parent.Left" relativePoint="TOPRIGHT"/>
-										<Anchor point="BOTTOMRIGHT" relativeKey="$parent.Right" relativePoint="BOTTOMLEFT"/>
-									</Anchors>
-									<Color r="1" g="0.95" b="0.9" a="1"/>
-								</Texture>
-							</Layer>
-						</Layers>
-						<FontString inherits="SystemFont_Large" justifyV="MIDDLE" justifyH="CENTER">
-							<Anchors>
-								<Anchor point="LEFT" relativeKey="$parent.Left" relativePoint="LEFT"/>
-								<Anchor point="RIGHT" relativeKey="$parent.Right" relativePoint="RIGHT"/>
-							</Anchors>
-						</FontString>
-						<Scripts>
-							<OnEnterPressed method="OnEnterPressed"/>
-							<OnEditFocusLost method="OnEditFocusLost"/>
-							<OnEditFocusGained method="OnEditFocusGained"/>
-						</Scripts>
 					</EditBox>
 					<Frame parentKey="Dropdown" inherits="Metal2DropdownWithSteppersAndLabelTemplate">
 						<Anchors>
@@ -934,7 +1066,10 @@
 				<Texture parentKey="Icon" setAllPoints="true" atlas="cdm-empty"/>
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="2">
-				<Texture parentKey="HasColor" file="Interface/addons/ActionBarsEnhanced/assets/ABE_Border_Square_4.png" setAllPoints="true" hidden="true"/>
+				<Texture parentKey="HasColor" file="Interface/addons/ActionBarsEnhanced/assets/ABE_Border_Square_3.png" setAllPoints="true" hidden="true"/>
+			</Layer>
+			<Layer level="ARTWORK" textureSubLevel="2">
+				<Texture parentKey="HasAuraColor" file="Interface/addons/ActionBarsEnhanced/assets/ABE_Settings_ItemHasAuraColor.png" setAllPoints="true" hidden="true"/>
 			</Layer>
 			<Layer level="ARTWORK" textureSubLevel="3">
 				<Texture parentKey="HasAura" atlas="ConduitIconFrame-Corners" setAllPoints="true" desaturated="true" hidden="true">
@@ -1083,6 +1218,20 @@
 			</Layer>
 		</Layers>
 		<Frames>
+			<Frame parentKey="LockedFrame" setAllPoints="true" hidden="true" enableMouse="true" frameStrata="HIGH" frameLevel="2000">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="10" y="-62"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent" relativePoint="BOTTOMRIGHT" x="-10" y="25"/>
+				</Anchors>
+				<Layers>
+					<Layer level="OVERLAY" textureSubLevel="3">
+						<Texture parentKey="Bg" atlas="CampCollection-BG-text" setAllPoints="true" desaturated="true"/>
+						<FontString parentKey="Name" inherits="ObjectiveTrackerFont22" justifyH="CENTER" text="In Combat">
+							<Anchors><Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER"/></Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
 			<Frame parentKey="ScrollBox" inherits="WowScrollBoxList">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent" x="8" y="-68"/>

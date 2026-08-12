@@ -1,8 +1,8 @@
-## Interface: 120007
+## Interface: 120010
 ## Title: |cFF30D1FFActionBars Enhanced|r (Retail)
 ## IconTexture: Interface\AddOns\ActionBarsEnhanced\assets\icon
 ## Category: Action Bars
-## Version: 2.4.27
+## Version: 2.5.0
 ## SavedVariables: ABDB
 ## SavedVariablesPerCharacter: ABE_FAKE_AURAS
 ## Notes: Enhance Blizzard Action Bars
@@ -24,6 +24,7 @@ SharedMedia\RegisterMedia.lua
 constants.lua
 layout.lua
 Config\config.lua
+Config\ConfigCustomAura.lua
 Config\ConfigCustomBars.lua
 LayoutGrid\LayoutGrid.lua
 frames\ActionBarsEnhanced.xml
@@ -43,8 +44,13 @@ CooldownManager\CooldownManagerSettings.lua
 frames\CooldownManagerCustom.xml
 CooldownManager\CooldownManagerCustomSettings.lua
 CooldownManager\CooldownManagerCustom.lua
-CooldownManager\CooldownManagerCustomCustomization.lua
 CooldownManager\CooldownManagerCustomBar.lua
+CooldownManager\CooldownManagerCustomCustomization.lua
+
+CooldownManager\CooldownManagerCustomAura.lua
+CooldownManager\CooldownManagerCustomAuraFrame.lua
+CooldownManager\CooldownManagerCustomAuraBar.lua
+
 
 BlizzFixesAndTweaks.lua
 

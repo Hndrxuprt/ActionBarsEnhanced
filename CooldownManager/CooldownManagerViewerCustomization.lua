@@ -68,8 +68,10 @@ function ABE_CDMCustomized:RefreshItemSize(child, frameName)
 
     local size = Addon:GetValue("CDMItemSize", nil, frameName)
     child:SetSize(size, size)
-    if child.SetScale then
+    if not child.__scaleHooked and child.SetScale then
         hooksecurefunc(child, "SetScale", Hook_OnItemSetScale)
+        child.__scaleHooked = true
+        child:SetScale(1)
     end
 end
 

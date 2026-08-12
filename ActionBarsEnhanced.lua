@@ -154,13 +154,14 @@ function Addon:GetConfig(button)
     local actionBar, barName
 
     if button then
-        actionBar = button.bar
-        if not actionBar then
-            actionBar = button:GetParent()
+        if button.parentName then
+            barName = button.parentName
+        else
+            actionBar = button.bar or button:GetParent()
+            barName = actionBar:GetName()
         end
         
-        if actionBar and actionBar:GetName() then
-            barName = actionBar:GetName()
+        if barName then
             if Addon.C[barName] then
                 config = Addon.C[barName]
                 configName = barName
@@ -1583,6 +1584,10 @@ local function ProcessEvent(self, event, ...)
             Addon:BarsFadeAnim()
         end)
     end
+    if event == "PLAYER_IN_COMBAT_CHANGED" then
+        local locked = ...
+        Addon:UpdateSettingsLock(locked)
+    end
     if event == "PLAYER_SPECIALIZATION_CHANGED" then
         ActionBarsEnhancedProfilesMixin:OnSpecChanged(currentProfile)
         currentProfile = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
@@ -1603,3 +1608,4 @@ Addon.eventHandlerFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED", "player")
 Addon.eventHandlerFrame:RegisterEvent("ACTIONBAR_SHOWGRID")
 Addon.eventHandlerFrame:RegisterEvent("ACTIONBAR_HIDEGRID")
 Addon.eventHandlerFrame:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
+Addon.eventHandlerFrame:RegisterEvent("PLAYER_IN_COMBAT_CHANGED")

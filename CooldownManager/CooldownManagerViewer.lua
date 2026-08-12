@@ -114,6 +114,8 @@ local function Hook_OnCooldownDone(self)
     button.__isOnActualCooldown = false
     button.__isOnAura = false
 
+    Addon.RefreshDesaturationOnCooldownOnly(button)
+
     if Addon:GetValue("UseCDMBackdrop", nil, barName) then
         Addon.SetBorderColor(button, {Addon:GetRGBA("CDMBackdropColor", nil, barName)}, "reset")
     end
@@ -219,6 +221,8 @@ local function OnCooldownSet(cooldownFrame, button)
         if not button.__removeAura and Addon:GetValue("UseCDMBackdropAuraColor", nil, barName) and not button.__isInPandemic then
             Addon.SetBorderColor(button, {Addon:GetRGBA("CDMBackdropAuraColor", nil, barName)}, "aura")
         end
+
+        EventRegistry:TriggerEvent("CDMCustomItem.AddAura", button)
     else
         button.__isOnAura = false
         if Addon:GetValue("UseCooldownColor", nil, barName) then
@@ -370,16 +374,95 @@ local function OnButtonVisibilityChanged(child)
     end
 end
 
-local function RefreshDesaturation(self)
+function Addon.RefreshDesaturation(self)
     if not self or self.__desaturated == nil then return end
     local frameName = self:GetParent():GetName()
 
     if Addon:GetValue("CDMRemoveDesaturation", nil, frameName) then
         self.__desaturated = false
     end
-    
     local icon = self:GetIconTexture()
     icon:SetDesaturated(self.__desaturated)
+end
+local function PackRGBA(color)
+    return {r=color[1], g=color[2], b=color[3], a=color[4]}
+end
+local function SetVertexColorFromSecret(region, secret, color, reason, reverse)
+    color = color or {1,1,1,1}
+
+    local fallbackColor = {region:GetVertexColor()}
+
+    if not reverse then
+        region:SetVertexColorFromBoolean(secret, PackRGBA(color), PackRGBA(fallbackColor))
+    else
+        region:SetVertexColorFromBoolean(secret, PackRGBA(fallbackColor), PackRGBA(color))
+    end
+end
+local function GetColorFromSecret(region, secret, color, reverse)
+    local fallbackColor = {region:GetVertexColor()}
+
+    local secretColor
+
+    if not reverse then
+        secretColor = C_CurveUtil.EvaluateColorFromBoolean(secret, PackRGBA(color), PackRGBA(fallbackColor))
+    else
+        secretColor = C_CurveUtil.EvaluateColorFromBoolean(secret, PackRGBA(fallbackColor), PackRGBA(color))
+    end
+    return secretColor
+end
+
+function Addon.OnButtonRefreshIconColor2(self)
+    local spellID = self:GetSpellID()
+    if not spellID then
+        return
+    end
+
+    local frame = self:GetParent()
+    local frameName = frame:GetName()
+    local iconTexture = self:GetIconTexture()
+    local outOfRangeTexture = self.GetOutOfRangeTexture and self:GetOutOfRangeTexture() or nil
+
+    local normalColor = Addon:GetValue("UseNormalColor", nil, frameName) and {Addon:GetRGBA("NormalColor", nil, frameName)} or {1, 1, 1, 1}
+    local color = {1, 1, 1, 1}
+
+    local isUsable, notEnoughMana = C_Spell.IsSpellUsable(spellID)
+
+    iconTexture:SetVertexColor(normalColor[1], normalColor[2], normalColor[3], normalColor[4])
+    --iconTexture:SetVertexColor(color[1], color[2], color[3], color[4])
+
+    if not self.__removeAura and self.__isOnAura and Addon:GetValue("UseAuraColor", nil, frameName) then
+        color = {Addon:GetRGBA("AuraColor", nil, frameName)}
+        --SetVertexColorFromSecret(iconTexture, self.__isOnAura, color, "AuraColor")
+        color = GetColorFromSecret(iconTexture, self.__isOnAura, color)
+    end
+    if Addon:GetValue("UseOOMColor", nil, frameName) then
+        color = {Addon:GetRGBA("OOMColor", nil, frameName)}
+        --SetVertexColorFromSecret(iconTexture, notEnoughMana, color, "OOMColor")
+        color = GetColorFromSecret(iconTexture, notEnoughMana, color)
+    end
+    if Addon:GetValue("UseNoUseColor", nil, frameName) then
+        color = {Addon:GetRGBA("NoUseColor", nil, frameName)}
+        local reverse = true
+        --SetVertexColorFromSecret(iconTexture, isUsable, color, "NoUseColor", reverse)
+        color = GetColorFromSecret(iconTexture, notEnoughMana, color, reverse)
+    end
+    if self.__isOnGCD and Addon:GetValue("UseGCDColor", nil, frameName) then
+        color = {Addon:GetRGBA("GCDColor", nil, frameName)}
+        --SetVertexColorFromSecret(iconTexture, self.__isOnGCD, color, "GCDColor")
+        color = GetColorFromSecret(iconTexture,  self.__isOnGCD, color)
+    end
+    if self.__isOnActualCooldown and Addon:GetValue("UseCDColor", nil, frameName) then
+        color = {Addon:GetRGBA("CDColor", nil, frameName)}
+        --SetVertexColorFromSecret(iconTexture, self.__isOnActualCooldown, color, "CDColor")
+        color = GetColorFromSecret(iconTexture,  self.__isOnActualCooldown, color)
+    end
+    if self.spellOutOfRange ~= nil and Addon:GetValue("UseOORColor", nil, frameName) then
+        color = {Addon:GetRGBA("OORColor", nil, frameName)}
+        --SetVertexColorFromSecret(iconTexture, self.spellOutOfRange, color, "OORColor")
+        color = GetColorFromSecret(iconTexture,  self.spellOutOfRange, color)
+    end
+    iconTexture:SetVertexColor(color.r, color.g, color.b, color.a)
+    Addon.RefreshDesaturation(self)
 end
 
 function Addon.OnButtonRefreshIconColor(self)
@@ -407,29 +490,20 @@ function Addon.OnButtonRefreshIconColor(self)
     local OORColor = CooldownManagerEnhanced.constants.OORColor
     local OOMColor = CooldownManagerEnhanced.constants.OOMColor
     local NUColor = CooldownManagerEnhanced.constants.NUColor
-
-    local isUsable, notEnoughMana = C_Spell.IsSpellUsable(self:GetSpellID())
     
+    local OORCheck = false
+    local NUCheck = false
+    local OOMCheck = false
 
-    --[[ if self.spellOutOfRange and Addon:GetValue("UseOORColor", nil, frameName) then
-        color = {Addon:GetRGBA("OORColor", nil, frameName)}
-        if outOfRangeTexture then
-            outOfRangeTexture:SetShown(false)
-        end
-        self.__desaturated = Addon:GetValue("OORDesaturate", nil, frameName)
-    elseif self.__isOnActualCooldown and Addon:GetValue("UseCDColor", nil, frameName) then
-        color = {Addon:GetRGBA("CDColor", nil, frameName)}
-        self.__desaturated = Addon:GetValue("CDColorDesaturate", nil, frameName)
-    elseif self.__isOnGCD and Addon:GetValue("UseGCDColor", nil, frameName) then
-        color = {Addon:GetRGBA("GCDColor", nil, frameName)}
-        self.__desaturated = Addon:GetValue("GCDColorDesaturate", nil, frameName)
-    
-    else
-        if  ]]
+    if (iconColor[1] == OORColor[1] and iconColor[2] == OORColor[2] and iconColor[3] == OORColor[3]) then
+        OORCheck = true
+    elseif (iconColor[1] == NUColor[1] and iconColor[2] == NUColor[2] and iconColor[3] == NUColor[3]) then
+        NUCheck = true
+    elseif (iconColor[1] == OOMColor[1] and iconColor[2] == OOMColor[2] and iconColor[3] == OOMColor[3]) then
+        OOMCheck = true
+    end
 
-
-    if Addon:GetValue("UseOORColor", nil, frameName) and 
-       (iconColor[1] == OORColor[1] and iconColor[2] == OORColor[2] and iconColor[3] == OORColor[3]) then
+    if Addon:GetValue("UseOORColor", nil, frameName) and OORCheck then
         color = {Addon:GetRGBA("OORColor", nil, frameName)}
         if outOfRangeTexture then
             outOfRangeTexture:SetShown(false)
@@ -445,13 +519,11 @@ function Addon.OnButtonRefreshIconColor(self)
         self.__desaturated = Addon:GetValue("GCDColorDesaturate", nil, frameName)
     
     else
-        if Addon:GetValue("UseNoUseColor", nil, frameName) and 
-           (iconColor[1] == NUColor[1] and iconColor[2] == NUColor[2] and iconColor[3] == NUColor[3]) then
+        if Addon:GetValue("UseNoUseColor", nil, frameName) and NUCheck then
             color = {Addon:GetRGBA("NoUseColor", nil, frameName)}
             self.__desaturated = Addon:GetValue("NoUseDesaturate", nil, frameName)
         
-        elseif Addon:GetValue("UseOOMColor", nil, frameName) and 
-               (iconColor[1] == OOMColor[1] and iconColor[2] == OOMColor[2] and iconColor[3] == OOMColor[3]) then
+        elseif Addon:GetValue("UseOOMColor", nil, frameName) and OOMCheck then
             color = {Addon:GetRGBA("OOMColor", nil, frameName)}
             self.__desaturated = Addon:GetValue("OOMDesaturate", nil, frameName)
         
@@ -467,8 +539,34 @@ function Addon.OnButtonRefreshIconColor(self)
             end
         end
     end
+
     iconTexture:SetVertexColor(color[1], color[2], color[3], color[4])
-    RefreshDesaturation(self)
+    Addon.RefreshDesaturation(self)
+end
+
+function Addon.RefreshDesaturationOnCooldownOnly(self)
+    if self.spellOutOfRange == true then return end
+
+    local frame = self:GetParent()
+    local frameName = frame:GetName()
+
+    local iconTexture = self:GetIconTexture()
+
+    if self.__isOnActualCooldown and Addon:GetValue("UseCDColor", nil, frameName) then
+        self.__desaturated = Addon:GetValue("CDColorDesaturate", nil, frameName)
+    elseif self.__isOnGCD and Addon:GetValue("UseGCDColor", nil, frameName) then
+        self.__desaturated = Addon:GetValue("GCDColorDesaturate", nil, frameName)
+    else
+        if not self.__removeAura and self.__isOnAura and Addon:GetValue("UseAuraColor", nil, frameName) then
+            self.__desaturated = Addon:GetValue("AuraColorDesaturate", nil, frameName)
+        elseif Addon:GetValue("UseNormalColor", nil, frameName) then
+            self.__desaturated = Addon:GetValue("NormalColorDesaturate", nil, frameName)
+        else
+            self.__desaturated = false
+        end
+    end
+
+    Addon.RefreshDesaturation(self)
 end
 
 local function OnButtonRefreshIconDesaturation(self)
@@ -477,7 +575,7 @@ local function OnButtonRefreshIconDesaturation(self)
 
     local iconTexture = self:GetIconTexture()
     
-    RefreshDesaturation(self)
+    Addon.RefreshDesaturation(self)
 end
 
 --[[ local function OnTriggerAvailableAlert(self)
@@ -666,7 +764,9 @@ local function Hook_Layout(self)
             if child.RefreshIconDesaturation then
                 hooksecurefunc(child, "RefreshIconDesaturation", OnButtonRefreshIconDesaturation)  
             end
-            
+            if child.RefreshCooldownOnly then
+                --hooksecurefunc(child, "RefreshCooldownOnly", OnButtonRefreshIconDesaturation)
+            end
             child.__refreshIconHook = true
         end
         
@@ -899,6 +999,7 @@ function Addon:CDM_SetHooks()
         if Addon:GetValue("CDMEnable", nil, frameName) and not frame.__HooksSet then
             if frame and frame.Layout then
                 hooksecurefunc(frame, "Layout", Hook_Layout)
+                frame:Layout()
             end
             if frame and frame.SetupPandemicStateFrameForItem then
                 hooksecurefunc(frame, "AnchorPandemicStateFrame", Hook_SetupPandemic)

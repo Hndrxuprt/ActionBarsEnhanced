@@ -26,9 +26,10 @@ end
 local function ProcessIcon(icon, frameName)
     icon:ClearAllPoints()
     icon:SetPoint("CENTER", icon:GetParent(), "CENTER")
-    icon:SetSize(icon:GetParent():GetSize())
     if Addon:GetValue("UseIconScale", nil, frameName) then
         icon:SetScale(Addon:GetValue("IconScale", nil, frameName))
+    else
+        icon:SetSize(26,26)
     end
 end
 
@@ -234,9 +235,11 @@ function ABE_CastingBarMixin.SetLook(self, look)
             self.__iconFrameLeft.border = Addon.CreateBorder(self.__iconFrameLeft, frameName)
             self.__iconFrameRight.border = Addon.CreateBorder(self.__iconFrameRight, frameName)
         end
-        ProcessBorder(self.__border, frameName)
-        ProcessBorder(self.__iconFrameLeft.border, frameName)
-        ProcessBorder(self.__iconFrameRight.border, frameName)
+        if not self:HasAnyForbiddenAspects() then
+            ProcessBorder(self.__border, frameName)
+            ProcessBorder(self.__iconFrameLeft.border, frameName)
+            ProcessBorder(self.__iconFrameRight.border, frameName)
+        end
     else
         if self.__border then
             self.__border:Hide()
@@ -430,8 +433,6 @@ function ABE_CastingBarMixin.GetTypeInfo(self, barType)
 
         self.__forceUpdate = nil
     end
-
-    ABE_CastingBarMixin.SetCustomColor(self)
 
     --[[ local color = self.CASTBAR_COLORS[barType]
     C_Timer.After(0, function() 
@@ -749,9 +750,14 @@ function ABE_CastingBarMixin.OnGetEffectiveType(self, isChannel, notInterruptibl
         channel = isChannel,
         uninterruptable = notInterruptible,
         applyingcrafting = isTradeSkill,
-        empowered = isEmpowered,
+        empowered = isEmpowered or false,
         interrupted = false,
     }
+end
+
+
+function ABE_CastingBarMixin.OnUpdateBarFillTexture(self, isFull)
+    ABE_CastingBarMixin.SetCustomColor(self)
 end
 
 function ABE_CastingBarMixin.SetHooks(frame)
@@ -800,5 +806,8 @@ function ABE_CastingBarMixin.SetHooks(frame)
     end
     if frame.PlayInterruptAnims then
         hooksecurefunc(frame, "PlayInterruptAnims", ABE_CastingBarMixin.OnPlayInterruptAnims)
+    end
+    if frame.UpdateBarFillTexture then
+        hooksecurefunc(frame, "UpdateBarFillTexture", ABE_CastingBarMixin.OnUpdateBarFillTexture)
     end
 end

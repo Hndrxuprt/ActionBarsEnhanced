@@ -53,6 +53,15 @@ function Addon:DebugPrint(...)
     lastCallTime = currentTime
 end
 
+function Addon:UpdateSettingsLock(locked)
+    if not ActionBarEnhancedOptionsFrame then return end
+    locked = locked or InCombatLockdown()
+        --[[ or C_InstanceEncounter.IsEncounterInProgress()
+        or C_ChallengeMode.IsChallengeModeActive() ]]
+    ActionBarEnhancedOptionsFrame.LockedFrame:SetShown(locked)
+    ActionBarEnhancedOptionsFrame.LockedFrame.Name:SetText(L.LockedInCombat)
+end
+
 function Addon:GetFontsList()
     local fontList = {"Default"}
     local LSMFonts = LibStub("LibSharedMedia-3.0"):List("font")

@@ -25,7 +25,7 @@ end
 
 function CDMCustomDraggedItemMixin:OnUpdate()
 	local topLevel = GetAppropriateTopLevelParent();
-	local x, y = GetScaledCursorPositionForFrame(topLevel);
+	local x, y = InputUtil.GetCursorPosition(topLevel);
 	self:SetPoint("TOPLEFT", topLevel, "BOTTOMLEFT", x, y);
 end
 
@@ -65,9 +65,19 @@ function OptionsCDMCustomItemListMixin:OnLoad()
     self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.AddSpellByID", self.OnAddSpellByID)
     self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.AddItemBySlot", self.OnAddItemBySlot)
     self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.AddRacial", self.OnAddRacials)
+    self:AddDynamicEventMethod(EventRegistry, "CooldownViewerSettings.BeginOrderChange", self.CDM_BeginOrderChange)
+    
 
     self.FakeAuraFrame.Label:SetText(L.SetFakeAura)
     self.FakeAuraFrame.Desc:SetText(L.SetFakeAuraDesc)
+end
+
+function OptionsCDMCustomItemListMixin:CDM_BeginOrderChange(item)
+    local spellID = item:GetSpellID()
+    local cooldownID = item:GetCooldownID()
+    local equipSlot = item:GetEquipSlot()
+    local category = item:GetCategory()
+
 end
 
 function OptionsCDMCustomItemListMixin:OnAddRacials(frameName, track)
@@ -211,8 +221,11 @@ function OptionsCDMCustomItemListMixin:OnShow()
         end
         
         item.fakeAura = item:GetFakeAura()
+        item.realAura = item:GetRealAura()
         item.stages = item:GetStages()
         item.color = item:GetCustomColor()
+        item.auraColor = item:GetCustomAuraColor()
+        item.barDisplayType = item:GetBarDisplayType()
 
         item:SetParent(gridFrame)
         item:Show()
@@ -227,6 +240,8 @@ function OptionsCDMCustomItemListMixin:OnShow()
     gridFrame.parentListFrame = self
 
     gridFrame:SetAllPoints()
+
+    Addon:UpdateSettingsLock()
 end
 
 function OptionsCDMCustomItemListMixin:SetupItemList()
@@ -490,43 +505,67 @@ local function SetupDropdown(dropdown, itemID)
     dropdown.DecrementButton:Hide()
 end
 
-function OptionsCDMCustomItemListMixin:OpenFakeAuraSettings(item)
+function OptionsCDMCustomItemListMixin:OpenAuraSettings(item)
     local itemID = item:GetSpellID()
-    self.FakeAuraFrame.Label:SetText(L.SetFakeAura)
-    self.FakeAuraFrame.Desc:SetText(L.SetFakeAuraDesc)
-    self.FakeAuraFrame.Desc:Show()
+    self.AuraSettings.Label:SetText(L.ConfigureAura)
 
-    self.FakeAuraFrame.EditBox:SetText((item.fakeAura and item.fakeAura > 0) and item.fakeAura or "")
-    self.FakeAuraFrame.EditBox:Show()
-    SetupDropdown(self.FakeAuraFrame.Dropdown, itemID)
-    self.FakeAuraFrame.Dropdown:Show()
+    local fakeAuraFrame = self.AuraSettings.FakeAuraContainer
+    fakeAuraFrame.Name:SetText(L.FakeAuraTimer)
 
-    self.FakeAuraFrame:Show()
-    self.FakeAuraFrame.Button:SetScript("OnClick", function()
-        local newDuration = tonumber(self.FakeAuraFrame.EditBox:GetText())
+    local fakeAuraEditBox = fakeAuraFrame.EditBox
+    fakeAuraEditBox:SetText((item.fakeAura and item.fakeAura > 0) and item.fakeAura or "")
+    fakeAuraEditBox:Show()
+    local fakeAuraDropDown = fakeAuraFrame.Dropdown
+    SetupDropdown(fakeAuraDropDown, itemID)
+
+    local realAuraFrame = self.AuraSettings.AuraContainer
+    realAuraFrame.Name:SetText(L.RealAuraID)
+
+    local realAuraEditBox = realAuraFrame.EditBox
+
+    local realAuraIDs = item:GetRealAura()
+    
+    local realAuraText = table.concat(realAuraIDs, ",")
+
+    realAuraEditBox:SetText(realAuraText)
+
+    local realAuraBlocked = realAuraFrame.InactiveAuraFrame:IsVisible()
+    realAuraFrame.InactiveAuraFrame.Name:SetText(L.RealAuraDisabled)
+
+    if not realAuraBlocked then
+        
+    end
+
+    local confirmButton = self.AuraSettings.Button
+    confirmButton:SetScript("OnClick", function()
+        local newDuration = tonumber(fakeAuraEditBox:GetText())
         newDuration = (newDuration and newDuration > 0) and newDuration or nil
-        local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
-        local profileTable = Addon.P.profilesList[profileName]
-        local index = ABE_BarsListMixin:GetFrameIndex()
-        if profileTable["CDMCustomFrames"] then
-            local frameTbl = profileTable["CDMCustomFrames"][index]
-            if not frameTbl.fakeAuras then
-                frameTbl.fakeAuras = {}
+        
+        item:SaveFakeAura(newDuration)
+
+        local newRealAuraIDs = realAuraEditBox:GetText()
+        if newRealAuraIDs then
+            local tbl = {}
+            if not newRealAuraIDs ~= "" then
+                local parts = { string.split(",", newRealAuraIDs) }
+                for _, spellID in ipairs(parts) do
+                    spellID = tonumber(spellID:match("^%s*(.-)%s*$"))
+                    if spellID and spellID > 0 and spellID % 1 == 0 then
+                        table.insert(tbl, spellID)
+                    end
+                end
             end
-            if not frameTbl.fakeAuras[itemID] then
-                frameTbl.fakeAuras[itemID] = {
-                    duration = newDuration,
-                    type = 1,
-                }
-                EventRegistry:TriggerEvent("CDMCustomItemList.FakeAuraTypeChanged", itemID, 1)
-            else
-                frameTbl.fakeAuras[itemID].duration = newDuration
-            end
-            EventRegistry:TriggerEvent("CDMCustomItemList.FakeAuraAdded", itemID, newDuration)
+
+            item:SaveRealAura(tbl)
         end
-        self.FakeAuraFrame:Hide()
+
+        self.AuraSettings:Hide()
         self:OnShow()
     end)
+
+
+    self.AuraSettings:Show()
+    
 end
 
 function OptionsCDMCustomItemListMixin:OpenStagesSettings(item)
@@ -791,6 +830,10 @@ function OptionsCDMCustomItemMixin:OnShow()
 
     if self.fakeAura then
         self.HasAura:Show()
+        self.HasAura:SetVertexColor(1,0.6,1,1)
+    elseif self.realAura and next(self.realAura) and not self:IsBarFrame() then
+        self.HasAura:Show()
+        self.HasAura:SetVertexColor(0.6,1,0.6,1)
     else
         self.HasAura:Hide()
     end
@@ -813,12 +856,22 @@ function OptionsCDMCustomItemMixin:OnShow()
             else
                 self.HasColor:Hide()
             end
+            --[[ if self.auraColor then
+                self.HasAuraColor:Show()
+                self.HasAuraColor:SetVertexColor(self.auraColor.r, self.auraColor.g, self.auraColor.b, 1)
+            else
+                self.HasAuraColor:Hide()
+            end ]]
         end
     end
 end
 
 function OptionsCDMCustomItemMixin:IsBarFrame()
-    return self.frameTemplate == "ABE_CDMCustomBarFrame"
+    return self.frameTemplate == "ABE_CDMCustomBarFrame" or self.frameTemplate == "ABE_CDMCustomAuraBar"
+end
+
+function OptionsCDMCustomItemMixin:IsAuraFrame()
+    return self.frameTemplate == "ABE_CDMCustomAuraFrame"
 end
 
 function OptionsCDMCustomItemMixin:GetIconTexture()
@@ -830,13 +883,17 @@ function OptionsCDMCustomItemMixin:GetIconTexture()
         texture = C_Item.GetItemIconByID(spellID)
     elseif spellID then
         texture = C_Spell.GetSpellTexture(spellID)
-        for i=1, 0, -1 do
+        if self:IsAuraFrame() then
+            isKnown = true
+        else
+            isKnown = ABE_CDMCustomFrameMixin:FindKnownInCDM(spellID)
             if not isKnown then
-                isKnown = C_SpellBook.IsSpellKnown(spellID, i)
+                for i=1, 0, -1 do
+                    if not isKnown then
+                        isKnown = C_SpellBook.IsSpellKnown(spellID, i)
+                    end
+                end
             end
-        end
-        if not isKnown then
-            isKnown = ABE_CDMCustomFrameMixin:FindAuraForCurrentSpellID(spellID)
         end
     end
     self.isKnown = isKnown
@@ -903,6 +960,7 @@ function OptionsCDMCustomItemMixin:SaveCustomColor(newColor)
         end
         frameTbl.color[itemID] = newColor
     end
+    EventRegistry:TriggerEvent("CDMCustomItemList.UpdateFrame", self.parentFrame.frameName)
 end
 
 function OptionsCDMCustomItemMixin:GetCustomColor()
@@ -928,47 +986,194 @@ function OptionsCDMCustomItemMixin:GetCustomColor()
     return color or { r=1, g=1, b=1, a=1 }
 end
 
+---
+function OptionsCDMCustomItemMixin:SaveCustomAuraColor(newColor)
+    local itemID = self:GetSpellID()
+    if not itemID then return end
+    local frameIndex = ABE_BarsListMixin:GetFrameIndex()
+    local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+    local profileTable = Addon.P.profilesList[profileName]
+
+    newColor.r = newColor.r or 1
+    newColor.g = newColor.g or 1
+    newColor.b = newColor.b or 1
+    newColor.a = newColor.a or 1
+
+    if profileTable["CDMCustomFrames"] then
+        local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
+        if not frameTbl.auraColor then
+            frameTbl.auraColor = {}
+        end
+        frameTbl.auraColor[itemID] = newColor
+    end
+    EventRegistry:TriggerEvent("CDMCustomItemList.UpdateFrame", self.parentFrame.frameName)
+end
+
+function OptionsCDMCustomItemMixin:GetCustomAuraColor()
+    local itemID = self:GetSpellID()
+    if not itemID then return end
+    local frameIndex = ABE_BarsListMixin:GetFrameIndex()
+    local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+    local profileTable = Addon.P.profilesList[profileName]
+    local color
+
+    if profileTable["CDMCustomFrames"] then
+        local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
+        if frameTbl and frameTbl.auraColor then
+            color = frameTbl.auraColor[itemID]
+        end
+    end
+    if color then
+        color.r = color.r or 1
+        color.g = color.g or 1
+        color.b = color.b or 1
+        color.a = color.a or 1
+    end
+    return color or { r=1, g=1, b=1, a=1 }
+end
+---
+
+function OptionsCDMCustomItemMixin:GetBarDisplayType()
+    local itemID = self:GetSpellID()
+    if not itemID then return end
+    local frameIndex = ABE_BarsListMixin:GetFrameIndex()
+    local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+    local profileTable = Addon.P.profilesList[profileName]
+    local displayType
+
+    if profileTable["CDMCustomFrames"] then
+        local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
+        if frameTbl and frameTbl.displayTypes then
+            displayType = frameTbl.displayTypes[itemID]
+        end
+    end
+    return displayType or 3
+end
+
+function OptionsCDMCustomItemMixin:SetBarDisplayType(barType)
+    local itemID = self:GetSpellID()
+    if not itemID then return end
+    local frameIndex = ABE_BarsListMixin:GetFrameIndex()
+    local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+    local profileTable = Addon.P.profilesList[profileName]
+
+    if profileTable["CDMCustomFrames"] then
+        local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
+        if not frameTbl.displayTypes then
+            frameTbl.displayTypes = {}
+        end
+        frameTbl.displayTypes[itemID] = barType
+    end
+    self.barDisplayType = barType
+end
+
 function OptionsCDMCustomItemMixin:IsRacialSpell()
     if not self.spellID then return false end
 
     return Addon:IsRacialSpell(self.spellID)
 end
 
+--[[ function OptionsCDMCustomItemMixin:IsStagesEnabled()
+    return self.isStagesEnabled == true
+end
+
+function OptionsCDMCustomItemMixin:EnableStages()
+    local itemID = self:GetSpellID()
+    if not itemID then return end
+    local isChecked = self:IsStagesEnabled()
+    local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+    local profileTable = Addon.P.profilesList[profileName]
+    local index = ABE_BarsListMixin:GetFrameIndex()
+    if profileTable["CDMCustomFrames"] then
+        local frameTbl = profileTable["CDMCustomFrames"][index]
+        if not frameTbl.stages then
+            frameTbl.stages = {}
+        end
+        frameTbl.stages[itemID] = not isChecked
+        EventRegistry:TriggerEvent("CDMCustomItemList.StagesAdded", itemID, not isChecked)
+        self.isStagesEnabled = not isChecked
+    end
+end ]]
+
 function OptionsCDMCustomItemMixin:DisplayContextMenu()
     MenuUtil.CreateContextMenu(self, function(owner, rootDescription)
         rootDescription:SetTag("CDMCustom ContextMenu")
 
-        rootDescription:CreateButton(L.FakeAura, function()
-            self.parentFrame:OpenFakeAuraSettings(self)
-        end)
+        if not self:IsAuraFrame() then
+            rootDescription:CreateButton(L.ConfigureAura, function()
+                self.parentFrame:OpenAuraSettings(self)
+            end)
+        end
         if self:IsBarFrame() then
             rootDescription:CreateButton(L.Stages, function()
                 self.parentFrame:OpenStagesSettings(self)
             end)
-            local color = self.color
-            local colorInfo = {
-                r=color.r, g=color.g, b=color.b, opacity=color.a,
-                swatchFunc = function()
-                    local r,g,b = ColorPickerFrame:GetColorRGB()
-                    local a = ColorPickerFrame:GetColorAlpha()
-                    self:SaveCustomColor({r=r, g=g, b=b, a=a})
-                    self.color = {r=r, g=g, b=b, a=a}
-                    self.HasColor:SetVertexColor(r, g, b, 1)
+            --rootDescription:CreateCheckbox(L.Stages, self:IsStagesEnabled(), self:EnableStages())
+            do
+                local color = self.color
+                local colorInfo = {
+                    r=color.r, g=color.g, b=color.b, opacity=color.a,
+                    swatchFunc = function()
+                        local r,g,b = ColorPickerFrame:GetColorRGB()
+                        local a = ColorPickerFrame:GetColorAlpha()
+                        self:SaveCustomColor({r=r, g=g, b=b, a=a})
+                        self.color = {r=r, g=g, b=b, a=a}
+                        self.HasColor:SetVertexColor(r, g, b, 1)
+                    end,
+                    cancelFunc = function()
+                        local r,g,b = ColorPickerFrame:GetColorRGB()
+                        local a = ColorPickerFrame:GetColorAlpha()
+                        self:SaveCustomColor({r=r, g=g, b=b, a=a})
+                        self.color = {r=r, g=g, b=b, a=a}
+                        self.HasColor:SetVertexColor(r, g, b, 1)
+                    end,
+                    hasOpacity = 1,
+                }
+                rootDescription:CreateColorSwatch(L.UseCustomColor, function()
+                    ColorPickerFrame:SetupColorPickerAndShow(colorInfo)
                 end,
-                cancelFunc = function()
-                    local r,g,b = ColorPickerFrame:GetColorRGB()
-                    local a = ColorPickerFrame:GetColorAlpha()
-                    self:SaveCustomColor({r=r, g=g, b=b, a=a})
-                    self.color = {r=r, g=g, b=b, a=a}
-                    self.HasColor:SetVertexColor(r, g, b, 1)
+                colorInfo)
+            end
+            --[[ do
+                local color = self.auraColor
+                local colorInfo = {
+                    r=color.r, g=color.g, b=color.b, opacity=color.a,
+                    swatchFunc = function()
+                        local r,g,b = ColorPickerFrame:GetColorRGB()
+                        local a = ColorPickerFrame:GetColorAlpha()
+                        self:SaveCustomAuraColor({r=r, g=g, b=b, a=a})
+                        self.auraColor = {r=r, g=g, b=b, a=a}
+                        self.HasAuraColor:SetVertexColor(r, g, b, 1)
+                    end,
+                    cancelFunc = function()
+                        local r,g,b = ColorPickerFrame:GetColorRGB()
+                        local a = ColorPickerFrame:GetColorAlpha()
+                        self:SaveCustomAuraColor({r=r, g=g, b=b, a=a})
+                        self.auraColor = {r=r, g=g, b=b, a=a}
+                        self.HasAuraColor:SetVertexColor(r, g, b, 1)
+                    end,
+                    hasOpacity = 1,
+                }
+                rootDescription:CreateColorSwatch("Custom Aura Color", function()
+                    ColorPickerFrame:SetupColorPickerAndShow(colorInfo)
                 end,
-                hasOpacity = 1,
-            }
-            rootDescription:CreateColorSwatch(L.UseCustomColor, function()
-                ColorPickerFrame:SetupColorPickerAndShow(colorInfo)
-            end,
-            colorInfo
-            )
+                colorInfo)
+            end ]]
+            do
+                local function IsSelected(value)
+                    return self.barDisplayType == value
+                end
+                local function SetSelected(value)
+                    self:SetBarDisplayType(value)
+                    EventRegistry:TriggerEvent("CDMCustomItemList.UpdateFrame", self.parentFrame.frameName)
+                end
+
+                local submenu = rootDescription:CreateButton(L.BarDisplayTitle)
+                submenu:CreateTitle(L.BarDisplayDesc)
+                for i, name in ipairs(Addon.CustomBarDisplayTypes) do
+                    submenu:CreateRadio(name, IsSelected, SetSelected, i)
+                end
+            end
         end
         if self:IsRacialSpell() then
             rootDescription:CreateButton("Racial Settings", function()
@@ -1024,6 +1229,30 @@ function OptionsCDMCustomItemMixin:SetReorderLocked(locked)
 	self.reorderLocked = locked
 	--self:RefreshData()
 end
+function OptionsCDMCustomItemMixin:SaveFakeAura(newDuration)
+    local itemID = self:GetSpellID()
+    if not itemID then return end
+    local frameIndex = ABE_BarsListMixin:GetFrameIndex()
+    local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+    local profileTable = Addon.P.profilesList[profileName]
+
+    if profileTable["CDMCustomFrames"] then
+        local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
+        if not frameTbl.fakeAuras then
+            frameTbl.fakeAuras = {}
+        end
+        if not frameTbl.fakeAuras[itemID] then
+            frameTbl.fakeAuras[itemID] = {
+                duration = newDuration,
+                type = 1,
+            }
+            EventRegistry:TriggerEvent("CDMCustomItemList.FakeAuraTypeChanged", itemID, 1)
+        else
+            frameTbl.fakeAuras[itemID].duration = newDuration
+        end
+        EventRegistry:TriggerEvent("CDMCustomItemList.FakeAuraAdded", itemID, newDuration)
+    end
+end
 
 function OptionsCDMCustomItemMixin:GetFakeAura()
     local itemID = self:GetSpellID()
@@ -1038,6 +1267,39 @@ function OptionsCDMCustomItemMixin:GetFakeAura()
             return frameTbl.fakeAuras[itemID].duration
         end
     end
+end
+
+function OptionsCDMCustomItemMixin:SaveRealAura(auraSpellIDs)
+    local itemID = self:GetSpellID()
+    if not itemID then return end
+    local frameIndex = ABE_BarsListMixin:GetFrameIndex()
+    local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+    local profileTable = Addon.P.profilesList[profileName]
+
+    if profileTable["CDMCustomFrames"] then
+        local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
+        if not frameTbl.realAuras then
+            frameTbl.realAuras = {}
+        end
+        frameTbl.realAuras[itemID] = auraSpellIDs
+        EventRegistry:TriggerEvent("CDMCustomItemList.RealAuraAdded", itemID, auraSpellIDs)
+    end
+end
+
+function OptionsCDMCustomItemMixin:GetRealAura()
+    local itemID = self:GetSpellID()
+    if not itemID or self:IsAuraFrame() then return {} end
+    local frameIndex = ABE_BarsListMixin:GetFrameIndex()
+    local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+    local profileTable = Addon.P.profilesList[profileName]
+
+    if profileTable["CDMCustomFrames"] then
+        local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
+        if frameTbl and frameTbl.realAuras and frameTbl.realAuras[itemID] then
+            return frameTbl.realAuras[itemID]
+        end
+    end
+    return Addon.SPELLID_TO_AURASPELLID[itemID] and Addon.SPELLID_TO_AURASPELLID[itemID].linkedSpellIDs or {}
 end
 
 function OptionsCDMCustomItemMixin:GetStages()
@@ -1070,6 +1332,56 @@ function ABE_FakeAuraEditBoxMixin:OnEditFocusLost()
 end
 function ABE_FakeAuraEditBoxMixin:OnEditFocusGained()
     
+end
+function ABE_FakeAuraEditBoxMixin:OnTextChanged()
+    local auraSettingsFrame = self:GetParent():GetParent()
+    if auraSettingsFrame.AuraContainer then
+        local realAuraCover = auraSettingsFrame.AuraContainer.InactiveAuraFrame
+
+        local duration = tonumber(self:GetText())
+        if duration and duration > 0 then
+            realAuraCover:Show()
+        else
+            self:SetText("")
+            realAuraCover:Hide()
+        end
+    end
+end
+
+ABE_RealAuraEditBoxMixin = {}
+function ABE_RealAuraEditBoxMixin:OnShow()
+        
+end
+
+function ABE_RealAuraEditBoxMixin:OnEnterPressed()
+        
+end
+function ABE_RealAuraEditBoxMixin:OnEditFocusLost()
+    local text = self:GetText()
+    
+    local cleanText = text:match("^,?(.-),?$") or ""
+    
+    if text ~= cleanText then
+        self:SetText(cleanText)
+    end
+end
+function ABE_RealAuraEditBoxMixin:OnEditFocusGained()
+    
+end
+function ABE_RealAuraEditBoxMixin:OnTextChanged()
+    local text = self:GetText()
+    local cleanText = text:gsub("[^%d,]", ""):gsub(",+", ",")
+
+    if text ~= cleanText then
+        local cursorPos = self:GetCursorPosition()
+        
+        local beforeCursor = text:sub(1, cursorPos)
+        local cleanBefore = beforeCursor:gsub("[^%d,]", ""):gsub(",+", ",")
+        local diff = beforeCursor:len() - cleanBefore:len()
+        
+        self:SetText(cleanText)
+        self:SetCursorPosition(math.max(0, cursorPos - diff))
+    end
 end
 
 ABE_FakeAuraConfirmButtonMixin = {}

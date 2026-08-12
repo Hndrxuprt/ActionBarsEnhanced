@@ -2,6 +2,36 @@ local AddonName, Addon = ...
 
 local profileTable
 
+Addon.SPELLID_TO_AURASPELLID = {
+    
+}
+
+local function BuildSpellIDToAuraSpellID()
+    for cdID, data in pairs(CooldownViewerSettings:GetDataProvider():GetDisplayData().cooldownInfoByID) do
+        if data.overrideTooltipSpellID or data.overrideSpellID or data.spellID then
+            local spellID = data.overrideTooltipSpellID or data.overrideSpellID or data.spellID
+            if spellID then
+                if not Addon.SPELLID_TO_AURASPELLID[spellID] then
+                    Addon.SPELLID_TO_AURASPELLID[spellID] = {}
+                end
+                if data.hasAura then
+                    Addon.SPELLID_TO_AURASPELLID[spellID].linkedSpellIDs = #data.linkedSpellIDs > 0 and data.linkedSpellIDs or {[1] = spellID}
+                elseif data.selfAura then
+                    Addon.SPELLID_TO_AURASPELLID[spellID].linkedSpellIDs = {[1] = spellID}
+                end
+                Addon.SPELLID_TO_AURASPELLID[spellID].auraUnit = C_Spell.IsSpellHelpful(spellID) and "player" or "target"
+            end
+        end
+    end
+end
+
+local CooldownManagerFrames = {
+    "BuffIconCooldownViewer",
+    "BuffBarCooldownViewer",
+    "EssentialCooldownViewer",
+    "UtilityCooldownViewer",
+}
+
 local isBeta = Addon.IsBeta
 
 local function IsOnGCD()
@@ -38,7 +68,6 @@ function ABE_CDMCustomItemMixin:OnShow()
             self:RefreshData()
         end)
     end ]]
-
     
     if not self.registeredEvents then
         self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
@@ -132,10 +161,15 @@ function ABE_CDMCustomItemMixin:OnEvent(event, ...)
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" or event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
         local spellID = ...
-        if self.type == "spell" and self.spellID == spellID or self.baseSpellID == spellID then
+        local isBar = self:IsBarFrame()
+        if not isBar and (self.type == "spell" and self.spellID == spellID or self.baseSpellID == spellID) then
             local isSpellOverlayed = spellID and C_SpellActivationOverlay.IsSpellOverlayed(spellID) or false
+            local parent = self.realAuraFrame or self
             if isSpellOverlayed then
                 ActionButtonSpellAlertManager:ShowAlert(self)
+                if self.SpellActivationAlert then
+                    self.SpellActivationAlert:SetFrameLevel(self:GetFrameLevel() + 10)
+                end
             else
                 ActionButtonSpellAlertManager:HideAlert(self)
             end
@@ -162,7 +196,7 @@ function ABE_CDMCustomItemMixin:OnEvent(event, ...)
         end
     elseif event == "PLAYER_IN_COMBAT_CHANGED" then
         local inCombat = ...
-        self:RefreshProcAnim(inCombat)
+        --self:RefreshProcAnim(inCombat)
     end
 end
 
@@ -239,63 +273,6 @@ function ABE_CDMCustomItemMixin:GetSpellID()
     return self.spellID
 end
 
-function ABE_CDMCustomItemMixin:FindAuraForCurrentSpellID()
-    --local orderedCooldownIDs = CooldownViewerSettings:GetDataProvider():GetOrderedCooldownIDs()
-
-    for cdID, data in pairs(CooldownViewerSettings:GetDataProvider():GetDisplayData().cooldownInfoByID) do
-        local itemSpellID = data.spellID
-        if itemSpellID == self.spellID then
-            --Addon:DebugPrint("SpellFound", itemSpellID, self.spellID)
-            self.linkedSpellID = data.linkedSpellID
-            self.overrideTooltipSpellID = data.overrideTooltipSpellID
-            self.overrideSpellID = data.overrideSpellID
-            --self.cooldownInfo = CooldownViewerSettings:GetDataProvider():GetCooldownInfoForID(2272)
-        end
-    end
-
-    --local auraData = C_UnitAuras.GetPlayerAuraBySpellID(self.spellID)
-end
-
-function ABE_CDMCustomItemMixin:FindAuraInstanceIDForCurrentSpellID()
-    for itemFrame in BuffIconCooldownViewer.itemFramePool:EnumerateActive() do
-        local auraInstanceID = itemFrame:GetAuraSpellInstanceID()
-        local spellID = itemFrame:GetBaseSpellID()
-        local cooldownID = itemFrame:GetCooldownID()
-        local cooldownInfo = itemFrame:GetCooldownInfo()
-        --Addon:DebugPrint("AuraInstanceID Set:", self.spellID, self.overrideID, spellID, overrideID, auraInstanceID, cooldownID)
-        if self.spellID == spellID then
-            self.auraInstanceID = auraInstanceID
-        end
-    end
-end
-
-function ABE_CDMCustomItemMixin:SetAuraInstanceInfo(auraInfo)
-    local auraSpellID, auraInstanceID = auraInfo.spellId, auraInfo.auraInstanceID
-	self.auraInstanceID = auraInstanceID
-    self.auraSpellID = auraSpellID
-end
-
-function ABE_CDMCustomItemMixin:ClearAuraInstanceInfo()
-	local auraSpellID, auraInstanceID = self.auraSpellID, self.auraInstanceID
-	if auraSpellID or auraInstanceID then
-		self.auraInstanceID = nil
-		self.auraSpellID = nil
-	end
-end
-
-function ABE_CDMCustomItemMixin:RefreshAuraInstance()
-	local auraData = C_UnitAuras.GetPlayerAuraBySpellID(self.spellID)
-	if auraData then
-		self:SetAuraInstanceInfo(auraData)
-	else
-		self:ClearAuraInstanceInfo()
-	end
-end
-
-function ABE_CDMCustomItemMixin:GetAuraSpellID()
-	return self.auraSpellID
-end
-
 function ABE_CDMCustomItemMixin:GetCooldownInfo()
     if self.type == "item" then
         local start, duration, enable = C_Item.GetItemCooldown(self.itemID)
@@ -323,7 +300,7 @@ end
 function ABE_CDMCustomItemMixin:GetCooldownDurationObj()
     if self.type == "spell" then
         local cooldownFrame = self:GetCooldownFrame()
-        local ignoreGCD = not cooldownFrame.showGCDSwipe
+        local ignoreGCD = not cooldownFrame.showGCDSwipe or self.barType ~= nil
         local forceSpellCD = false
 
         local chargeCooldownInfo = self:GetChargesCooldownInfo()
@@ -357,11 +334,13 @@ function ABE_CDMCustomItemMixin:GetSpellTexture()
 	return texture
 end
 
+function ABE_CDMCustomItemMixin:IsBarFrame()
+    return self.barType ~= nil
+end
+
 function ABE_CDMCustomItemMixin:RefreshSpellTexture()
     local spellTexture = self:GetSpellTexture()
-    if self.auraData then
-        spellTexture = self.auraData.icon
-    end
+
     local icon = self.Icon.Icon or self.Icon
     icon:SetTexture(spellTexture)
 end
@@ -380,12 +359,16 @@ function ABE_CDMCustomItemMixin:RefreshIconDesaturation(desaturated)
 end
 
 function ABE_CDMCustomItemMixin:RefreshIconColor()
+    local isBar = self:IsBarFrame()
     local frameName = self.parentName
     local color = {1,1,1,1}
     local desaturated = false
-    if not self.isOnAuraTimer and self.isOnActualCooldown and Addon:GetValue("UseCDColor", nil, frameName) then
+    if (not self.isOnAuraTimer or isBar) and self.isOnActualCooldown and Addon:GetValue("UseCDColor", nil, frameName) then
         color = {Addon:GetRGBA("CDColor", nil, frameName)}
         desaturated = Addon:GetValue("CDColorDesaturate", nil, frameName)
+    elseif Addon:GetValue("UseAuraColor", nil, frameName) and self.isOnAuraTimer then
+        color = {Addon:GetRGBA("AuraColor", nil, frameName)}
+        desaturated = Addon:GetValue("AuraColorDesaturate", nil, frameName)
     elseif Addon:GetValue("UseNormalColor", nil, frameName) then
         color = {Addon:GetRGBA("NormalColor", nil, frameName)}
         desaturated = Addon:GetValue("NormalColorDesaturate", nil, frameName)
@@ -407,13 +390,6 @@ function ABE_CDMCustomItemMixin:RefreshCount()
 
         count = charges and charges.currentCharges or ""
 
-        self.auraData = self.auraInstanceID and C_UnitAuras.GetAuraDataByAuraInstanceID("player", self.auraInstanceID) or nil
-        --Addon:DebugPrint("RefreshCount", self.auraData, self.auraInstanceID)
-
-        if self.auraData then
-            charges.currentCharges = self.auraData.applications
-        end
-
         count = charges.currentCharges or 0
 
         if charges.maxCharges == 1 then
@@ -426,6 +402,11 @@ function ABE_CDMCustomItemMixin:RefreshCount()
     self.count = count
     applications.Applications:SetText(count)
     applications:SetAlpha(count)
+
+    if self.Bar and self.Bar.Count then
+        self.Bar.Count:SetText(count)
+        self.Bar.Count:SetAlpha(count)
+    end
 
     self:RefreshIconDesaturation()
     self:RefreshSpellTexture()
@@ -486,7 +467,9 @@ function ABE_CDMCustomItemMixin:RefreshFakeAuraInfo(reset)
 
     local cooldownFrame = self:GetCooldownFrame()
     cooldownFrame:SetAlpha(0)
-    cooldownFrame:Show()
+    if not self.Bar then
+        cooldownFrame:Show()
+    end
 
     if ABE_FAKE_AURAS[self.spellID] then
         startTime = ABE_FAKE_AURAS[self.spellID].startTime
@@ -528,6 +511,8 @@ end
 function ABE_CDMCustomItemMixin:RefreshBackdrop()
     if not self.iconBorder then return end
 
+    --self.iconBorder:SetFrameLevel(self:GetFrameLevel() + 10)
+
     if self.isOnAuraTimer then
         if Addon:GetValue("UseCDMBackdropAuraColor", nil, self.parentName) then
             self.iconBorder:SetBackdropBorderColor(Addon:GetRGBA("CDMBackdropAuraColor", nil, self.parentName))
@@ -542,13 +527,14 @@ end
 function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
     if not self.spellID then return end
 
+    --Addon:DebugPrint("RefreshSpellCooldownInfo", self.spellID)
+    local cooldownFrame = self:GetCooldownFrame()
+    local auraCooldown = self:GetAuraFrame()
+
     if self.fakeAura and not IsFakeAuraExpired(self.spellID) then
         --Addon:DebugPrint("RefreshSpellCooldownInfo check RefreshFakeAuraInfo", self.spellID, self.layoutIndex)
         self:RefreshFakeAuraInfo()
     end
-    --Addon:DebugPrint("RefreshSpellCooldownInfo", self.spellID)
-    local cooldownFrame = self:GetCooldownFrame()
-    local auraCooldown = self:GetAuraFrame()
 
     cooldownFrame.showGCDSwipe = not (Addon:GetValue("CDMRemoveGCDSwipe", nil, self.parentName))
 
@@ -623,14 +609,15 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
             else
                 cooldownFrame:SetCooldown(cooldownInfo.startTime, cooldownInfo.duration)
             end
-            cooldownFrame:Show()
+            if not self.Bar then
+                cooldownFrame:Show()
+            end
 
             if cooldownInfo.enable == false then
                 cooldownFrame:Pause()
             else
                 cooldownFrame:Resume()
             end
-            
             if not self.isOnAuraTimer and durationObj then
                 cooldownFrame:SetAlpha(durationObj:EvaluateRemainingDuration(Addon.alphaCurve, 0))
             end
@@ -648,11 +635,10 @@ function ABE_CDMCustomItemMixin:RefreshSpellCooldownInfo()
 end
 
 function ABE_CDMCustomItemMixin:RefreshData()
-    self:FindAuraInstanceIDForCurrentSpellID()
     --if not self:IsVisible() then return end
     self:RefreshSpellCooldownInfo()
     --self:RefreshAuraInstance()
-    self:RefreshSpellTexture()
+    --self:RefreshSpellTexture()
     if self.type == "item" and IsHealthstoneItem(self.itemID) then
         C_Timer.After(0.5, function()
             self:RefreshCount()
@@ -664,6 +650,9 @@ function ABE_CDMCustomItemMixin:RefreshData()
     end
     self:RefreshBackdrop()
     self:RefreshIconColor()
+
+    self:AddAuraSlot()
+    
     --self:RefreshProcAnim()
 end
 
@@ -683,8 +672,14 @@ function ABE_CDMCustomItemMixin:RefreshVisibility()
     local hideType = parentFrame.Container.hideInactiveType
 
     local hideEmpty = Addon:GetValue("CDMCustomHideEmpty", nil, self.parentName)
-
-    if hideType == 4 then
+    if hideType == 5 then
+        if self.isOnActualCooldown then
+            self.__isActive = true
+        else
+            self.__isActive = false
+        end
+        parentFrame:RefreshVisibileOnCD()
+    elseif hideType == 4 then
         
         if not self.isOnActualCooldown or self.isOnAuraTimer then
             self.__isActive = true
@@ -778,6 +773,7 @@ function ABE_CDMCustomItemMixin:RefreshProcAnim(inCombat)
         ActionButtonSpellAlertManager:ShowAlert(self)
     end
 end
+
 function ABE_CDMCustomItemMixin:GetFakeAura()
     if not self.spellID then return end
     local frameName = self.parentName
@@ -790,6 +786,238 @@ function ABE_CDMCustomItemMixin:GetFakeAura()
     end
 end
 
+function ABE_CDMCustomItemMixin:SaveRealAuraInit(spellIDs)
+
+    if not self.spellID and not self.itemID then return end
+
+    local frameName = self.parentName
+    local frameIndex = _G[frameName]:GetFrameIndexByName(frameName)
+    local spellID = self.itemID or self.spellID
+
+    if profileTable["CDMCustomFrames"] then
+        local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
+        if not frameTbl.realAuras then
+            frameTbl.realAuras = {}
+        end
+        if not frameTbl.realAuras[spellID] then
+            frameTbl.realAuras[spellID] = spellIDs
+        end
+    end
+
+end
+
+function ABE_CDMCustomItemMixin:GetRealAura()
+    if not self.spellID then return end
+    local frameName = self.parentName
+    local frameIndex = _G[frameName]:GetFrameIndexByName(frameName)
+    local spellID = self.itemID or self.spellID
+
+    if profileTable["CDMCustomFrames"] then
+        local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
+        if frameTbl and frameTbl.realAuras and frameTbl.realAuras[spellID] then
+            return frameTbl.realAuras[spellID] or {}
+        end
+    end
+end
+
+function ABE_CDMCustomItemMixin:GetAuraContainer()
+    return self.AuraContainer
+end
+
+function ABE_CDMCustomItemMixin:CreateAuraContainer()
+    if not self.AuraContainer then
+        self.AuraContainer = CreateFrame("AuraContainer", nil, self, "ABE_CDMAuraContainer")
+    end
+    return self.AuraContainer
+end
+
+function ABE_CDMCustomItemMixin:AnchorAuraContainer()
+    local container = self:GetAuraContainer()
+
+    container:ClearAllPoints()
+    container:SetPoint("CENTER", self, "CENTER")
+
+end
+
+function ABE_CDMCustomItemMixin:ConfigureAuraContainer(auraButton)
+    local container = self:GetAuraContainer()
+    local auraCooldown = self:GetAuraFrame()
+    
+    if not self.realAuraFrame then
+        self.realAuraFrame = CreateFrame("Frame", nil, auraButton)
+        self.realAuraFrame:SetAllPoints(self)
+        self.realAuraFrame:SetFrameLevel(self:GetFrameLevel() + 6)
+
+        self.realAuraFrame.iconBorder = Addon.CreateBorder(self.realAuraFrame, self.parentName)
+        local color = {}
+        color.r, color.g, color.b, color.a = Addon:GetRGBA("CDMBackdropAuraColor", nil, self.parentName)
+        self.realAuraFrame.color = color
+        --self.realAuraFrame.iconBorder:Show()
+        self.realAuraFrame.iconBorder:SetFrameLevel(self.realAuraFrame:GetFrameLevel() + 1)
+
+        self.realAuraFrame.pandemicBorder = Addon.CreateBorder(self.realAuraFrame, self.parentName)
+        local pColor = {}
+        pColor.r, pColor.g, pColor.b, pColor.a = Addon:GetRGBA("CDMBackdropPandemicColor", nil, self.parentName)
+        self.realAuraFrame.pColor = pColor
+        self.realAuraFrame.pandemicBorder:Show()
+        self.realAuraFrame.pandemicBorder:SetFrameLevel(self.realAuraFrame:GetFrameLevel() + 2)
+
+        self.realAuraFrame.pandemicGlow = CreateFrame("Frame", nil,  self.realAuraFrame, "ABE_CDMCustomItemPandemicGlow")
+        self.realAuraFrame.pandemicGlow:SetPoint("TOPLEFT", self.realAuraFrame, "TOPLEFT", -6, 6)
+        self.realAuraFrame.pandemicGlow:SetPoint("BOTTOMRIGHT", self.realAuraFrame, "BOTTOMRIGHT", 6, -6)
+        self.realAuraFrame.pandemicGlow:SetFrameLevel(self.realAuraFrame:GetFrameLevel() + 3)
+        self.realAuraFrame.pandemicGlow:Show()
+        self.realAuraFrame.pandemicGlow.FX.Anim:Play()
+
+        self.realAuraCooldownFrame = CreateFrame("Cooldown", nil, auraButton, "CooldownFrameTemplate")
+        self.realAuraCooldownFrame:SetFrameLevel(self:GetFrameLevel() + 5)
+
+        self.realAuraFrame.dispelBorder = auraButton:CreateTexture(nil, "OVERLAY")
+        self.realAuraFrame.dispelBorder:SetAllPoints(auraButton)
+
+        self.realAuraFrame.icon = auraButton:CreateTexture(nil, "OVERLAY")
+        self.realAuraFrame.icon:SetAllPoints(self.Icon)
+        local mask = self.Icon:GetMaskTexture(1)
+        if mask then
+            self.realAuraFrame.icon:AddMaskTexture(mask)
+        end
+        
+
+        self.realAuraFrame.overlayFrame = CreateFrame("Frame", nil, self.realAuraFrame)
+        self.realAuraFrame.overlayFrame:SetAllPoints(self.realAuraFrame)
+        self.realAuraFrame.overlayFrame:SetFrameLevel(self.realAuraFrame:GetFrameLevel() + 4)
+
+        self.realAuraFrame.overlayFrame.count = self.realAuraFrame.overlayFrame:CreateFontString(nil, "OVERLAY")
+    end
+
+    if auraButton.SetAuraBorder then
+        auraButton:SetAuraBorder(self.realAuraFrame.dispelBorder, {
+            showIcon = true,
+            showWhenHarmful = true,
+            showWhenHelpful = false,
+        })
+    end
+    
+    ABE_CDMCustomFrameCustomized:CustomizeCooldownFrame(self.realAuraCooldownFrame, self.parentName, self.Icon)
+    ABE_CDMCustomFrameCustomized:RefreshAuraColor(self.realAuraCooldownFrame, self.parentName)
+    ABE_CDMCustomFrameCustomized:RefreshAuraTimer(self.realAuraCooldownFrame, self.parentName)
+    ABE_CDMCustomFrameCustomized:CustomizeCooldownFont(self.realAuraCooldownFrame, self.parentName)
+    ABE_CDMCustomFrameCustomized:CustomizeStacksFont(self.realAuraFrame.overlayFrame.count, self.parentName, self.Icon)
+    ABE_CDMCustomFrameCustomized:SetupBackdrop(self.realAuraFrame.iconBorder, frameName, self.realAuraFrame.color)
+    ABE_CDMCustomFrameCustomized:SetupBackdrop(self.realAuraFrame.pandemicBorder, frameName, self.realAuraFrame.pColor)
+
+    auraButton:SetIcon(self.realAuraFrame.icon)
+    auraButton:SetApplicationCount(self.realAuraFrame.overlayFrame.count, {})
+    auraButton:SetDurationCooldown(self.realAuraCooldownFrame)
+    auraButton:SetSize(auraCooldown:GetSize())
+
+    auraButton:AddPandemicRegion(self.realAuraFrame.pandemicBorder)
+    auraButton:AddPandemicRegion(self.realAuraFrame.pandemicGlow)
+
+    local auraUnit = self:GetAuraUnit()
+    container:SetUnit(auraUnit)
+
+    self:AnchorAuraContainer()
+
+    return auraButton
+end
+
+local elemEB = {
+    [173184] = true,
+    [118522] = true,
+    [173183] = true,
+}
+
+function ABE_CDMCustomItemMixin:ClearAuraSlots()
+    local container = self:GetAuraContainer()
+    if not container then return end
+
+    container:SetEnabled(false)
+end
+
+function ABE_CDMCustomItemMixin:AddAuraSlot()
+
+    if self.fakeAura and self.fakeAura.duration then return end
+
+    local spellIDsRaw = self:GetRealAura()
+    if not spellIDsRaw or not next(spellIDsRaw) then return end
+
+    local spellIDs = {}
+    for _, spellID in ipairs(spellIDsRaw) do
+        spellIDs[tonumber(spellID)] = true
+    end
+    if not next(spellIDs) then return end
+
+    local container = self:CreateAuraContainer()
+
+    local auraUnit = self:GetAuraUnit()
+    local filterString = auraUnit == "player" and "HELPFUL|PLAYER" or "HARMFUL|PLAYER"
+    local IsElemHackNeeded = self:IsElemHackNeeded() == true
+    local candidateFilters = {includeSpellIDs = IsElemHackNeeded and elemEB or spellIDs}
+
+    if not self.AuraSet then
+        self.aura = container:AddAuraSlot("1", filterString, {
+            maxFrameCount = 1,
+            sortMethod = AuraContainerSortMethod.ExpirationOnly,
+            sortDirection = AuraContainerSortDirection.Reverse,
+            showIcon = true,
+
+            initializeFrame = function(button) self:ConfigureAuraContainer(button) end,
+
+            layout = {
+                elementWidth = 20,
+                elementHeight = 20,
+                elementSpacingX = 0,
+                elementSpacingY = 0,
+            },
+            candidateFilters = {
+                includeSpellIDs = IsElemHackNeeded and elemEB or spellIDs
+            }
+        })
+        self.AuraSet = true
+    end
+    container:SetAuraSlotFilterString("1", filterString)
+    container:SetAuraSlotCandidateFilters("1", candidateFilters)
+    container:SetAuraSlotSortMethod("1", AuraContainerSortMethod.ExpirationOnly, AuraContainerSortDirection.Reverse)
+    container:SetEnabled(true)
+    container:Show()
+end
+
+function ABE_CDMCustomItemMixin:GetAuraUnit()
+    local spellID = self.baseSpellID or self.spellID
+    local tbl = Addon.SPELLID_TO_AURASPELLID[spellID]
+    local auraUnit
+    if tbl then
+        auraUnit = tbl.auraUnit
+    end
+    auraUnit = auraUnit or (C_Spell.IsSpellHelpful(spellID) and "player" or "target")
+    self.auraUnit = auraUnit
+
+    return auraUnit
+end
+
+function ABE_CDMCustomItemMixin:IsElemHackNeeded()
+    local auraSpellIDs = self:GetRealAura()
+    if not self.elemShamHack then
+        for i, auraSpellID in ipairs(auraSpellIDs) do
+            if elemEB[auraSpellID] then
+                self.elemShamHack = true
+            end
+        end
+    end
+    return self.elemShamHack
+end
+
+function ABE_CDMCustomItemMixin:FindAuraSpellID()
+    if self.type ~= "spell" then return end
+
+    local spellID = self.baseSpellID or self.spellID
+
+    local tbl = Addon.SPELLID_TO_AURASPELLID[spellID]
+    if tbl then
+        self:SaveRealAuraInit(tbl.linkedSpellIDs)
+    end
+end
 -----------------------------
 ABE_CDMCustomItemProcGlow = {}
 
@@ -843,6 +1071,10 @@ function ABE_CDMCustomFrameMixin:OnLoad()
         CooldownFrame_Clear(auraCooldown)
         itemFrame:UnregisterAllEvents()
         itemFrame.registeredEvents = nil
+        itemFrame.auraUnit = nil
+        itemFrame.elemShamHack = nil
+        itemFrame.AuraFrameCreated = nil
+        itemFrame:ClearAuraSlots()
 	end
 
     self.itemPool = CreateFramePool("Frame", self.Container, self.itemTemplate, itemResetCallback)
@@ -855,6 +1087,8 @@ function ABE_CDMCustomFrameMixin:OnLoad()
     self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.FakeAuraAdded", self.OnFakeAuraAdded)
     self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.FakeAuraTypeChanged", self.OnFakeAuraTypeChanged)
     self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.UpdateFrame", self.OnFrameUpdate)
+
+    self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.RealAuraAdded", self.OnRealAuraAdded)
 
     C_Timer.After(0.5, function()
         self:RefreshLayout()    
@@ -871,6 +1105,7 @@ function ABE_CDMCustomFrameMixin:OnFrameUpdate(frameName)
     if self:GetName() ~= frameName then return end
     self:RefreshLayout()
 end
+
 function ABE_CDMCustomFrameMixin:OnFakeAuraTypeChanged(spellID, newType)
     for itemFrame in self.itemPool:EnumerateActive() do
         if itemFrame.itemID == spellID or itemFrame.spellID == spellID then
@@ -885,6 +1120,7 @@ function ABE_CDMCustomFrameMixin:OnFakeAuraTypeChanged(spellID, newType)
         end
     end
 end
+
 function ABE_CDMCustomFrameMixin:OnFakeAuraAdded(spellID, newDuration)
     for itemFrame in self.itemPool:EnumerateActive() do
         if itemFrame.itemID == spellID or itemFrame.spellID == spellID then
@@ -896,6 +1132,18 @@ function ABE_CDMCustomFrameMixin:OnFakeAuraAdded(spellID, newDuration)
                     type = 1
                 }
             end
+            local auraContainer = itemFrame:GetAuraContainer()
+            if auraContainer then
+                auraContainer:SetEnabled(false)
+            end
+        end
+    end
+end
+
+function ABE_CDMCustomFrameMixin:OnRealAuraAdded(spellID, auraSpellIDs)
+    for itemFrame in self.itemPool:EnumerateActive() do
+        if itemFrame.itemID == spellID or itemFrame.spellID == spellID then
+            itemFrame:AddAuraSlot()
         end
     end
 end
@@ -950,8 +1198,8 @@ function ABE_CDMCustomFrameMixin:OnCustomItemListItemUpdate(itemList, frameName)
 end
 function ABE_CDMCustomFrameMixin:RegisterUnitAura()
     if self.hasSpellElement then
-        self:RegisterUnitEvent("UNIT_AURA", "player")
-        --self:RegisterUnitEvent("UNIT_AURA", "player", "target")
+        --self:RegisterUnitEvent("UNIT_AURA", "player")
+        self:RegisterUnitEvent("UNIT_AURA", "player", "target")
     else
         self:UnregisterEvent("UNIT_AURA")
     end
@@ -968,10 +1216,10 @@ function ABE_CDMCustomFrameMixin:OnShow()
     self:RegisterEvent("CHALLENGE_MODE_START")
     self:RegisterEvent("FIRST_FRAME_RENDERED")
     self:RegisterEvent("UNIT_DIED")
-    self:RegisterUnitAura()
+    --self:RegisterUnitAura()
     self:RegisterUnitEvent("UNIT_PET", "player")
     --self:RegisterEvent("PLAYER_TOTEM_UPDATE")
-    --self:RegisterUnitEvent("UNIT_TARGET", "player")
+    self:RegisterUnitEvent("PLAYER_TARGET_CHANGED")
 end
 
 function ABE_CDMCustomFrameMixin:OnHide()
@@ -990,56 +1238,6 @@ function ABE_CDMCustomFrameMixin:OnHide()
     self:UnregisterEvent("UNIT_SPELLCAST_SUCCEEDED") ]]
 end
 
-local CooldownManagerFrames = {
-    "EssentialCooldownViewer",
-    "UtilityCooldownViewer",
-    "BuffBarCooldownViewer",
-    "BuffIconCooldownViewer",
-}
-
-function ABE_CDMCustomFrameMixin:OnAuraAddedEvent(spellID, overrideSpellID, auraData)
-    for itemFrame in self.itemPool:EnumerateActive() do
-        if not itemFrame.__removeAura and ((itemFrame.spellID == spellID or itemFrame.baseSpellID == spellID)
-        or (itemFrame.spellID == overrideSpellID or itemFrame.baseSpellID == overrideSpellID)) then
-            itemFrame.auraInstanceID = auraData.auraInstanceID
-            itemFrame.auraDuration = auraData.duration
-            local auraDurationObject = C_UnitAuras.GetAuraDuration("player", itemFrame.auraInstanceID)
-            if auraDurationObject then
-                itemFrame.__auraDurationObject = auraDurationObject
-                itemFrame.auraStartTime = auraDurationObject:GetStartTime()
-                itemFrame.isOnAuraTimer = true
-                local auraCooldown = itemFrame:GetAuraFrame()
-                auraCooldown:SetCooldownFromDurationObject(auraDurationObject)
-                itemFrame:RefreshData()
-            end
-        end
-    end
-end
-
-function ABE_CDMCustomFrameMixin:OnAuraUpdatedEvent(auraInstanceID)
-    for itemFrame in self.itemPool:EnumerateActive() do
-        if itemFrame.auraInstanceID == auraInstanceID then
-            itemFrame.isOnAuraTimer = true
-            local auraDurationObject = C_UnitAuras.GetAuraDuration("player", itemFrame.auraInstanceID)
-            if auraDurationObject then
-                itemFrame.auraStartTime = auraDurationObject:GetStartTime()
-                local auraCooldown = itemFrame:GetAuraFrame()
-                auraCooldown:SetCooldownFromDurationObject(auraDurationObject)
-                itemFrame:RefreshData()
-            end
-        end
-    end
-end
-function ABE_CDMCustomFrameMixin:OnAuraRemoveEvent(auraInstanceID)
-    for itemFrame in self.itemPool:EnumerateActive() do
-        if itemFrame.auraInstanceID == auraInstanceID then
-            itemFrame.isOnAuraTimer = false
-            local auraCooldown = itemFrame:GetAuraFrame()
-            CooldownFrame_Clear(auraCooldown)
-            itemFrame:RefreshData()
-        end
-    end
-end
 function ABE_CDMCustomFrameMixin:UpdateAllTrinkets(usedSlot)
     for itemFrame in self.itemPool:EnumerateActive() do
         if itemFrame.slotID and itemFrame.slotID ~= usedSlot and itemFrame.slotID < 16 then
@@ -1071,51 +1269,15 @@ function ABE_CDMCustomFrameMixin:OnEvent(event, ...)
                 end
             end
         end ]]
-
-    elseif event == "UNIT_AURA" then
-        local unit, unitAuraUpdateInfo = ...
-        if unitAuraUpdateInfo then
-            if unitAuraUpdateInfo.removedAuraInstanceIDs then
-                for _, auraInstanceID in ipairs(unitAuraUpdateInfo.removedAuraInstanceIDs) do
-                    self:OnAuraRemoveEvent(auraInstanceID)
-                end
-            end
-
-            if unitAuraUpdateInfo.updatedAuraInstanceIDs then
-                for _, auraInstanceID in ipairs(unitAuraUpdateInfo.updatedAuraInstanceIDs) do
-                    self:OnAuraUpdatedEvent(auraInstanceID)
-                end
-            end
-
-            if unitAuraUpdateInfo.addedAuras then
-                for _, auraData in ipairs(unitAuraUpdateInfo.addedAuras) do
-                    local itemFrames
-                    for _, frameName in ipairs(CooldownManagerFrames) do
-                        local frame = _G[frameName]
-                        if frame then
-                            RunNextFrame(function()
-                                itemFrames = frame.auraInstanceIDToItemFramesMap[auraData.auraInstanceID]
-                                if itemFrames then
-                                    for _, item in ipairs(itemFrames) do
-                                        if item.cooldownInfo then
-                                            local spellID = item.cooldownInfo.spellID
-                                            --print("addedAuras", spellID)
-                                            local overrideSpellID = item.cooldownInfo.overrideSpellID
-                                            self:OnAuraAddedEvent(spellID, overrideSpellID, auraData)
-                                            return
-                                        end
-                                    end
-                                end
-                            end)
-                        end
-                    end
-                end
-            end
-        end
-    elseif event == "UNIT_TARGET" then
+    elseif event == "PLAYER_TARGET_CHANGED" then
         local unit = ...
         for itemFrame in self.itemPool:EnumerateActive() do
-            itemFrame:RefreshData()
+            if itemFrame.auraUnit == "target" then
+                local container = itemFrame:GetAuraContainer()
+                if container then
+                    container:UpdateAllAuras()
+                end
+            end
         end
     elseif event == "UNIT_DIED" then
         local guid = ...
@@ -1133,7 +1295,7 @@ function ABE_CDMCustomFrameMixin:OnEvent(event, ...)
     or event == "CHALLENGE_MODE_START"
     or event == "UNIT_PET" then
         local currentTime = GetTime()
-        if currentTime - self.lastRunTime > 0.1 then
+        if self.lastRunTime and currentTime - self.lastRunTime > 0.1 then
             self:RefreshLayout()
         end
         self.lastRunTime = currentTime
@@ -1219,16 +1381,18 @@ function ABE_CDMCustomFrameMixin:OnAcquireItemFrame(itemFrame)
     applications.Applications:SetText("")
     itemFrame.fakeAura = itemFrame:GetFakeAura()
     itemFrame.stages = nil
+    itemFrame:FindAuraSpellID()
     --itemFrame:RefreshVisibility()
     --itemFrame:RefreshCount()
     itemFrame:RefreshData()
 	--itemFrame:SetHideWhenInactive(self.hideWhenInactive);
 end
 
-function ABE_CDMCustomFrameMixin:FindAuraForCurrentSpellID(spellID)
+function ABE_CDMCustomFrameMixin:FindKnownInCDM(spellID)
     for cdID, data in pairs(CooldownViewerSettings:GetDataProvider():GetDisplayData().cooldownInfoByID) do
         local itemSpellID = data.spellID
         if itemSpellID == spellID and data.isKnown then
+            local auraSpellID = data.hasAura and data.linkedSpellIDs[1] or data.selfAura and data.spellID
             return true
         end
     end
@@ -1250,13 +1414,14 @@ function ABE_CDMCustomFrameMixin:GetVisibleChildren()
                 data.id = Addon:GetRacialSpell() or data.id
             end
             
-            for i=1, 0, -1 do
-                if not isKnown then
-                    isKnown = C_SpellBook.IsSpellKnownOrInSpellBook(data.baseID or data.id, i)
-                end
-            end
+            isKnown = self:FindKnownInCDM(data.baseID or data.id)
+
             if not isKnown then
-                isKnown = self:FindAuraForCurrentSpellID(data.baseID or data.id)
+                for i=1, 0, -1 do
+                    if not isKnown then
+                        isKnown = C_SpellBook.IsSpellKnownOrInSpellBook(data.baseID or data.id, i)
+                    end
+                end
             end
 
             if isRacial then
@@ -1337,7 +1502,7 @@ function ABE_CDMCustomFrameMixin:GetVisibleChildren()
             self:OnAcquireItemFrame(item)
         end
 	end
-    self:RegisterUnitAura()
+    --self:RegisterUnitAura()
     return self.visibleChildren
 
 end
@@ -1367,6 +1532,7 @@ function ABE_CDMCustomFrameMixin:RefreshLayout()
     self.Container.__wasVisibleChildren = nil
 
     if self.Container.isCentered then
+        --self.Container:SetCollapsesLayout(true)
         Addon:ApplyCenteredGridLayout(self.Container, visibleChildren, self.Container.stride, self.Container.childXPadding)
     else
         Addon:ApplyStandardGridLayout(self.Container, visibleChildren, self.Container.stride, self.Container.childXPadding)
@@ -1466,12 +1632,22 @@ function ABE_CDMCustomFrameMixin:CreateFrame(name, parent, point, relativePoint,
     frame:SetPoint(point, UIParent, relativePoint, math.ceil(offsetX) or 0, math.ceil(offsetY) or 0)
     frame:SetFrameLevel(2)
     frame.template = template
+    
+    self.template = template
 
     return frame, { x = offsetX, y = offsetY }
 end
 
 function ABE_CDMCustomFrameMixin:DeleteFrame()
     
+end
+
+function ABE_CDMCustomFrameMixin:IsBarFrame()
+    return self.template == "ABE_CDMCustomBarFrame"
+end
+
+function ABE_CDMCustomFrameMixin:GetTemplate()
+    return self.template
 end
 --------------------------------
 
@@ -1504,14 +1680,24 @@ function ABE_CDMCustomFrameSelectionMixin:OnShow()
     parent.PulseAnim:Play()
 
     parent.isEditing = true
-    parent:RefreshVisibileOnCD()
+    if parent.RefreshVisibileOnCD then
+        parent:RefreshVisibileOnCD()
+    end
+    if parent.UpdatePlaceholders then
+        parent:UpdatePlaceholders(true)
+    end
 end
 function ABE_CDMCustomFrameSelectionMixin:OnHide()
     local parent = self:GetParent()
     parent.PulseAnim:Stop()
 
     parent.isEditing = false
-    parent:RefreshVisibileOnCD()
+    if parent.RefreshVisibileOnCD then
+        parent:RefreshVisibileOnCD()
+    end
+    if parent.UpdatePlaceholders then
+        parent:UpdatePlaceholders()
+    end
 end
 
 function ABE_CDMCustomFrameSelectionMixin:OnDragStart()
@@ -1656,8 +1842,8 @@ end
 -----------------------------------------------
 
 
-local function OnCreateNewMenuFrame(self, frameLabel, displayName)
-    local frame = ABE_CDMCustomFrameMixin:CreateFrame(frameLabel, nil, nil, nil, 0, 0)
+local function OnCreateNewMenuFrame(self, frameLabel, displayName, template)
+    local frame = ABE_CDMCustomFrameMixin:CreateFrame(frameLabel, nil, nil, nil, 0, 0, template)
     frame:SetDisplayName(displayName)
 end
 
@@ -1681,9 +1867,10 @@ local function OnDeleteMenuFrame(self, frameLabel)
     end
 end
 
-
 local function ProcessEvent(self, event, ...)
     if event == "PLAYER_LOGIN" then
+
+        BuildSpellIDToAuraSpellID()
         
         if not ABE_FAKE_AURAS then
             ABE_FAKE_AURAS = {}
@@ -1698,7 +1885,7 @@ local function ProcessEvent(self, event, ...)
 
         for index, data in ipairs(profileTable["CDMCustomFrames"]) do
             if data then
-                local frame = ABE_CDMCustomFrameMixin:CreateFrame( profileTable["CDMCustomFrames"][index].label, nil, nil, nil, data.point.x or 0, data.point.y or 0, data.template)
+                local frame = ABE_CDMCustomFrameMixin:CreateFrame( profileTable["CDMCustomFrames"][index].label, nil, nil, nil, data.point.x or 0, data.point.y or 0, data.template )
                 frame:SetDisplayName(data.name)
             end
         end

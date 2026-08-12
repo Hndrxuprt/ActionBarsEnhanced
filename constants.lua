@@ -118,7 +118,8 @@ Addon.GridLayoutHideActive = {
     [1] = L.AlwaysShow,
     [2] = L.ShowOnAura,
     [3] = L.ShowOnAuraAndCD,
-    --[4] = "Show when NOT on CD"
+    --[4] = "Show when NOT on CD",
+    --[5] = "Show Only CD",
 }
 Addon.BarTextJustifyH = {
     [1] = "LEFT",
@@ -146,6 +147,16 @@ Addon.CooldownFormatType = {
     [3] = L.CDFormatCeil,
     [4] = L.CDFormatCeilWithDecimals,
 }
+Addon.CustomBarDisplayTypes = {
+    [1] = L.BarDisplayOnCD,
+    [2] = L.BarDisplayOnAura,
+    [3] = L.BarDisplayOnAuraAndCD,
+}
+Addon.AuraTimeFormat = {
+    [1] = L.CastTimeRemaining,
+    [2] = L.CastTimeMax,
+    [3] = L.CastTimeRemainingAndMax,
+}
 
 do
     local cooldownColorCurve = C_CurveUtil.CreateColorCurve()
@@ -167,9 +178,31 @@ do
     invertAlphaCurve:AddPoint(0, 1.0)
     invertAlphaCurve:AddPoint(0.001, 0.0)
 
+    local pandemicCurve = C_CurveUtil.CreateCurve()
+    pandemicCurve:SetType(Enum.LuaCurveType.Step)
+    pandemicCurve:AddPoint(0.0, 0.0)
+    pandemicCurve:AddPoint(0.69, 0.0)
+    pandemicCurve:AddPoint(0.7, 1.0)
+    pandemicCurve:AddPoint(1.0, 1.0)
+
+    local chargesColorCurve = C_CurveUtil.CreateColorCurve()
+    chargesColorCurve:SetType(Enum.LuaCurveType.Step)
+    chargesColorCurve:AddPoint(0, CreateColor(1, 1, 1, 1))
+    chargesColorCurve:AddPoint(99, CreateColor(1, 1, 1, 1))
+    chargesColorCurve:AddPoint(100, CreateColor(1, 0, 0, 1))
+
+    Addon.chargesColorCurve = chargesColorCurve
     Addon.cooldownColorCurve = cooldownColorCurve
     Addon.alphaCurve = alphaCurve
     Addon.invertAlphaCurve = invertAlphaCurve
+    Addon.pandemicCurve = pandemicCurve
+
+    local defaultDurationFormatter = C_StringUtil.CreateSecondsFormatter()
+    Addon.defaultDurationFormatter = defaultDurationFormatter
+
+    defaultDurationFormatter:SetDefaultAbbreviation(Enum.SecondsFormatterAbbreviation.OneLetter)
+    defaultDurationFormatter:SetStripIntervalWhitespace(Enum.SecondsFormatterIntervalWhitespace.Strip)
+    defaultDurationFormatter:SetMillisecondsThreshold(5)
 end
 
 Addon.Defaults = {
@@ -671,6 +704,45 @@ Addon.Defaults = {
     CooldownFormatType = 3,
     CDMCooldownFormatType = 3,
 
+    CustomFrameBarNameEnable = true,
+    CurrentCustomFrameBarNameFont = "Default",
+    UseCustomFrameBarNameSize = false,
+    CustomFrameBarNameSize = 14,
+    UsCustomFrameBarNameColor = false,
+    CustomFrameBarNameColor = { r=1.0, g=1.0, b=1.0, a=1.0 },
+    CustomFrameBarNamePoint = 7,
+    CustomFrameBarNameRelativePoint = 7,
+    UseCustomFrameBarNameOffset = true,
+    CustomFrameBarNameOffsetX = 2,
+    CustomFrameBarNameOffsetY = 0,
+    CurrentCustomFrameBarNameJustifyH = 1,
+
+    CustomFrameBarStacksEnable = true,
+    CurrentCustomFrameBarStacksFont = "Default",
+    UseCustomFrameBarStacksSize = false,
+    CustomFrameBarStacksSize = 14,
+    UsCustomFrameBarStacksColor = false,
+    CustomFrameBarStacksColor = { r=1.0, g=1.0, b=1.0, a=1.0 },
+    CustomFrameBarStacksPoint = 8,
+    CustomFrameBarStacksRelativePoint = 7,
+    UseCustomFrameBarStacksOffset = true,
+    CustomFrameBarStacksOffsetX = -4,
+    CustomFrameBarStacksOffsetY = 0,
+    CurrentCustomFrameBarStacksJustifyH = 2,
+
+    CustomFrameBarTimeEnable = true,
+    CurrentCustomFrameBarTimeFormat = 1,
+    CurrentCustomFrameBarTimeFont = "Default",
+    UseCustomFrameBarTimeSize = false,
+    CustomFrameBarTimeSize = 11,
+    UseCustomFrameBarTimeColor = false,
+    CustomFrameBarTimeColor = { r=1.0, g=1.0, b=1.0, a=1.0 },
+    CurrentCustomFrameBarTimePoint = 8,
+    CurrentCustomFrameBarTimeRelativePoint = 8,
+    UseCustomFrameBarTimeOffset = false,
+    CustomFrameBarTimeOffsetX = 0,
+    CustomFrameBarTimeOffsetY = 0,
+    CurrentCustomFrameBarTimeJustifyH = 2,
 }
 
 Addon.Templates = {

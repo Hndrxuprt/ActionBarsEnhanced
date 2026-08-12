@@ -2288,7 +2288,7 @@ Addon.config.containers = {
                     local frameLabel = ABE_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
                     ABE_CDMCustomFrameCustomized:RefreshBarTextures(frame, frameLabel)
-                    frame:RefreshLayout()
+                    --frame:RefreshLayout()
                 end,
             },
             ["CDMCustomFrameBackgroundTexture"] = {
@@ -2304,7 +2304,7 @@ Addon.config.containers = {
                     local frameLabel = ABE_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
                     ABE_CDMCustomFrameCustomized:RefreshBarTextures(frame, frameLabel)
-                    frame:RefreshLayout()
+                    --frame:RefreshLayout()
                 end,
             },
             ["CDMCustomFrameBackgroundColor"] = {
@@ -2316,7 +2316,8 @@ Addon.config.containers = {
                 callback        = function()
                     local frameLabel = ABE_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
-                    frame:RefreshLayout()
+                    ABE_CDMCustomFrameCustomized:RefreshBarTextures(frame, frameLabel)
+                    --frame:RefreshLayout()
                 end,
             },
             ["CDMCustomFramePipTexture"] = {
@@ -2330,7 +2331,7 @@ Addon.config.containers = {
                 OnClose     = function()
                     local frameLabel = ABE_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
-                    frame:RefreshLayout()
+                    ABE_CDMCustomFrameCustomized:RefreshPipTexture(frame, frameName)
                 end,
             },
             ["CDMCustomFramePipSize"] = {
@@ -2345,7 +2346,7 @@ Addon.config.containers = {
                 callback        = function()
                     local frameLabel = ABE_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
-                    frame:RefreshLayout()
+                    ABE_CDMCustomFrameCustomized:RefreshPipTexture(frame, frameName)
                 end,
             },
         }
@@ -2732,6 +2733,18 @@ Addon.config.containers = {
                 name            = L.CDMBackdropAuraColor,
                 value           = "CDMBackdropAuraColor",
                 checkboxValues  = {"UseCDMBackdropAuraColor"},
+                alpha           = true,
+                callback        = function()
+                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                end,
+            },
+            ["CDMCustomFrameBackdropPandemicColor"] = {
+                type            = "colorSwatch",
+                name            = L.CDMBackdropPandemicColor,
+                value           = "CDMBackdropPandemicColor",
+                checkboxValues  = {"UseCDMBackdropPandemicColor"},
                 alpha           = true,
                 callback        = function()
                     local frameName = ABE_BarsListMixin:GetFrameLebel()

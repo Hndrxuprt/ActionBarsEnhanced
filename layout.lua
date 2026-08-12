@@ -756,6 +756,7 @@ Addon.CustomFrameCooldownViewer = {
             {name = "CDMCustomFrameBackdropSize", template = "OptionsCheckboxSliderTemplate"},
             {name = "CDMCustomFrameBackdropColor", template = "OptionsColorOverrideTemplate"},
             {name = "CDMCustomFrameBackdropAuraColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CDMCustomFrameBackdropPandemicColor", template = "OptionsColorOverrideTemplate"},
         }
     },
     {
@@ -765,6 +766,7 @@ Addon.CustomFrameCooldownViewer = {
             --{name = "CustomColorNotUsable", template = "OptionsColorOverrideTemplate"},
             --{name = "CustomColorOnGCD", template = "OptionsColorOverrideTemplate"},
             {name = "CustomColorOnActualCD", template = "OptionsColorOverrideTemplate"},
+            {name = "CustomColorOnAura", template = "OptionsColorOverrideTemplate"},
         }
     },
 }
@@ -848,7 +850,7 @@ Addon.CustomFrameBarsCooldownViewer = {
             {name = "IconScale", template = "OptionsCheckboxSliderTemplate"},
         }
     },
-    {
+    --[[ {
         name = "CDMCustomFrameCDContainer",
         childs = {
             {name = "CDMCustomFrameSwipeTexture", template = "OptionsDropdownTemplate"},
@@ -875,24 +877,39 @@ Addon.CustomFrameBarsCooldownViewer = {
             {name = "PreviewAuraSwipe", template = "OptionsButtonCooldownPreviewTemplate", point = {"TOP", "desc", "BOTTOM", 180, -120}, scale="1.8"},
             {name = "PreviewEdge", template = "OptionsButtonCooldownPreviewTemplate", point = {"TOP", "desc", "BOTTOM", 180, -230}, scale="1.8"},
         }
-    },
+    }, ]]
     {
-        name = "CDMCustomFrameFontContainer",
+        name = "CDMCustomFrameBarFontContainer",
         childs = {
-            {name = "CDMCooldownFont", template = "OptionsDropdownTemplate"},
-            {name = "CDMCooldownFontSize", template = "OptionsCheckboxSliderTemplate"},
-            {name = "CDMCooldownFontOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
-            {name = "CDMCooldownFontColor", template = "OptionsColorOverrideTemplate"},
-            {name = "CDMColorizedCooldownFont", template = "OptionsCheckboxTemplate"},
-            {name = "CDMCooldownFormatType", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameBarNameEnable", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomFrameBarNameFont", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameBarNameSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameBarNameColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CDMCustomFrameBarNamePoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CDMCustomFrameBarNameOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+            --{name = "CDMCustomFrameBarNameJustifyH", template = "OptionsDropdownTemplate"},
+
             {name = "Divider", template = "OptionsDividerTemplate"},
-            {name = "CDMStacksFont", template = "OptionsDropdownTemplate"},
-            {name = "CDMStacksPoint", template = "OptionsDoubleDropdownTemplate"},
-            {name = "CDMStacksOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
-            {name = "CDMStacksFontSize", template = "OptionsCheckboxSliderTemplate"},
-            {name = "CDMStacksFontColor", template = "OptionsColorOverrideTemplate"},
-            {name = "PreviewCooldownFont", template = "OptionsButtonCooldownPreviewTemplate", point = {"TOP", "desc", "BOTTOM", 180, -10}, scale="1.8"},
-            {name = "PreviewFont", template = "OptionsButtonTextPreviewTemplate", point = {"TOP", "desc", "BOTTOM", 180, -110}, scale="1.8"},
+
+            {name = "CDMCustomFrameBarStacksEnable", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomFrameBarStacksFont", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameBarStacksSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameBarStacksColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CDMCustomFrameBarStacksPoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CDMCustomFrameBarStacksOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+            --{name = "CDMCustomFrameBarStacksJustifyH", template = "OptionsDropdownTemplate"},
+
+            {name = "Divider2", template = "OptionsDividerTemplate"},
+
+            {name = "CDMCustomFrameBarTimeEnable", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomFrameBarTimeFormat", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameBarTimeFont", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameBarTimeSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameBarTimeColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CDMCustomFrameBarTimePoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CDMCustomFrameBarTimeOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+            --{name = "CDMCustomFrameBarTimeJustifyH", template = "OptionsDropdownTemplate"},
+
         }
     },
     {
@@ -901,6 +918,7 @@ Addon.CustomFrameBarsCooldownViewer = {
             {name = "CDMCustomFrameBackdropSize", template = "OptionsCheckboxSliderTemplate"},
             {name = "CDMCustomFrameBackdropColor", template = "OptionsColorOverrideTemplate"},
             {name = "CDMCustomFrameBackdropAuraColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CDMCustomFrameBackdropPandemicColor", template = "OptionsColorOverrideTemplate"},
         }
     },
 }
@@ -1138,4 +1156,204 @@ Addon.TargetFrameSpellBar = {
         }
     },
 
+}
+Addon.CustomFrameAuraViewer = {
+    {
+        name = "CDMAuraFrameContainer",
+        childs = {
+            {name = "CDMCustomFrameEditBox", template = "OptionsEditBoxTemplate"},
+            {name = "CDMCustomItemListFrame", template = "OptionsCDMCustomItemListTemplate", height = 250},
+            {name = "CDMCustomFrameAddSpellByID", template = "OptionsEditBoxTemplate"},
+            {name = "CDMCustomFrameDeleteButton", template = "OptionsNamedButtonTemplate"},
+        }
+    },
+    {
+        name = "CDMAuraFrameGridContainer",
+        childs = {
+            {name = "CDMCustomFrameItemSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameIconPadding", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameStride", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameGridLayoutType", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameHideWhenInactive", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameVerticalGrowth", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameHorizontalGrowth", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameGridDirection", template = "OptionsDropdownTemplate"},
+        }
+    },
+    {
+        name = "CDMAuraFrameAttachContainer",
+        childs = {
+            {name = "CDMEnableAttach", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomFrameAttachTo", template = "OptionsEditBoxTemplate"},
+            {name = "CDMCustomFrameAttachPoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CDMCustomFrameAttachOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+        }
+    },
+    {
+        name = "FadeOptionsContainer",
+        childs = {
+            {name = "FadeOutBars", template = "OptionsCheckboxSliderTemplate"},
+            {name = "FadeInOnCombat", template = "OptionsCheckboxTemplate"},
+            {name = "FadeInOnTarget", template = "OptionsCheckboxTemplate"},
+            {name = "FadeInOnCasting", template = "OptionsCheckboxTemplate"},
+            {name = "FadeInOnHover", template = "OptionsCheckboxTemplate"},
+        }
+    },
+    {
+        name = "CDMAuraFrameCDContainer",
+        childs = {
+            {name = "CDMAuraFrameSwipeTexture", template = "OptionsDropdownTemplate"},
+            {name = "CDMAuraFrameSwipeSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMAuraFrameAuraSwipeColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CDMAuraFrameAuraTimerColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CDMAuraFrameReverseSwipe", template = "OptionsCheckboxTemplate"},
+            {name = "Divider", template = "OptionsDividerTemplate"},
+            {name = "CDMAuraFrameEdgeTexture", template = "OptionsDropdownTemplate"},
+            {name = "CDMAuraFrameEdgeSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMAuraFrameEdgeColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CDMAuraFrameEdgeAlwaysShow", template = "OptionsCheckboxTemplate"},
+        }
+    },
+    {
+        name = "CDMAuraFrameFontContainer",
+        childs = {
+            {name = "CDMAuraFrameCooldownFont", template = "OptionsDropdownTemplate"},
+            {name = "CDMAuraFrameCooldownFontSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMAuraFrameCooldownFontOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+            {name = "CDMAuraFrameCooldownFontColor", template = "OptionsColorOverrideTemplate"},
+            {name = "Divider", template = "OptionsDividerTemplate"},
+            {name = "CDMAuraFrameStacksFont", template = "OptionsDropdownTemplate"},
+            {name = "CDMAuraFrameStacksPoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CDMAuraFrameStacksOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+            {name = "CDMAuraFrameStacksFontSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMAuraFrameStacksFontColor", template = "OptionsColorOverrideTemplate"},
+        }
+    },
+    {
+        name = "CDMCustomFrameBackdropContainer",
+        childs = {
+            {name = "CDMCustomFrameBackdropSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameBackdropColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CDMCustomFrameBackdropAuraColor", template = "OptionsColorOverrideTemplate"},
+            --{name = "CDMCustomFrameBackdropPandemicColor", template = "OptionsColorOverrideTemplate"},
+        }
+    },
+    
+}
+Addon.CustomFrameBarsAuraViewer = {
+    {
+        name = "CDMCustomFrameBarContainer",
+        childs = {
+            {name = "CDMCustomFrameEditBox", template = "OptionsEditBoxTemplate"},
+            {name = "CDMCustomItemListFrame", template = "OptionsCDMCustomItemListTemplate", height = 250},
+            {name = "CDMCustomFrameAddSpellByID", template = "OptionsEditBoxTemplate"},
+            {name = "CDMCustomFrameDeleteButton", template = "OptionsNamedButtonTemplate"}
+        }
+    },
+
+    {
+        name = "CDMAuraBarGridContainer",
+        childs = {
+            --{name = "CDMCustomFrameItemSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameIconPadding", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameStride", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameGridLayoutType", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameHideWhenInactive", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameVerticalGrowth", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameHorizontalGrowth", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameGridDirection", template = "OptionsDropdownTemplate"},
+
+            {name = "Divider1", template = "OptionsDividerTemplate"},
+
+            {name = "CDMCustomFrameBarWidth", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameBarHeight", template = "OptionsCheckboxSliderTemplate"},
+
+            {name = "Divider2", template = "OptionsDividerTemplate"},
+
+            {name = "CDMCustomFrameStatusbarTexture", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameBackgroundTexture", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameBackgroundColor", template = "OptionsColorOverrideTemplate"},
+
+            {name = "Divider3", template = "OptionsDividerTemplate"},
+
+            {name = "CDMCustomFramePipTexture", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFramePipSize", template = "OptionsDoubleCheckboxSliderTemplate"},
+
+        }
+    },
+    {
+        name = "CDMCustomFrameAttachContainer",
+        childs = {
+            {name = "CDMEnableAttach", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomFrameAttachTo", template = "OptionsEditBoxTemplate"},
+            {name = "CDMCustomFrameAttachPoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CDMCustomFrameAttachOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+        }
+    },
+    {
+        name = "FadeOptionsContainer",
+        childs = {
+            {name = "FadeOutBars", template = "OptionsCheckboxSliderTemplate"},
+            {name = "FadeInOnCombat", template = "OptionsCheckboxTemplate"},
+            {name = "FadeInOnTarget", template = "OptionsCheckboxTemplate"},
+            {name = "FadeInOnCasting", template = "OptionsCheckboxTemplate"},
+            {name = "FadeInOnHover", template = "OptionsCheckboxTemplate"},
+        }
+    },
+    {
+        name = "CDMAuraBarIconOptionsContainer",
+        childs = {
+            {name = "CDMCustomFrametBarIconPosition", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameBarIconSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameBarIconOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+
+            --[[ {name = "Divider", template = "OptionsDividerTemplate"},
+
+            {name = "IconMaskTextureOptions", template = "OptionsDropdownTemplate"},
+            {name = "MaskScale", template = "OptionsCheckboxSliderTemplate"},
+            {name = "IconScale", template = "OptionsCheckboxSliderTemplate"}, ]]
+        }
+    },
+    {
+        name = "CDMAuraBarFontContainer",
+        childs = {
+            {name = "CDMCustomFrameBarNameEnable", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomFrameBarNameFont", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameBarNameSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameBarNameColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CDMCustomFrameBarNamePoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CDMCustomFrameBarNameOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+            --{name = "CDMCustomFrameBarNameJustifyH", template = "OptionsDropdownTemplate"},
+
+            {name = "Divider", template = "OptionsDividerTemplate"},
+
+            {name = "CDMCustomFrameBarStacksEnable", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomFrameBarStacksFont", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameBarStacksSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameBarStacksColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CDMCustomFrameBarStacksPoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CDMCustomFrameBarStacksOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+            --{name = "CDMCustomFrameBarStacksJustifyH", template = "OptionsDropdownTemplate"},
+
+            {name = "Divider2", template = "OptionsDividerTemplate"},
+
+            {name = "CDMCustomFrameBarTimeEnable", template = "OptionsCheckboxTemplate"},
+            {name = "CDMCustomFrameBarTimeFormat", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameBarTimeFont", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameBarTimeSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameBarTimeColor", template = "OptionsColorOverrideTemplate"},
+            {name = "CDMCustomFrameBarTimePoint", template = "OptionsDoubleDropdownTemplate"},
+            {name = "CDMCustomFrameBarTimeOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
+            --{name = "CDMCustomFrameBarTimeJustifyH", template = "OptionsDropdownTemplate"},
+        }
+    },
+    {
+        name = "CDMCustomFrameBackdropContainer",
+        childs = {
+            {name = "CDMCustomFrameBackdropSize", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameBackdropColor", template = "OptionsColorOverrideTemplate"},
+            --{name = "CDMCustomFrameBackdropAuraColor", template = "OptionsColorOverrideTemplate"},
+            --{name = "CDMCustomFrameBackdropPandemicColor", template = "OptionsColorOverrideTemplate"},
+        }
+    },
 }

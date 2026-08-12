@@ -273,12 +273,14 @@ function ABE_BarsButtonMixin:SetSelected(selected)
 		self.Texture:Show()
         self.active = true
         if bar then
-            ABE_BarsFrameMixin.selection:ClearAllPoints()
-            ABE_BarsFrameMixin.selection:SetPoint("TOPLEFT", bar, "TOPLEFT", -4, 4)
-            ABE_BarsFrameMixin.selection:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 4, -4)
-            ABE_BarsFrameMixin.selection:SetFrameLevel(bar:GetFrameLevel()-1)
-            ABE_BarsFrameMixin.selection:Show()
-            ABE_BarsFrameMixin.selection.PulseAnim:Play()
+            if not bar:HasAnyForbiddenAspects() then
+                ABE_BarsFrameMixin.selection:ClearAllPoints()
+                ABE_BarsFrameMixin.selection:SetPoint("TOPLEFT", bar, "TOPLEFT", -4, 4)
+                ABE_BarsFrameMixin.selection:SetPoint("BOTTOMRIGHT", bar, "BOTTOMRIGHT", 4, -4)
+                ABE_BarsFrameMixin.selection:SetFrameLevel(bar:GetFrameLevel()-1)
+                ABE_BarsFrameMixin.selection:Show()
+                ABE_BarsFrameMixin.selection.PulseAnim:Play()
+            end
 
             if isCastBar then
                 ABE_CastingBarMixin.OnOptionsSelected(bar, true)
@@ -593,7 +595,7 @@ local function CreateCustomFrame(layout, template)
         index = index,
     })
 
-    EventRegistry:TriggerEvent("CDMCustomItemList.CreateNewFrame", frameLabel, "Custom Frame "..index)
+    EventRegistry:TriggerEvent("CDMCustomItemList.CreateNewFrame", frameLabel, "Custom Frame "..index, template)
 
     local listFrame = ABE_BarsListMixin:GetFrame()
     listFrame:RefreshMenu()
@@ -611,12 +613,19 @@ function ABE_BarsGroupButtonIconMixin:DisplayContextMenu()
         rootDescription:CreateButton(L.CreateIconsFrame, function()
             CreateCustomFrame("CustomFrameCooldownViewer", "ABE_CDMCustomFrame")
         end)
+        rootDescription:CreateButton(L.CreateAuraFrame, function()
+            CreateCustomFrame("CustomFrameAuraViewer", "ABE_CDMCustomAuraFrame")
+        end)
         
         rootDescription:CreateDivider()
         
         --[[ rootDescription:CreateButton(L.CreateBarsFrame, function()
-            Addon.Print("not ready yet :<")
+            --Addon.Print("not ready yet :<")
             CreateCustomFrame("CustomFrameBarsCooldownViewer", "ABE_CDMCustomBarFrame")
         end) ]]
+        rootDescription:CreateButton(L.CreateBarsFrame, function()
+            --Addon.Print("not ready yet :<")
+            CreateCustomFrame("CustomFrameBarsAuraViewer", "ABE_CDMCustomAuraBar")
+        end)
     end)
 end
