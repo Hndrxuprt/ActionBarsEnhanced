@@ -639,6 +639,7 @@ function ABE_CDMCustomItemMixin:RefreshData()
     self:RefreshSpellCooldownInfo()
     --self:RefreshAuraInstance()
     --self:RefreshSpellTexture()
+    self:AddAuraSlot()
     if self.type == "item" and IsHealthstoneItem(self.itemID) then
         C_Timer.After(0.5, function()
             self:RefreshCount()
@@ -648,10 +649,9 @@ function ABE_CDMCustomItemMixin:RefreshData()
         self:RefreshCount()
         self:RefreshVisibility()
     end
-    self:RefreshBackdrop()
+    --self:RefreshBackdrop()
     self:RefreshIconColor()
 
-    self:AddAuraSlot()
     
     --self:RefreshProcAnim()
 end
@@ -669,6 +669,13 @@ function ABE_CDMCustomItemMixin:RefreshVisibility()
     else
         self:SetAlpha(1)
     end ]]
+    self.Icon:Show()
+    if self.iconBorder then
+        self.iconBorder:Show()
+    end
+    local cooldownFrame = self:GetCooldownFrame()
+    if cooldownFrame then cooldownFrame:Show() end
+
     local hideType = parentFrame.Container.hideInactiveType
 
     local hideEmpty = Addon:GetValue("CDMCustomHideEmpty", nil, self.parentName)
@@ -695,8 +702,14 @@ function ABE_CDMCustomItemMixin:RefreshVisibility()
         end
         parentFrame:RefreshVisibileOnCD()
     elseif hideType == 2 then
-        if self.isOnAuraTimer then
+        if self.isOnAuraTimer or self.AuraSet then
             self.__isActive = true
+            self.Icon:Hide()
+            if self.iconBorder then
+                self.iconBorder:Hide()
+            end
+            local cooldownFrame = self:GetCooldownFrame()
+            if cooldownFrame then cooldownFrame:Hide() end
         else
             self.__isActive = false
         end
@@ -706,7 +719,7 @@ function ABE_CDMCustomItemMixin:RefreshVisibility()
     end
 
     if hideEmpty and self.type == "item" then
-        if not self.isOnAuraTimer and self.count == 0 then
+        if not self.isOnAuraTimer and not self.AuraSet and self.count == 0 then
             self.__isActive = false
             self.__shouldBeVisible = false
         else
@@ -840,6 +853,10 @@ function ABE_CDMCustomItemMixin:AnchorAuraContainer()
 end
 
 function ABE_CDMCustomItemMixin:ConfigureAuraContainer(auraButton)
+    if not auraButton:CanBeAccessedInContext() then
+        return
+    end
+
     local container = self:GetAuraContainer()
     local auraCooldown = self:GetAuraFrame()
     
@@ -849,7 +866,7 @@ function ABE_CDMCustomItemMixin:ConfigureAuraContainer(auraButton)
         self.realAuraFrame:SetFrameLevel(self:GetFrameLevel() + 6)
 
         self.realAuraFrame.iconBorder = Addon.CreateBorder(self.realAuraFrame, self.parentName)
-        local color = {}
+        local color = {r=1,g=0,b=0,a=1}
         color.r, color.g, color.b, color.a = Addon:GetRGBA("CDMBackdropAuraColor", nil, self.parentName)
         self.realAuraFrame.color = color
         --self.realAuraFrame.iconBorder:Show()
@@ -1090,9 +1107,12 @@ function ABE_CDMCustomFrameMixin:OnLoad()
 
     self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.RealAuraAdded", self.OnRealAuraAdded)
 
-    C_Timer.After(0.5, function()
-        self:RefreshLayout()    
-    end)
+    for _, data in ipairs(self.itemList) do
+        if data.type == "item" and not C_Item.IsItemDataCachedByID(tonumber(data.id)) then
+            C_Item.RequestLoadItemDataByID(tonumber(data.id))
+        end
+    end
+    self:RefreshLayout()
 
     self:SetMouseClickEnabled(false)
 

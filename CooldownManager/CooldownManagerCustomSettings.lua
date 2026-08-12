@@ -1050,23 +1050,6 @@ function OptionsCDMCustomItemMixin:GetBarDisplayType()
     return displayType or 3
 end
 
-function OptionsCDMCustomItemMixin:SetBarDisplayType(barType)
-    local itemID = self:GetSpellID()
-    if not itemID then return end
-    local frameIndex = ABE_BarsListMixin:GetFrameIndex()
-    local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
-    local profileTable = Addon.P.profilesList[profileName]
-
-    if profileTable["CDMCustomFrames"] then
-        local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
-        if not frameTbl.displayTypes then
-            frameTbl.displayTypes = {}
-        end
-        frameTbl.displayTypes[itemID] = barType
-    end
-    self.barDisplayType = barType
-end
-
 function OptionsCDMCustomItemMixin:IsRacialSpell()
     if not self.spellID then return false end
 
@@ -1133,46 +1116,6 @@ function OptionsCDMCustomItemMixin:DisplayContextMenu()
                     ColorPickerFrame:SetupColorPickerAndShow(colorInfo)
                 end,
                 colorInfo)
-            end
-            --[[ do
-                local color = self.auraColor
-                local colorInfo = {
-                    r=color.r, g=color.g, b=color.b, opacity=color.a,
-                    swatchFunc = function()
-                        local r,g,b = ColorPickerFrame:GetColorRGB()
-                        local a = ColorPickerFrame:GetColorAlpha()
-                        self:SaveCustomAuraColor({r=r, g=g, b=b, a=a})
-                        self.auraColor = {r=r, g=g, b=b, a=a}
-                        self.HasAuraColor:SetVertexColor(r, g, b, 1)
-                    end,
-                    cancelFunc = function()
-                        local r,g,b = ColorPickerFrame:GetColorRGB()
-                        local a = ColorPickerFrame:GetColorAlpha()
-                        self:SaveCustomAuraColor({r=r, g=g, b=b, a=a})
-                        self.auraColor = {r=r, g=g, b=b, a=a}
-                        self.HasAuraColor:SetVertexColor(r, g, b, 1)
-                    end,
-                    hasOpacity = 1,
-                }
-                rootDescription:CreateColorSwatch("Custom Aura Color", function()
-                    ColorPickerFrame:SetupColorPickerAndShow(colorInfo)
-                end,
-                colorInfo)
-            end ]]
-            do
-                local function IsSelected(value)
-                    return self.barDisplayType == value
-                end
-                local function SetSelected(value)
-                    self:SetBarDisplayType(value)
-                    EventRegistry:TriggerEvent("CDMCustomItemList.UpdateFrame", self.parentFrame.frameName)
-                end
-
-                local submenu = rootDescription:CreateButton(L.BarDisplayTitle)
-                submenu:CreateTitle(L.BarDisplayDesc)
-                for i, name in ipairs(Addon.CustomBarDisplayTypes) do
-                    submenu:CreateRadio(name, IsSelected, SetSelected, i)
-                end
             end
         end
         if self:IsRacialSpell() then

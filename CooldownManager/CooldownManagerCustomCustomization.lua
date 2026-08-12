@@ -400,10 +400,10 @@ function ABE_CDMCustomFrameCustomized:RefreshBackdrop(frame, frameName)
 
                 if not itemFrame.iconBorder then
                     itemFrame.iconBorder = Addon.CreateBorder(itemFrame.Icon, frameName)
-                    itemFrame.iconBorder:Show()
+                    itemFrame.iconBorder:SetShown(self.__isActive)
                 elseif itemFrame.iconBorder then
                     self:SetupBackdrop(itemFrame.iconBorder, frameName)
-                    itemFrame.iconBorder:Show()
+                    itemFrame.iconBorder:SetShown(self.__isActive)
                 end
                 if itemFrame.Bar and not itemFrame.BarBorder then
                     itemFrame.BarBorder = Addon.CreateBorder(itemFrame.Bar, frameName)
