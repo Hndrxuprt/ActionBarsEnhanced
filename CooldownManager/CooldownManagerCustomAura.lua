@@ -13,6 +13,7 @@ function ABE_CDMCustomAuraMixin:GetProfileTable()
 end
 
 function ABE_CDMCustomAuraMixin:OnLoad()
+	self:SetFrameLevel(2)
 	self.frameName = self:GetName()
 
 	self:SetMovable(true)
