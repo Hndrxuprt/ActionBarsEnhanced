@@ -279,7 +279,7 @@ function ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, for
         local cooldownFrame = itemFrame.Icon.Cooldown or itemFrame.Cooldown
         local auraFrame = itemFrame.Icon.AuraCooldown or itemFrame.AuraCooldown
 
-        local cdColor
+        local cdColor = {r=1,g=1,b=1,a=1}
         if Addon:GetValue("UseCooldownFontColor", nil, frameName) then
             cdColor.r,cdColor.g,cdColor.b,cdColor.a = Addon:GetRGBA("CooldownFontColor", nil, frameName)
         end
