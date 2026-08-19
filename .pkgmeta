@@ -1,4 +1,11 @@
-package-as: ActionBarsEnhanced
+package-as: HUI
+
+move-folders:
+  HUI/HUI_ActionBars: HUI_ActionBars
+  HUI/HUI_CooldownManagerView: HUI_CooldownManagerView
+  HUI/HUI_CooldownManagerCustom: HUI_CooldownManagerCustom
+  HUI/HUI_CastingBar: HUI_CastingBar
+  HUI/ActionBarsEnhanced: ActionBarsEnhanced
 
 ignore:
     - .github

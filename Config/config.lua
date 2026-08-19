@@ -8,6 +8,17 @@ Addon.Fonts = {}
 Addon.config = {}
 
 Addon.config.containers = {
+    ModulesOptionsContainer = {
+        title = "Modules",
+        desc = "Enable or disable modules (requires /reload)",
+        childs = {
+            ["ModuleActionBars"] = { type = "moduleCheckbox", name = "Action Bars", moduleName = "ActionBars" },
+            ["ModuleCooldownManagerView"] = { type = "moduleCheckbox", name = "Cooldown Manager", moduleName = "CooldownManagerView" },
+            ["ModuleCooldownManagerCustom"] = { type = "moduleCheckbox", name = "Custom Cooldown Frames", moduleName = "CooldownManagerCustom" },
+            ["ModuleCastingBar"] = { type = "moduleCheckbox", name = "Casting Bars", moduleName = "CastingBar" },
+            ["ModuleMinimapButton"] = { type = "minimapCheckbox", name = L.MinimapButton },
+        },
+    },
     GlowOptionsContainer = {
         title = L.GlowTypeTitle,
         desc = L.GlowTypeDesc,
@@ -19,8 +30,8 @@ Addon.config.containers = {
                 IsSelected  = function(id) return id == Addon:GetValue("CurrentLoopGlow", nil, true) end,
                 OnSelect    = function(id) Addon:SaveSetting("CurrentLoopGlow", id, true) end,
                 showNew     = false,
-                OnEnter     = function(id, frames) ActionBarEnhancedDropdownMixin:RefreshProcLoop(frames.ProcLoopPreview, id) end,
-                OnClose     = function() ActionBarEnhancedDropdownMixin:RefreshAllPreview() end,
+                OnEnter     = function(id, frames) HUIDropdownMixin:RefreshProcLoop(frames.ProcLoopPreview, id) end,
+                OnClose     = function() HUIDropdownMixin:RefreshAllPreview() end,
             },
             ["CustomColorGlow"] = {
                 type            = "colorSwatch",
@@ -29,7 +40,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseLoopGlowColor", "DesaturateGlow"},
                 alpha           = false,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    HUIDropdownMixin:RefreshAllPreview()
                 end,
             },
             ["ProcLoopPreview"] = {
@@ -51,8 +62,8 @@ Addon.config.containers = {
                     Addon:SaveSetting("CurrentProcGlow", id, true)
                 end,
                 showNew     = false,
-                OnEnter     = function(id, frames) ActionBarEnhancedDropdownMixin:RefreshProcStart(frames.ProcStartPreview, id) end,
-                OnClose     = function() ActionBarEnhancedDropdownMixin:RefreshAllPreview() end,
+                OnEnter     = function(id, frames) HUIDropdownMixin:RefreshProcStart(frames.ProcStartPreview, id) end,
+                OnClose     = function() HUIDropdownMixin:RefreshAllPreview() end,
             },
             ["CustomColorProc"] = {
                 type            = "colorSwatch",
@@ -61,7 +72,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseProcColor", "DesaturateProc"},
                 alpha           = false,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    HUIDropdownMixin:RefreshAllPreview()
                 end,
             },
             ["ProcStartPreview"] = {
@@ -163,9 +174,9 @@ Addon.config.containers = {
                 IsSelected  = function(id) return id == Addon:GetValue("CurrentNormalTexture", nil, true) end,
                 OnSelect    = function(id) Addon:SaveSetting("CurrentNormalTexture", id, true) end,
                 showNew     = false,
-                OnEnter     = function(id, frames) ActionBarEnhancedDropdownMixin:RefreshNormalTexture(frames.PreviewNormal, id) end,
+                OnEnter     = function(id, frames) HUIDropdownMixin:RefreshNormalTexture(frames.PreviewNormal, id) end,
                 OnClose     = function() 
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    HUIDropdownMixin:RefreshAllPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -176,7 +187,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseNormalTextureColor", "DesaturateNormal"},
                 alpha           = true,
                 callback        = function() 
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    HUIDropdownMixin:RefreshAllPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -196,9 +207,9 @@ Addon.config.containers = {
                 IsSelected  = function(id) return id == Addon:GetValue("CurrentBackdropTexture", nil, true) end,
                 OnSelect    = function(id) Addon:SaveSetting("CurrentBackdropTexture", id, true) end,
                 showNew     = false,
-                OnEnter     = function(id, frames) ActionBarEnhancedDropdownMixin:RefreshBackdropTexture(frames.PreviewBackdrop, id) end,
+                OnEnter     = function(id, frames) HUIDropdownMixin:RefreshBackdropTexture(frames.PreviewBackdrop, id) end,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    HUIDropdownMixin:RefreshAllPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -209,7 +220,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseBackdropColor", "DesaturateBackdrop"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    HUIDropdownMixin:RefreshAllPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -230,9 +241,9 @@ Addon.config.containers = {
                 IsSelected  = function(id) return id == Addon:GetValue("CurrentIconMaskTexture", nil, true) end,
                 OnSelect    = function(id) Addon:SaveSetting("CurrentIconMaskTexture", id, true) end,
                 showNew     = false,
-                OnEnter     = function(id, frames) ActionBarEnhancedDropdownMixin:RefreshIconMaskTexture(frames.PreviewIcon, id) end,
+                OnEnter     = function(id, frames) HUIDropdownMixin:RefreshIconMaskTexture(frames.PreviewIcon, id) end,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    HUIDropdownMixin:RefreshAllPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -246,7 +257,7 @@ Addon.config.containers = {
                 step            = 0.01,
                 sliderName      = {top = L.Scale},
                 callback        = function(_, frames)
-                    ActionBarEnhancedDropdownMixin:RefreshPreview(frames.PreviewIcon)
+                    HUIDropdownMixin:RefreshPreview(frames.PreviewIcon)
                     Addon:RefreshButtons()
                 end,
             },
@@ -260,7 +271,7 @@ Addon.config.containers = {
                 step            = 0.01,
                 sliderName      = {top = L.Scale},
                 callback        = function(_, frames)
-                    ActionBarEnhancedDropdownMixin:RefreshPreview(frames.PreviewIcon)
+                    HUIDropdownMixin:RefreshPreview(frames.PreviewIcon)
                     Addon:RefreshButtons()
                 end,
             },
@@ -280,9 +291,9 @@ Addon.config.containers = {
                 IsSelected  = function(id) return id == Addon:GetValue("CurrentPushedTexture", nil, true) end,
                 OnSelect    = function(id) Addon:SaveSetting("CurrentPushedTexture", id, true) end,
                 showNew     = false,
-                OnEnter     = function(id, frames) ActionBarEnhancedDropdownMixin:RefreshPushedTexture(frames.PreviewPushed, id) end,
+                OnEnter     = function(id, frames) HUIDropdownMixin:RefreshPushedTexture(frames.PreviewPushed, id) end,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    HUIDropdownMixin:RefreshAllPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -293,7 +304,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UsePushedColor", "DesaturatePushed"},
                 alpha           = false,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    HUIDropdownMixin:RefreshAllPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -316,9 +327,9 @@ Addon.config.containers = {
                 IsSelected  = function(id) return id == Addon:GetValue("CurrentHighlightTexture", nil, true) end,
                 OnSelect    = function(id) Addon:SaveSetting("CurrentHighlightTexture", id, true) end,
                 showNew     = false,
-                OnEnter     = function(id, frames) ActionBarEnhancedDropdownMixin:RefreshHighlightTexture(frames.PreviewHighlight, id) end,
+                OnEnter     = function(id, frames) HUIDropdownMixin:RefreshHighlightTexture(frames.PreviewHighlight, id) end,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    HUIDropdownMixin:RefreshAllPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -329,7 +340,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseHighlightColor", "DesaturateHighlight"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    HUIDropdownMixin:RefreshAllPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -352,9 +363,9 @@ Addon.config.containers = {
                 IsSelected  = function(id) return id == Addon:GetValue("CurrentCheckedTexture", nil, true) end,
                 OnSelect    = function(id) Addon:SaveSetting("CurrentCheckedTexture", id, true) end,
                 showNew     = false,
-                OnEnter     = function(id, frames) ActionBarEnhancedDropdownMixin:RefreshCheckedTexture(frames.PreviewChecked, id) end,
+                OnEnter     = function(id, frames) HUIDropdownMixin:RefreshCheckedTexture(frames.PreviewChecked, id) end,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    HUIDropdownMixin:RefreshAllPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -365,7 +376,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCheckedColor","DesaturateChecked"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
+                    HUIDropdownMixin:RefreshAllPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -390,10 +401,10 @@ Addon.config.containers = {
                 OnSelect    = function(id) Addon:SaveSetting("CurrentSwipeTexture", id, true) end,
                 showNew     = false,
                 OnEnter     = function(id, frames)
-                    ActionBarEnhancedDropdownMixin:RefreshSwipeTexture(frames.PreviewSwipe, id)
+                    HUIDropdownMixin:RefreshSwipeTexture(frames.PreviewSwipe, id)
                 end,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    HUIDropdownMixin:RefreshCooldownPreview()
                 end,
             },
             ["SwipeSize"] = {
@@ -406,7 +417,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    HUIDropdownMixin:RefreshCooldownPreview()
                 end,
             },
             ["SwipeColor"] = {
@@ -415,14 +426,14 @@ Addon.config.containers = {
                 value           = "CooldownColor",
                 checkboxValues  = {"UseCooldownColor"},
                 alpha           = true,
-                callback        = function() ActionBarEnhancedDropdownMixin:RefreshCooldownPreview() end,
+                callback        = function() HUIDropdownMixin:RefreshCooldownPreview() end,
             },
             ["ShowCountdownNumbersForCharges"] = {
                 type            = "checkbox",
                 name            = L.ShowCountdownNumbersForCharges,
                 value           = "ShowCountdownNumbersForCharges",
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    HUIDropdownMixin:RefreshCooldownPreview()
                 end,
             },
             ["EdgeTexture"] = {
@@ -433,10 +444,10 @@ Addon.config.containers = {
                 OnSelect    = function(id) Addon:SaveSetting("CurrentEdgeTexture", id, true) end,
                 showNew     = false,
                 OnEnter     = function(id, frames)
-                    ActionBarEnhancedDropdownMixin:RefreshEdgeTexture(frames.PreviewEdge, id)
+                    HUIDropdownMixin:RefreshEdgeTexture(frames.PreviewEdge, id)
                 end,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    HUIDropdownMixin:RefreshCooldownPreview()
                 end,
             },
             ["EdgeSize"] = {
@@ -449,7 +460,7 @@ Addon.config.containers = {
                 step            = 0.1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    HUIDropdownMixin:RefreshCooldownPreview()
                 end,
             },
             ["EdgeColor"] = {
@@ -458,14 +469,14 @@ Addon.config.containers = {
                 value           = "EdgeColor",
                 checkboxValues  = {"UseEdgeColor"},
                 alpha           = true,
-                callback        = function() ActionBarEnhancedDropdownMixin:RefreshCooldownPreview() end,
+                callback        = function() HUIDropdownMixin:RefreshCooldownPreview() end,
             },
             ["EdgeAlwaysShow"] = {
                 type            = "checkbox",
                 name            = L.EdgeAlwaysShow,
                 value           = "EdgeAlwaysShow",
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    HUIDropdownMixin:RefreshCooldownPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -478,10 +489,10 @@ Addon.config.containers = {
                 OnSelect    = function(id) Addon:SaveSetting("CurrentCooldownFont", id, true) end,
                 showNew     = false,
                 OnEnter     = function(id, frames)
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownFont(frames.PreviewCooldownFont, id)
+                    HUIDropdownMixin:RefreshCooldownFont(frames.PreviewCooldownFont, id)
                 end,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    HUIDropdownMixin:RefreshCooldownPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -495,7 +506,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    HUIDropdownMixin:RefreshCooldownPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -506,7 +517,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCooldownFontColor"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    HUIDropdownMixin:RefreshCooldownPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -516,7 +527,7 @@ Addon.config.containers = {
                 value           = "ColorizedCooldownFont",
                 showNew         = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    HUIDropdownMixin:RefreshCooldownPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -529,7 +540,7 @@ Addon.config.containers = {
                 showNew     = true,
                 OnEnter     = false,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    HUIDropdownMixin:RefreshCooldownPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -543,7 +554,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    HUIDropdownMixin:RefreshCooldownPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -626,11 +637,7 @@ Addon.config.containers = {
                 name            = L.HideTalkingHead,
                 value           = "HideTalkingHead",
                 callback        = function(checked)
-                    if checked then
-                        Addon.eventHandlerFrame:RegisterEvent("TALKINGHEAD_REQUESTED")
-                    else
-                        Addon.eventHandlerFrame:UnregisterEvent("TALKINGHEAD_REQUESTED")
-                    end
+                    Addon:SetTalkingHeadEnabled(checked)
                 end,
             },
             ["HideInterrupt"] = {
@@ -679,14 +686,14 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = function(id, frames)
                     Addon:PreviewButtons("HotkeyFont", id)
-                    ActionBarEnhancedDropdownMixin:RefreshHotkeyFont(frames.PreviewFont05, id)
-                    ActionBarEnhancedDropdownMixin:RefreshHotkeyFont(frames.PreviewFont075, id)
-                    ActionBarEnhancedDropdownMixin:RefreshHotkeyFont(frames.PreviewFont1, id)
-                    ActionBarEnhancedDropdownMixin:RefreshHotkeyFont(frames.PreviewFont15, id)
-                    ActionBarEnhancedDropdownMixin:RefreshHotkeyFont(frames.PreviewFont2, id)
+                    HUIDropdownMixin:RefreshHotkeyFont(frames.PreviewFont05, id)
+                    HUIDropdownMixin:RefreshHotkeyFont(frames.PreviewFont075, id)
+                    HUIDropdownMixin:RefreshHotkeyFont(frames.PreviewFont1, id)
+                    HUIDropdownMixin:RefreshHotkeyFont(frames.PreviewFont15, id)
+                    HUIDropdownMixin:RefreshHotkeyFont(frames.PreviewFont2, id)
                 end,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -698,10 +705,10 @@ Addon.config.containers = {
                 OnSelect    = function(id) Addon:SaveSetting("CurrentHotkeyOutline", id, true) end,
                 showNew     = false,
                 OnEnter     = function(id, frames)
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                 end,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -715,7 +722,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -726,7 +733,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseHotkeyColor"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -744,16 +751,16 @@ Addon.config.containers = {
                 },
                 showNew     = false,
                 OnEnter     = {
-                    function() ActionBarEnhancedDropdownMixin:RefreshFontPreview() end,
-                    function() ActionBarEnhancedDropdownMixin:RefreshFontPreview() end,
+                    function() HUIDropdownMixin:RefreshFontPreview() end,
+                    function() HUIDropdownMixin:RefreshFontPreview() end,
                 },
                 OnClose     = {
                     function()
-                        ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                        HUIDropdownMixin:RefreshFontPreview()
                         Addon:RefreshButtons()
                     end,
                     function()
-                        ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                        HUIDropdownMixin:RefreshFontPreview()
                         Addon:RefreshButtons()
                     end,
                 },
@@ -768,7 +775,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -779,7 +786,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseHotkeyShadow"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -793,7 +800,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -807,7 +814,7 @@ Addon.config.containers = {
                 step            = 0.1,
                 sliderName      = {top = L.Scale},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -820,14 +827,14 @@ Addon.config.containers = {
                 OnSelect    = function(id) Addon:SaveSetting("CurrentStacksFont", id, true) end,
                 showNew     = false,
                 OnEnter     = function(id, frames)
-                    ActionBarEnhancedDropdownMixin:RefreshStacksFont(frames.PreviewFont05, id)
-                    ActionBarEnhancedDropdownMixin:RefreshStacksFont(frames.PreviewFont075, id)
-                    ActionBarEnhancedDropdownMixin:RefreshStacksFont(frames.PreviewFont1, id)
-                    ActionBarEnhancedDropdownMixin:RefreshStacksFont(frames.PreviewFont15, id)
-                    ActionBarEnhancedDropdownMixin:RefreshStacksFont(frames.PreviewFont2, id)
+                    HUIDropdownMixin:RefreshStacksFont(frames.PreviewFont05, id)
+                    HUIDropdownMixin:RefreshStacksFont(frames.PreviewFont075, id)
+                    HUIDropdownMixin:RefreshStacksFont(frames.PreviewFont1, id)
+                    HUIDropdownMixin:RefreshStacksFont(frames.PreviewFont15, id)
+                    HUIDropdownMixin:RefreshStacksFont(frames.PreviewFont2, id)
                 end,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -839,10 +846,10 @@ Addon.config.containers = {
                 OnSelect    = function(id) Addon:SaveSetting("CurrentStacksOutline", id, true) end,
                 showNew     = false,
                 OnEnter     = function(id, frames)
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                 end,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -856,7 +863,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -867,7 +874,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseStacksColor"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -885,16 +892,16 @@ Addon.config.containers = {
                 },
                 showNew     = false,
                 OnEnter     = {
-                    function() ActionBarEnhancedDropdownMixin:RefreshFontPreview() end,
-                    function() ActionBarEnhancedDropdownMixin:RefreshFontPreview() end,
+                    function() HUIDropdownMixin:RefreshFontPreview() end,
+                    function() HUIDropdownMixin:RefreshFontPreview() end,
                 },
                 OnClose     = {
                     function()
-                        ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                        HUIDropdownMixin:RefreshFontPreview()
                         Addon:RefreshButtons()
                     end,
                     function()
-                        ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                        HUIDropdownMixin:RefreshFontPreview()
                         Addon:RefreshButtons()
                     end,
                 },
@@ -909,7 +916,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -920,7 +927,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseStacksShadow"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -934,7 +941,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -948,7 +955,7 @@ Addon.config.containers = {
                 step            = 0.1,
                 sliderName      = {top = L.Scale},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -957,7 +964,7 @@ Addon.config.containers = {
                 name            = L.FontHideName,
                 value           = "FontHideName",
                 callback        = function(_, frames) 
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -971,7 +978,7 @@ Addon.config.containers = {
                 step            = 0.1,
                 sliderName      = {top = L.Scale},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                     Addon:RefreshButtons()
                 end,
             },
@@ -1026,7 +1033,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Rows},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     if frameName == "GlobalSettings" then
                         Addon:UpdateAllActionBarGrid()
                     else
@@ -1045,7 +1052,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Columns},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     if frameName == "GlobalSettings" then
                         Addon:UpdateAllActionBarGrid()
                     else
@@ -1064,7 +1071,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Buttons},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     if frameName == "GlobalSettings" then
                         Addon:UpdateAllActionBarGrid()
                     else
@@ -1083,7 +1090,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Padding},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     if frameName == "GlobalSettings" then
                         Addon:UpdateAllActionBarGrid()
                     else
@@ -1108,7 +1115,7 @@ Addon.config.containers = {
                 name            = L.CDMCenteredGrid,
                 value           = "GridCentered",
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     if frameName == "GlobalSettings" then
                         Addon:UpdateAllActionBarGrid()
                     else
@@ -1126,7 +1133,7 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     if frameName == "GlobalSettings" then
                         Addon:UpdateAllActionBarGrid()
                     else
@@ -1165,7 +1172,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1177,11 +1184,11 @@ Addon.config.containers = {
                 OnSelect    = function(id) Addon:SaveSetting("CurrentSwipeTexture", id, true) end,
                 showNew     = false,
                 OnEnter     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    HUIDropdownMixin:RefreshCooldownPreview()
                 end,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1195,8 +1202,8 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1207,8 +1214,8 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCooldownColor"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1218,7 +1225,7 @@ Addon.config.containers = {
                 name            = L.ShowCountdownNumbersForCharges,
                 value           = "ShowCountdownNumbersForCharges",
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    HUIDropdownMixin:RefreshCooldownPreview()
                 end,
             },
 
@@ -1227,8 +1234,8 @@ Addon.config.containers = {
                 name            = L.CDMAuraRemoveSwipe,
                 value           = "CDMAuraRemoveSwipe",
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1239,8 +1246,8 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCooldownAuraColor"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1251,8 +1258,8 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCDMAuraTimerColor"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1261,8 +1268,8 @@ Addon.config.containers = {
                 name            = L.CDMReverseSwipe,
                 value           = "CDMReverseSwipe",
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1271,8 +1278,8 @@ Addon.config.containers = {
                 name            = L.CDMAuraReverseSwipe,
                 value           = "CDMAuraReverseSwipe",
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1281,7 +1288,7 @@ Addon.config.containers = {
                 name            = L.CDMRemoveGCDSwipe,
                 value           = "CDMRemoveGCDSwipe",
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1294,8 +1301,8 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1309,8 +1316,8 @@ Addon.config.containers = {
                 step            = 0.1,
                 sliderName      = {top = L.Scale},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1321,8 +1328,8 @@ Addon.config.containers = {
                 checkboxValues  = {"UseEdgeColor"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1331,8 +1338,8 @@ Addon.config.containers = {
                 name            = L.EdgeAlwaysShow,
                 value           = "EdgeAlwaysShow",
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1365,8 +1372,8 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1380,8 +1387,8 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1395,8 +1402,8 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1407,8 +1414,8 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCooldownFontColor"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1421,11 +1428,11 @@ Addon.config.containers = {
                 OnSelect    = function(id) Addon:SaveSetting("CurrentStacksFont", id, true) end,
                 showNew     = false,
                 OnEnter     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
+                    HUIDropdownMixin:RefreshFontPreview()
                 end,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshFontPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1443,18 +1450,18 @@ Addon.config.containers = {
                 },
                 showNew     = false,
                 OnEnter     = {
-                    function() ActionBarEnhancedDropdownMixin:RefreshFontPreview() end,
-                    function() ActionBarEnhancedDropdownMixin:RefreshFontPreview() end,
+                    function() HUIDropdownMixin:RefreshFontPreview() end,
+                    function() HUIDropdownMixin:RefreshFontPreview() end,
                 },
                 OnClose     = {
                     function()
-                        ActionBarEnhancedDropdownMixin:RefreshFontPreview()
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
+                        HUIDropdownMixin:RefreshFontPreview()
+                        local frameName = HUI_BarsListMixin:GetFrameLebel()
                         CooldownManagerEnhanced:ForceUpdate(frameName)
                     end,
                     function()
-                        ActionBarEnhancedDropdownMixin:RefreshFontPreview()
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
+                        HUIDropdownMixin:RefreshFontPreview()
+                        local frameName = HUI_BarsListMixin:GetFrameLebel()
                         CooldownManagerEnhanced:ForceUpdate(frameName)
                     end,
                 },
@@ -1469,8 +1476,8 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshFontPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1484,8 +1491,8 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshFontPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1496,8 +1503,8 @@ Addon.config.containers = {
                 checkboxValues  = {"UseStacksColor"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshFontPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1511,7 +1518,7 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1525,7 +1532,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1536,7 +1543,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseNameCDMFontColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1546,7 +1553,17 @@ Addon.config.containers = {
                 value           = "ColorizedCooldownFont",
                 showNew         = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
+                    CooldownManagerEnhanced:ForceUpdate(frameName)
+                end,
+            },
+            ["CDMColorizedAuraFont"] = {
+                type            = "checkbox",
+                name            = L.ColorizedAuraFont,
+                value           = "ColorizedAuraFont",
+                showNew         = true,
+                callback        = function()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1559,7 +1576,7 @@ Addon.config.containers = {
                 showNew     = true,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1587,7 +1604,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1598,7 +1615,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCDMBackdropColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1609,7 +1626,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCDMBackdropAuraColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1620,7 +1637,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCDMBackdropPandemicColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1641,7 +1658,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1655,7 +1672,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1669,7 +1686,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Offset},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1683,7 +1700,7 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1694,7 +1711,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCDMBarColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1708,7 +1725,7 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1719,7 +1736,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCDMBarBGColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1732,7 +1749,7 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1745,7 +1762,7 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1759,7 +1776,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {{top = L.SizeX}, {top = L.SizeY}},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1786,7 +1803,7 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1799,7 +1816,7 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1813,7 +1830,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Padding},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1826,7 +1843,7 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1839,7 +1856,7 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1848,7 +1865,7 @@ Addon.config.containers = {
                 name            = L.CDMRemoveIconMask,
                 value           = "CDMRemoveIconMask",
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1857,7 +1874,7 @@ Addon.config.containers = {
                 name            = L.CDMRemovePandemic,
                 value           = "CDMRemovePandemic",
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1866,7 +1883,7 @@ Addon.config.containers = {
                 name            = L.CDMRemoveAuraTypeBorder,
                 value           = "CDMRemoveAuraTypeBorder",
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1878,7 +1895,7 @@ Addon.config.containers = {
                 name            = L.RemoveDesaturation,
                 value           = "CDMRemoveDesaturation",
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1895,10 +1912,10 @@ Addon.config.containers = {
                 IsSelected  = function(id) return id == Addon:GetValue("CurrentIconMaskTexture", nil, true) end,
                 OnSelect    = function(id) Addon:SaveSetting("CurrentIconMaskTexture", id, true) end,
                 showNew     = false,
-                OnEnter     = function(id, frames) ActionBarEnhancedDropdownMixin:RefreshIconMaskTexture(frames.PreviewIcon, id) end,
+                OnEnter     = function(id, frames) HUIDropdownMixin:RefreshIconMaskTexture(frames.PreviewIcon, id) end,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshAllPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1912,8 +1929,8 @@ Addon.config.containers = {
                 step            = 0.01,
                 sliderName      = {top = L.Scale},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshAllPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1927,8 +1944,8 @@ Addon.config.containers = {
                 step            = 0.01,
                 sliderName      = {top = L.Scale},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshAllPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
                 end,
             },
@@ -1955,14 +1972,14 @@ Addon.config.containers = {
                 type            = "editbox",
                 name            = L.CDMCustomFrameName,
                 defaultText     = function()
-                    local frame = _G[ABE_BarsListMixin:GetFrameLebel()]
+                    local frame = _G[HUI_BarsListMixin:GetFrameLebel()]
                     if frame then
                         local frameName = frame:GetDisplayName()
                         return frameName
                     end
                 end,
                 OnEnterPressed  = function(self)
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
                     local name = self:GetText()
                     self.currentName = name
@@ -1985,7 +2002,7 @@ Addon.config.containers = {
                 name            = L.CDMCustomFrameDelete,
                 buttonName      = L.Delete,
                 OnClick         = function(self)
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     EventRegistry:TriggerEvent("CDMCustomItemList.DeleteFrame", frameLabel)
                 end
             },
@@ -1995,7 +2012,7 @@ Addon.config.containers = {
                 defaultText     = "",
                 numeric         = true,
                 OnEnterPressed  = function(self)
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local id = self:GetText()
                     EventRegistry:TriggerEvent("CDMCustomItemList.AddSpellByID", id, frameLabel)
                     self:ClearFocus()
@@ -2008,7 +2025,7 @@ Addon.config.containers = {
                 defaultText     = "",
                 numeric         = true,
                 OnEnterPressed  = function(self)
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local id = self:GetText()
                     EventRegistry:TriggerEvent("CDMCustomItemList.AddItemByID", id, frameLabel)
                     self:ClearFocus()
@@ -2020,7 +2037,7 @@ Addon.config.containers = {
                 name            = L.CDMCustomFrameTrackSlot13,
                 value           = "CDMCustomTrackTrink1",
                 callback        = function(checked)
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     EventRegistry:TriggerEvent("CDMCustomItemList.AddItemBySlot", 13, frameLabel, checked)
                 end
             },
@@ -2029,7 +2046,7 @@ Addon.config.containers = {
                 name            = L.CDMCustomFrameTrackSlot14,
                 value           = "CDMCustomTrackTrink2",
                 callback        = function(checked)
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     EventRegistry:TriggerEvent("CDMCustomItemList.AddItemBySlot", 14, frameLabel, checked)
                 end
             },
@@ -2038,7 +2055,7 @@ Addon.config.containers = {
                 name            = L.CDMCustomFrameTrackSlot16,
                 value           = "CDMCustomTrackWeapon1",
                 callback        = function(checked)
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     EventRegistry:TriggerEvent("CDMCustomItemList.AddItemBySlot", 16, frameLabel, checked)
                 end
             },
@@ -2047,7 +2064,7 @@ Addon.config.containers = {
                 name            = L.CDMCustomFrameTrackSlot17,
                 value           = "CDMCustomTrackWeapon2",
                 callback        = function(checked)
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     EventRegistry:TriggerEvent("CDMCustomItemList.AddItemBySlot", 17, frameLabel, checked)
                 end
             },
@@ -2056,7 +2073,7 @@ Addon.config.containers = {
                 name            = L.CDMCustomFrameTrackRacial,
                 value           = "CDMCustomTrackRacial",
                 callback        = function(checked)
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     EventRegistry:TriggerEvent("CDMCustomItemList.AddRacial", frameLabel, checked)
                 end
             },
@@ -2065,7 +2082,7 @@ Addon.config.containers = {
                 name            = L.CDMCustomFrameHideWhen0,
                 value           = "CDMCustomHideEmpty",
                 callback        = function(checked)
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
                     frame:RefreshLayout()
                 end
@@ -2080,7 +2097,7 @@ Addon.config.containers = {
                 step            = 0.1,
                 sliderName      = {top = L.Alpha},
                 callback        = function()
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
                     frame:RefreshLayout()
                 end,
@@ -2101,9 +2118,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshBarWidth(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshBarWidth(frame, frameName)
                     frame:RefreshLayout()
                 end,
             },
@@ -2117,9 +2134,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshItemSize(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshItemSize(frame, frameName)
                     frame:RefreshLayout()
                 end,
             },
@@ -2133,7 +2150,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Padding},
                 callback        = function()
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
                     frame:SetGridPadding()
                     frame:RefreshLayout()
@@ -2149,7 +2166,7 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Columns},
                 callback        = function()
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
                     frame:SetGridStride()
                     frame:RefreshLayout()
@@ -2160,7 +2177,7 @@ Addon.config.containers = {
                 name            = L.CenteredLayout,
                 value           = "CDMCustomCenteredLayout",
                 callback        = function(checked)
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
                     frame:SetGridCentered(checked)
                     frame:RefreshLayout()
@@ -2175,7 +2192,7 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose        = function()
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
                     frame:SetupGridLayoutParams()
                     frame:RefreshLayout()
@@ -2190,7 +2207,7 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
                     frame:SetupGridLayoutParams()
                     frame:RefreshLayout()
@@ -2205,7 +2222,7 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose        = function()
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
                     frame:SetGridVerticalGrowth()
                     frame:RefreshLayout()
@@ -2220,7 +2237,7 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose        = function()
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
                     frame:SetGridHorizontalGrowth()
                     frame:RefreshLayout()
@@ -2235,7 +2252,7 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose        = function()
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
                     frame:SetGridDirection()
                     frame:RefreshLayout()
@@ -2252,9 +2269,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Width},
                 callback        = function()
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
-                    ABE_CDMCustomFrameCustomized:RefreshBarSize(frame, frameLabel)
+                    HUI_CDMCustomFrameCustomized:RefreshBarSize(frame, frameLabel)
                     frame:RefreshLayout()
                 end,
             },
@@ -2268,9 +2285,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Height},
                 callback        = function()
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
-                    ABE_CDMCustomFrameCustomized:RefreshBarSize(frame, frameLabel)
+                    HUI_CDMCustomFrameCustomized:RefreshBarSize(frame, frameLabel)
                     frame:RefreshLayout()
                 end,
             },
@@ -2285,9 +2302,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
-                    ABE_CDMCustomFrameCustomized:RefreshBarTextures(frame, frameLabel)
+                    HUI_CDMCustomFrameCustomized:RefreshBarTextures(frame, frameLabel)
                     --frame:RefreshLayout()
                 end,
             },
@@ -2301,9 +2318,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
-                    ABE_CDMCustomFrameCustomized:RefreshBarTextures(frame, frameLabel)
+                    HUI_CDMCustomFrameCustomized:RefreshBarTextures(frame, frameLabel)
                     --frame:RefreshLayout()
                 end,
             },
@@ -2314,9 +2331,9 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCDMCustomFrameBackgroundColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
-                    ABE_CDMCustomFrameCustomized:RefreshBarTextures(frame, frameLabel)
+                    HUI_CDMCustomFrameCustomized:RefreshBarTextures(frame, frameLabel)
                     --frame:RefreshLayout()
                 end,
             },
@@ -2329,9 +2346,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
-                    ABE_CDMCustomFrameCustomized:RefreshPipTexture(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshPipTexture(frame, frameName)
                 end,
             },
             ["CDMCustomFramePipSize"] = {
@@ -2344,9 +2361,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {{top = L.SizeX}, {top = L.SizeY}},
                 callback        = function()
-                    local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameLabel]
-                    ABE_CDMCustomFrameCustomized:RefreshPipTexture(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshPipTexture(frame, frameName)
                 end,
             },
         }
@@ -2360,32 +2377,52 @@ Addon.config.containers = {
                 name            = L.EnableAttach,
                 value           = "CDMEnableAttach",
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
                 end,
             },
             ["CDMCustomFrameAttachTo"] = {
-                type            = "editbox",
+                type            = "editboxPicker",
                 name            = L.CDMCustomFrameAttachFrameName,
                 numLetters      = 100,
+                pickerButtonName = L.FramePickerSelect,
+                pickerOnClick   = function(self)
+                    Addon.FramePicker:Start(function(frameName)
+                        local editBox = self:GetParent().EditBox
+                        editBox:SetText(frameName)
+                        editBox.currentName = frameName
+                        Addon:SaveSetting("CurrentAttachFrame", frameName, true)
+                        local customFrameName = HUI_BarsListMixin:GetFrameLebel()
+                        local customFrame = _G[customFrameName]
+                        HUI_CDMCustomFrameCustomized:RefreshAnchors(customFrame, customFrameName)
+                    end)
+                end,
                 defaultText     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local name = Addon:GetValue("CurrentAttachFrame", nil, frameName)
                     return name or ""
                 end,
                 OnEnterPressed  = function(self)
-                    local frameName = self:GetText()
-                    local frame = _G[frameName]
-                    if frame then
-                        self.currentName = frameName
-
-                        Addon:SaveSetting("CurrentAttachFrame", frameName, true)
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
-                        local frame = _G[frameName]
-                        ABE_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
+                    local frameName = self:GetText():match("^%s*(.-)%s*$")
+                    if frameName == "" then
+                        self.currentName = ""
+                        Addon:SaveSetting("CurrentAttachFrame", "", true)
+                        local customFrameName = HUI_BarsListMixin:GetFrameLebel()
+                        local customFrame = _G[customFrameName]
+                        HUI_CDMCustomFrameCustomized:RefreshAnchors(customFrame, customFrameName)
                     else
-                        Addon.Print("Cant find frame with name: |cffff0000", frameName)
+                        local frame = _G[frameName]
+                        if frame then
+                            self.currentName = frameName
+
+                            Addon:SaveSetting("CurrentAttachFrame", frameName, true)
+                            local customFrameName = HUI_BarsListMixin:GetFrameLebel()
+                            local customFrame = _G[customFrameName]
+                            HUI_CDMCustomFrameCustomized:RefreshAnchors(customFrame, customFrameName)
+                        else
+                            Addon.Print("Cant find frame with name: |cffff0000", frameName)
+                        end
                     end
                     self:ClearFocus()
                 end,
@@ -2415,14 +2452,14 @@ Addon.config.containers = {
                 },
                 OnClose     = {
                     function()
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
+                        local frameName = HUI_BarsListMixin:GetFrameLebel()
                         local frame = _G[frameName]
-                        ABE_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
+                        HUI_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
                     end,
                     function()
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
+                        local frameName = HUI_BarsListMixin:GetFrameLebel()
                         local frame = _G[frameName]
-                        ABE_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
+                        HUI_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
                     end,
                 },
             },
@@ -2436,9 +2473,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
                 end,
             },
         }
@@ -2456,10 +2493,10 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshAllPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
             ["CDMCustomFrameMaskScale"] = {
@@ -2472,10 +2509,10 @@ Addon.config.containers = {
                 step            = 0.01,
                 sliderName      = {top = L.Scale},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshAllPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
             ["CDMCustomFrameIconScale"] = {
@@ -2488,10 +2525,10 @@ Addon.config.containers = {
                 step            = 0.01,
                 sliderName      = {top = L.Scale},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshAllPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
             ["PreviewIcon"] = {
@@ -2511,13 +2548,13 @@ Addon.config.containers = {
                 OnSelect    = function(id) Addon:SaveSetting("CurrentSwipeTexture", id, true) end,
                 showNew     = false,
                 OnEnter     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    HUIDropdownMixin:RefreshCooldownPreview()
                 end,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
             ["CDMCustomFrameSwipeSize"] = {
@@ -2530,10 +2567,10 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
             ["CDMCustomFrameSwipeColor"] = {
@@ -2543,10 +2580,10 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCooldownColor"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
             ["ShowCountdownNumbersForCharges"] = {
@@ -2554,7 +2591,7 @@ Addon.config.containers = {
                 name            = L.ShowCountdownNumbersForCharges,
                 value           = "ShowCountdownNumbersForCharges",
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
+                    HUIDropdownMixin:RefreshCooldownPreview()
                 end,
             },
 
@@ -2563,10 +2600,12 @@ Addon.config.containers = {
                 name            = L.CDMAuraRemoveSwipe,
                 value           = "CDMAuraRemoveSwipe",
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    if frame and frame.RefreshLayout then
+                        frame:RefreshLayout()
+                    end
                 end,
             },
             ["CDMCustomFrameAuraSwipeColor"] = {
@@ -2576,10 +2615,10 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCooldownAuraColor"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
             ["CDMCustomFrameAuraTimerColor"] = {
@@ -2589,10 +2628,10 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCDMAuraTimerColor"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
             ["CDMCustomFrameReverseSwipe"] = {
@@ -2600,10 +2639,10 @@ Addon.config.containers = {
                 name            = L.CDMReverseSwipe,
                 value           = "CDMReverseSwipe",
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
             ["CDMCustomFrameAuraReverseSwipe"] = {
@@ -2611,10 +2650,10 @@ Addon.config.containers = {
                 name            = L.CDMAuraReverseSwipe,
                 value           = "CDMAuraReverseSwipe",
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
             ["CDMCustomFrameRemoveGCDSwipe"] = {
@@ -2622,9 +2661,9 @@ Addon.config.containers = {
                 name            = L.CDMRemoveGCDSwipe,
                 value           = "CDMRemoveGCDSwipe",
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
             ["CDMCustomFrameEdgeTexture"] = {
@@ -2636,10 +2675,10 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
             ["CDMCustomFrameEdgeSize"] = {
@@ -2652,10 +2691,10 @@ Addon.config.containers = {
                 step            = 0.1,
                 sliderName      = {top = L.Scale},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
             ["CDMCustomFrameEdgeColor"] = {
@@ -2665,10 +2704,10 @@ Addon.config.containers = {
                 checkboxValues  = {"UseEdgeColor"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
             ["CDMCustomFrameEdgeAlwaysShow"] = {
@@ -2676,10 +2715,10 @@ Addon.config.containers = {
                 name            = L.EdgeAlwaysShow,
                 value           = "EdgeAlwaysShow",
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
             ["PreviewSwipe"] = {
@@ -2711,9 +2750,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
             ["CDMCustomFrameBackdropColor"] = {
@@ -2723,9 +2762,9 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCDMBackdropColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
             ["CDMCustomFrameBackdropAuraColor"] = {
@@ -2735,9 +2774,9 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCDMBackdropAuraColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
             ["CDMCustomFrameBackdropPandemicColor"] = {
@@ -2747,9 +2786,19 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCDMBackdropPandemicColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                end,
+            },
+            ["CDMCustomFrameRemovePandemic"] = {
+                type            = "checkbox",
+                name            = L.CDMRemovePandemic,
+                value           = "CDMRemovePandemic",
+                callback        = function()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
                 end,
             },
         }
@@ -2766,12 +2815,12 @@ Addon.config.containers = {
                 IsSelected  = function(id) return id == Addon:GetValue("CurrentLoopGlow", nil, true) end,
                 OnSelect    = function(id) Addon:SaveSetting("CurrentLoopGlow", id, true) end,
                 showNew     = false,
-                OnEnter     = function(id, frames) ActionBarEnhancedDropdownMixin:RefreshProcLoop(frames.ProcLoopPreview, id) end,
+                OnEnter     = function(id, frames) HUIDropdownMixin:RefreshProcLoop(frames.ProcLoopPreview, id) end,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshAllPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshLoopGlow(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshLoopGlow(frame, frameName)
                 end,
             },
             ["CustomColorGlow"] = {
@@ -2781,10 +2830,10 @@ Addon.config.containers = {
                 checkboxValues  = {"UseLoopGlowColor", "DesaturateGlow"},
                 alpha           = false,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshAllPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshLoopGlow(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshLoopGlow(frame, frameName)
                 end,
             },
             ["ProcLoopPreview"] = {
@@ -2806,12 +2855,12 @@ Addon.config.containers = {
                     Addon:SaveSetting("CurrentProcGlow", id, true)
                 end,
                 showNew     = false,
-                OnEnter     = function(id, frames) ActionBarEnhancedDropdownMixin:RefreshProcStart(frames.ProcStartPreview, id) end,
+                OnEnter     = function(id, frames) HUIDropdownMixin:RefreshProcStart(frames.ProcStartPreview, id) end,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshAllPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshLoopGlow(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshLoopGlow(frame, frameName)
                 end,
             },
             ["CustomColorProc"] = {
@@ -2821,10 +2870,10 @@ Addon.config.containers = {
                 checkboxValues  = {"UseProcColor", "DesaturateProc"},
                 alpha           = false,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshAllPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshAllPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshLoopGlow(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshLoopGlow(frame, frameName)
                 end,
             },
             ["ProcStartPreview"] = {
@@ -2847,10 +2896,10 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
                 end,
             },
             ["CDMCooldownFontSize"] = {
@@ -2863,10 +2912,10 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshFontPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
                 end,
             },
             ["CDMCooldownFontOffset"] = {
@@ -2879,10 +2928,10 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshCooldownPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
                 end,
             },
             ["CDMCooldownFontColor"] = {
@@ -2892,11 +2941,11 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCooldownFontColor"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshFontPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
-                    ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, true)
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, true)
                 end,
             },
             ["CDMColorizedCooldownFont"] = {
@@ -2905,10 +2954,22 @@ Addon.config.containers = {
                 value           = "ColorizedCooldownFont",
                 showNew         = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
-                    ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, true)
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, true)
+                end,
+            },
+            ["CDMColorizedAuraFont"] = {
+                type            = "checkbox",
+                name            = L.ColorizedAuraFont,
+                value           = "ColorizedAuraFont",
+                showNew         = true,
+                callback        = function()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, true)
                 end,
             },
             ["CDMCooldownFormatType"] = {
@@ -2920,12 +2981,24 @@ Addon.config.containers = {
                 showNew     = true,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, true)
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, true)
                 end,
             },
 
+            ["CDMAlwaysShowStacks"] = {
+                type            = "checkbox",
+                name            = L.AlwaysShowStacks,
+                value           = "AlwaysShowStacks",
+                callback        = function()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    if frame and frame.RefreshLayout then
+                        frame:RefreshLayout()
+                    end
+                end,
+            },
             ["CDMStacksFont"] = {
                 type        = "dropdown",
                 fontOption  = true,
@@ -2936,10 +3009,10 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshFontPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
                 end,
             },
             ["CDMStacksPoint"] = {
@@ -2956,21 +3029,21 @@ Addon.config.containers = {
                 },
                 showNew     = false,
                 OnEnter     = {
-                    function() ActionBarEnhancedDropdownMixin:RefreshFontPreview() end,
-                    function() ActionBarEnhancedDropdownMixin:RefreshFontPreview() end,
+                    function() HUIDropdownMixin:RefreshFontPreview() end,
+                    function() HUIDropdownMixin:RefreshFontPreview() end,
                 },
                 OnClose     = {
                     function()
-                        ActionBarEnhancedDropdownMixin:RefreshFontPreview()
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
+                        HUIDropdownMixin:RefreshFontPreview()
+                        local frameName = HUI_BarsListMixin:GetFrameLebel()
                         local frame = _G[frameName]
-                        ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
+                        HUI_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
                     end,
                     function()
-                        ActionBarEnhancedDropdownMixin:RefreshFontPreview()
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
+                        HUIDropdownMixin:RefreshFontPreview()
+                        local frameName = HUI_BarsListMixin:GetFrameLebel()
                         local frame = _G[frameName]
-                        ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
+                        HUI_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
                     end,
                 },
             },
@@ -2984,10 +3057,10 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshFontPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
                 end,
             },
             ["CDMStacksFontSize"] = {
@@ -3000,10 +3073,10 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshFontPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
                 end,
             },
             ["CDMStacksFontColor"] = {
@@ -3013,10 +3086,10 @@ Addon.config.containers = {
                 checkboxValues  = {"UseStacksColor"},
                 alpha           = true,
                 callback        = function()
-                    ActionBarEnhancedDropdownMixin:RefreshFontPreview()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    HUIDropdownMixin:RefreshFontPreview()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
                 end,
             },
             ["CDMNameFont"] = {
@@ -3029,9 +3102,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
                 end,
             },
             ["CDMNameFontSize"] = {
@@ -3044,9 +3117,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
                 end,
             },
             ["CDMNameFontColor"] = {
@@ -3056,9 +3129,9 @@ Addon.config.containers = {
                 checkboxValues  = {"UseNameCDMFontColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
                 end,
             },
             ["PreviewCooldownFont"] = {
@@ -3093,9 +3166,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Width},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastBarHeight"] = {
@@ -3108,9 +3181,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Height},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
 
@@ -3133,16 +3206,16 @@ Addon.config.containers = {
                 },
                 OnClose     = {
                     function()
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
+                        local frameName = HUI_BarsListMixin:GetFrameLebel()
                         local frame = _G[frameName]
-                        --ABE_CastingBarMixin.SetLook(frame)
-                        ABE_CastingBarMixin.AdjustPosition(frame)
+                        --HUI_CastingBarMixin.SetLook(frame)
+                        HUI_CastingBarMixin.AdjustPosition(frame)
                     end,
                     function()
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
+                        local frameName = HUI_BarsListMixin:GetFrameLebel()
                         local frame = _G[frameName]
-                        --ABE_CastingBarMixin.SetLook(frame)
-                        ABE_CastingBarMixin.AdjustPosition(frame)
+                        --HUI_CastingBarMixin.SetLook(frame)
+                        HUI_CastingBarMixin.AdjustPosition(frame)
                     end,
                 },
             },
@@ -3156,10 +3229,10 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Offset},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    --ABE_CastingBarMixin.SetLook(frame)
-                    ABE_CastingBarMixin.AdjustPosition(frame)
+                    --HUI_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.AdjustPosition(frame)
                 end,
             },
             ["CastBarOffsetY"] = {
@@ -3172,10 +3245,10 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Offset},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    --ABE_CastingBarMixin.SetLook(frame)
-                    ABE_CastingBarMixin.AdjustPosition(frame)
+                    --HUI_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.AdjustPosition(frame)
                 end,
             },
             ["CastBarStatusbarTexture"] = {
@@ -3188,9 +3261,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetStatusBarTexture(frame)
+                    HUI_CastingBarMixin.SetStatusBarTexture(frame)
                 end,
             },
             ["CastBarBackgroundTexture"] = {
@@ -3203,9 +3276,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetStatusBarTexture(frame)
+                    HUI_CastingBarMixin.SetStatusBarTexture(frame)
                 end,
             },
             ["CastBarBackgroundColor"] = {
@@ -3215,9 +3288,9 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCastBarBackgroundColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetStatusBarTexture(frame)
+                    HUI_CastingBarMixin.SetStatusBarTexture(frame)
                 end,
             },
             ["CastBarPipTexture"] = {
@@ -3229,9 +3302,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.ShowSpark(frame)
+                    HUI_CastingBarMixin.ShowSpark(frame)
                 end,
             },
             ["PipSize"] = {
@@ -3244,9 +3317,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {{top = L.SizeX}, {top = L.SizeY}},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.ShowSpark(frame)
+                    HUI_CastingBarMixin.ShowSpark(frame)
                 end,
             },
             ["CastHideTextBorder"] = {
@@ -3254,9 +3327,9 @@ Addon.config.containers = {
                 name            = L.CastHideTextBorder,
                 value           = "CastHideTextBorder",
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastHideInterruptAnim"] = {
@@ -3278,9 +3351,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetStatusBarTexture(frame)
+                    HUI_CastingBarMixin.SetStatusBarTexture(frame)
                 end,
             },
             ["CastBarShieldIconSize"] = {
@@ -3293,9 +3366,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastBarShieldIconPoint"] = {
@@ -3317,14 +3390,14 @@ Addon.config.containers = {
                 },
                 OnClose     = {
                     function()
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
+                        local frameName = HUI_BarsListMixin:GetFrameLebel()
                         local frame = _G[frameName]
-                        ABE_CastingBarMixin.SetLook(frame)
+                        HUI_CastingBarMixin.SetLook(frame)
                     end,
                     function()
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
+                        local frameName = HUI_BarsListMixin:GetFrameLebel()
                         local frame = _G[frameName]
-                        ABE_CastingBarMixin.SetLook(frame)
+                        HUI_CastingBarMixin.SetLook(frame)
                     end,
                 },
             },
@@ -3338,9 +3411,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
 
@@ -3351,7 +3424,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCastBarStandardColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
                     frame.__forceUpdate = true
                 end,
@@ -3363,7 +3436,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCastBarImportantColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
                     frame.__forceUpdate = true
                 end,
@@ -3375,7 +3448,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCastBarChannelColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
                     frame.__forceUpdate = true
                 end,
@@ -3387,7 +3460,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCastBarUninterruptableColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
                     frame.__forceUpdate = true
                 end,
@@ -3399,7 +3472,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCastBarInterruptedColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
                     frame.__forceUpdate = true
                 end,
@@ -3411,7 +3484,7 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCastBarReadyColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
                     frame.__forceUpdate = true
                 end,
@@ -3433,9 +3506,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.UpdateIconShown(frame)
+                    HUI_CastingBarMixin.UpdateIconShown(frame)
                 end,
             },
             ["CastBarIconPosition"] = {
@@ -3447,9 +3520,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.UpdateIconShown(frame)
+                    HUI_CastingBarMixin.UpdateIconShown(frame)
                 end,
             },
             ["CastBarIconPoint"] = {
@@ -3471,14 +3544,14 @@ Addon.config.containers = {
                 },
                 OnClose     = {
                     function()
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
+                        local frameName = HUI_BarsListMixin:GetFrameLebel()
                         local frame = _G[frameName]
-                        ABE_CastingBarMixin.UpdateIconShown(frame)
+                        HUI_CastingBarMixin.UpdateIconShown(frame)
                     end,
                     function()
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
+                        local frameName = HUI_BarsListMixin:GetFrameLebel()
                         local frame = _G[frameName]
-                        ABE_CastingBarMixin.UpdateIconShown(frame)
+                        HUI_CastingBarMixin.UpdateIconShown(frame)
                     end,
                 },
             },
@@ -3492,9 +3565,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.UpdateIconShown(frame)
+                    HUI_CastingBarMixin.UpdateIconShown(frame)
                 end,
             },
             ["IconMaskTextureOptions"] = {
@@ -3506,9 +3579,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.UpdateIconShown(frame)
+                    HUI_CastingBarMixin.UpdateIconShown(frame)
                 end,
             },
             ["MaskScale"] = {
@@ -3521,9 +3594,9 @@ Addon.config.containers = {
                 step            = 0.01,
                 sliderName      = {top = L.Scale},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.UpdateIconShown(frame)
+                    HUI_CastingBarMixin.UpdateIconShown(frame)
                 end,
             },
             ["IconScale"] = {
@@ -3536,9 +3609,9 @@ Addon.config.containers = {
                 step            = 0.01,
                 sliderName      = {top = L.Scale},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.UpdateIconShown(frame)
+                    HUI_CastingBarMixin.UpdateIconShown(frame)
                 end,
             },
         }
@@ -3565,9 +3638,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastBarLatencyColor"] = {
@@ -3577,9 +3650,9 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCastBarLatencyColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
 
@@ -3588,9 +3661,9 @@ Addon.config.containers = {
                 name            = L.Enable,
                 value           = "CastBarShowSQW",
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastBarSQWTexture"] = {
@@ -3603,9 +3676,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastBarSQWColor"] = {
@@ -3615,9 +3688,9 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCastBarSQWColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
         }
@@ -3636,9 +3709,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastBarCastNameSize"] = {
@@ -3651,9 +3724,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastBarCastNameColor"] = {
@@ -3663,9 +3736,9 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCastBarCastNameColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastBarCastNamePoint"] = {
@@ -3687,14 +3760,14 @@ Addon.config.containers = {
                 },
                 OnClose     = {
                     function()
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
+                        local frameName = HUI_BarsListMixin:GetFrameLebel()
                         local frame = _G[frameName]
-                        ABE_CastingBarMixin.SetLook(frame)
+                        HUI_CastingBarMixin.SetLook(frame)
                     end,
                     function()
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
+                        local frameName = HUI_BarsListMixin:GetFrameLebel()
                         local frame = _G[frameName]
-                        ABE_CastingBarMixin.SetLook(frame)
+                        HUI_CastingBarMixin.SetLook(frame)
                     end,
                 },
             },
@@ -3708,9 +3781,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastBarCastNameJustifyH"] = {
@@ -3722,9 +3795,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
 
@@ -3737,9 +3810,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastBarCastTimeFont"] = {
@@ -3752,9 +3825,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.UpdateIconShown(frame)
+                    HUI_CastingBarMixin.UpdateIconShown(frame)
                 end,
             },
             ["CastBarCastTimeSize"] = {
@@ -3767,9 +3840,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.UpdateIconShown(frame)
+                    HUI_CastingBarMixin.UpdateIconShown(frame)
                 end,
             },
             ["CastBarCastTimeColor"] = {
@@ -3779,9 +3852,9 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCastBarCastTimeColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.UpdateIconShown(frame)
+                    HUI_CastingBarMixin.UpdateIconShown(frame)
                 end,
             },
             ["CastBarCastTimePoint"] = {
@@ -3803,14 +3876,14 @@ Addon.config.containers = {
                 },
                 OnClose     = {
                     function()
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
+                        local frameName = HUI_BarsListMixin:GetFrameLebel()
                         local frame = _G[frameName]
-                        ABE_CastingBarMixin.SetLook(frame)
+                        HUI_CastingBarMixin.SetLook(frame)
                     end,
                     function()
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
+                        local frameName = HUI_BarsListMixin:GetFrameLebel()
                         local frame = _G[frameName]
-                        ABE_CastingBarMixin.SetLook(frame)
+                        HUI_CastingBarMixin.SetLook(frame)
                     end,
                 },
             },
@@ -3824,9 +3897,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastBarCastTimeJustifyH"] = {
@@ -3838,9 +3911,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
 
@@ -3849,9 +3922,9 @@ Addon.config.containers = {
                 name            = L.EnableSpellTargetName,
                 value           = "CastBarCastTargetEnable",
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastBarCastTargetFont"] = {
@@ -3864,9 +3937,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastBarCastTargetSize"] = {
@@ -3879,9 +3952,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastBarCastTargetColor"] = {
@@ -3891,9 +3964,9 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCastBarCastTargetColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastBarCastTargetPoint"] = {
@@ -3915,14 +3988,14 @@ Addon.config.containers = {
                 },
                 OnClose     = {
                     function()
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
+                        local frameName = HUI_BarsListMixin:GetFrameLebel()
                         local frame = _G[frameName]
-                        ABE_CastingBarMixin.SetLook(frame)
+                        HUI_CastingBarMixin.SetLook(frame)
                     end,
                     function()
-                        local frameName = ABE_BarsListMixin:GetFrameLebel()
+                        local frameName = HUI_BarsListMixin:GetFrameLebel()
                         local frame = _G[frameName]
-                        ABE_CastingBarMixin.SetLook(frame)
+                        HUI_CastingBarMixin.SetLook(frame)
                     end,
                 },
             },
@@ -3936,9 +4009,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastBarCastTargetJustifyH"] = {
@@ -3950,9 +4023,9 @@ Addon.config.containers = {
                 showNew     = false,
                 OnEnter     = false,
                 OnClose     = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
         }
@@ -3971,9 +4044,9 @@ Addon.config.containers = {
                 step            = 1,
                 sliderName      = {top = L.Size},
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastBarsBackdropColor"] = {
@@ -3983,9 +4056,9 @@ Addon.config.containers = {
                 checkboxValues  = {"UseCastBarsBackdropColor"},
                 alpha           = true,
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
             ["CastBarsBackdropColorByType"] = {
@@ -3993,9 +4066,9 @@ Addon.config.containers = {
                 name            = L.ColorByCastbarType,
                 value           = "CastBarsBackdropColorByType",
                 callback        = function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CastingBarMixin.SetLook(frame)
+                    HUI_CastingBarMixin.SetLook(frame)
                 end,
             },
         }
@@ -4003,123 +4076,40 @@ Addon.config.containers = {
 }
 
 function Addon:BuildPresetsPreview()
-    local profilesList = ActionBarsEnhancedProfilesMixin:GetProfiles()
-    for i=1, #profilesList do
-        local profileName = profilesList[i]
-        local contaierCfg = Addon.config.containers.PresetsOptionsContainer
-        local containerLayout
-        for i, layout in ipairs(Addon.layoutPresets) do
-            if layout.name == "PresetsOptionsContainer" then
-                containerLayout = Addon.layoutPresets[i]
-            end
+    local containerLayout
+    for _, layout in ipairs(Addon.layoutPresets) do
+        if layout.name == "PresetsOptionsContainer" then
+            containerLayout = layout
+            break
         end
+    end
+    if not containerLayout then return end
 
+    local containerCfg = Addon.config.containers.PresetsOptionsContainer
+    wipe(containerLayout.childs)
+    wipe(containerCfg.childs)
+
+    for i, profileName in ipairs(HUIProfilesMixin:GetProfiles()) do
         local presetName = "Preset_"..i
-        if containerLayout then
-            table.insert(containerLayout.childs, { name = presetName, template = "OptionsPresetsTemplate", scale="1.8" })
-
-            contaierCfg.childs[presetName] = {
-                type = "previewPreset",
-                sub = "Font",
-                text = profileName,
-                preset = profileName,
-            }
-        end
+        table.insert(containerLayout.childs, { name = presetName, template = "OptionsPresetsTemplate", scale = "1.8" })
+        containerCfg.childs[presetName] = {
+            type = "previewPreset",
+            sub = "Font",
+            text = profileName,
+            preset = profileName,
+        }
     end
 end
 
---[[ local ElementsFramePools = CreateFramePoolCollection()
-
-function Addon:BuildContainerChildren(container, elementData, containerConfig)
-
-    local frames = {}
-    frames[elementData.name] = container
-
-    local elementResetCallback = function(pool, elementFrame)
-        Pool_HideAndClearAnchors(pool, elementFrame)
-        elementFrame:UnregisterAllEvents()
-        
-        if elementFrame.OnClick then
-            elementFrame:SetScript("OnClick", nil)
-        end
-        if elementFrame.OnEnter then
-            elementFrame:SetScript("OnEnter", nil)
-        end
-        if elementFrame.OnLeave then
-            elementFrame:SetScript("OnLeave", nil)
-        end
-        
-        if elementFrame.Checkbox then elementFrame.Checkbox:SetScript("OnClick", nil) end
-        if elementFrame.ColorSwatch then elementFrame.ColorSwatch:SetScript("OnClick", nil) end
-        if elementFrame.EditBox then elementFrame.EditBox:SetScript("OnEnterPressed", nil) elementFrame.EditBox:SetScript("OnEditFocusLost", nil) end
+function Addon:RefreshPresetsPreview()
+    Addon:BuildPresetsPreview()
+    if HUIDropdownMixin and HUIDropdownMixin.presetButtons then
+        wipe(HUIDropdownMixin.presetButtons)
     end
-
-    if container.activeChildren then
-        for _, poolData in ipairs(container.activeChildren) do
-            poolData.pool:Release(poolData.frame)
-        end
+    if HUIOptionsFrame and HUIMixin.currentLayout == Addon.layoutPresets then
+        HUIMixin:InitData(Addon.layoutPresets)
     end
-
-    container.activeChildren = {}
-
-    for i, data in ipairs(elementData.childs) do
-        local childName = data.name
-
-        local elementFramePool = ElementsFramePools:GetOrCreatePool(
-            data.template:find("Button") and "CheckButton" or "Frame", 
-            container, 
-            data.template, 
-            elementResetCallback
-        )
-
-        local child = elementFramePool:Acquire()
-
-        child:ClearAllPoints()
-
-        if data.point then
-            local parentName = data.point[2]
-            local parent
-            if parentName == "container" then
-                parent = container
-            elseif parentName == "desc" then
-                parent = container.Desc
-            elseif parentName == "title" then
-                parent = container.Title
-            else
-                parent = frames[parentName]
-                if not parent then parent = container end -- Fallback
-            end 
-            child:SetPoint(data.point[1], parent, data.point[3], data.point[4], data.point[5])
-        else
-            if i == 1 then
-                child:SetPoint("TOP", container.Desc, "BOTTOM", 0, -10)
-            else
-                local prev = frames[elementData.childs[i-1].name]
-                if prev then
-                    child:SetPoint("TOP", prev, "BOTTOM", 0, -10)
-                end
-            end
-        end
-
-        if data.scale then
-            child:SetScale(data.scale)
-        else
-            child:SetScale(1)
-        end
-
-        frames[data.name] = child
-
-        if containerConfig and containerConfig.childs then
-            local childConfig = containerConfig.childs[data.name]
-            if childConfig then
-                Addon:InitChildElement(child, childConfig, frames)
-            end
-        end
-
-        child:Show()
-        table.insert(container.activeChildren, { frame = child, pool = elementFramePool })
-    end
-end ]]
+end
 
 function Addon:BuildContainerChildren(container, containerDef, containerConfig, childList)
     

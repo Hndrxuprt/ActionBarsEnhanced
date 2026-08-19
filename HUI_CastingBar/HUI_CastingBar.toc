@@ -1,0 +1,19 @@
+## Interface: 120100
+## Title: HUI | CastingBar
+## IconTexture: Interface\AddOns\HUI\assets\icon
+## Notes: HUI CastingBar module
+## LoadOnDemand: 1
+## Dependencies: HUI
+
+## X-Curse-Project-ID: 1343483
+## X-Wago-ID: QKywgEN7
+## X-Contributors: Hndrxuprt
+## X-eMail: hndrxuprt@gmail.com
+
+CastingBarFrame.lua
+
+PlayerCastingBarFrame.lua
+
+TargetCastingBarFrame.lua
+
+BossCastingBarFrame.lua

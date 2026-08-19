@@ -1,0 +1,27 @@
+## Interface: 120100
+## Title: HUI | CooldownManagerCustom
+## IconTexture: Interface\AddOns\HUI\assets\icon
+## Notes: HUI CooldownManagerCustom module
+## LoadOnDemand: 1
+## Dependencies: HUI
+
+## X-Curse-Project-ID: 1343483
+## X-Wago-ID: QKywgEN7
+## X-Contributors: Hndrxuprt
+## X-eMail: hndrxuprt@gmail.com
+
+CooldownManagerCustom.xml
+
+CooldownManagerCustomSettings.lua
+
+CooldownManagerCustom.lua
+
+CooldownManagerCustomBar.lua
+
+CooldownManagerCustomCustomization.lua
+
+CooldownManagerCustomAura.lua
+
+CooldownManagerCustomAuraFrame.lua
+
+CooldownManagerCustomAuraBar.lua

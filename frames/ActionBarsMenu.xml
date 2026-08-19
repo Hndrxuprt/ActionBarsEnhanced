@@ -1,6 +1,6 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
 
-	<Frame name="ABE_BarsFrameTemplate" mixin="ABE_BarsFrameMixin" frameStrata="LOW" virtual="true" enableMouse="true" hidden="false">
+	<Frame name="HUI_BarsFrameTemplate" mixin="HUI_BarsFrameMixin" frameStrata="LOW" virtual="true" enableMouse="true" hidden="false">
         <Size x="200" y="740"/>
         <Anchors>
             <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER"/>
@@ -97,7 +97,7 @@
                     </Layer>
 				</Layers>
 			</Frame>
-			<Button parentKey="ABE_BarsFrameButton" mixin="ABE_BarsFrameMixin" virtual="true" frameLevel="95">
+			<Button parentKey="HUI_BarsFrameButton" mixin="HUI_BarsFrameMixin" virtual="true" frameLevel="95">
 				<Size x="20" y="112"/>
 				<Anchors>
 					<Anchor point="RIGHT" relativeKey="$parent.NineSlice.RightBorderDecoration" relativePoint="RIGHT" x="-8" y="0"/>
@@ -107,11 +107,11 @@
 					<OnClick method="OnClick"/>
 					<OnHide method="OnHide"/>
 				</Scripts>
-				<HighlightTexture parentKey="HighlightTexture" file="Interface/addons/ActionBarsEnhanced/assets/button_highlight.png" alphaMode="ADD"/>
+				<HighlightTexture parentKey="HighlightTexture" file="Interface/AddOns/HUI/assets/button_highlight.png" alphaMode="ADD"/>
 			</Button>
         </Frames>
     </Frame>
-	<Frame name="ABE_BarsHighlightTemplate" mixin="ABE_BarsFrameMixin" virtual="true" hidden="true">
+	<Frame name="HUI_BarsHighlightTemplate" mixin="HUI_BarsFrameMixin" virtual="true" hidden="true">
 		<Frames>
 			<Frame parentKey="NineSlice" inherits="NineSlicePanelTemplate" setAllPoints="true" hidden="false" frameLevel="90">
 				<Anchors>
@@ -188,11 +188,88 @@
 		</Animations>
 	</Frame>
 	
-    <Frame name="ABE_BarsListSpacerTemplate" virtual="true">
+	<Frame name="HUI_FramePickerHighlightTemplate" virtual="true" hidden="true">
+		<Frames>
+			<Frame parentKey="NineSlice" inherits="NineSlicePanelTemplate" setAllPoints="true" hidden="false" frameLevel="90">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="-8" y="8"/>
+					<Anchor point="BOTTOMRIGHT" x="8" y="-8"/>
+				</Anchors>
+				<Layers>
+					<Layer level="BORDER">
+						<Texture parentKey="TopLeftCorner" atlas="editmode-actionbar-highlight-nineslice-corner" useAtlasSize="true">
+                            <Anchors>
+                                <Anchor point="TOPLEFT"/>
+                            </Anchors>
+                            <Color r="0" g="1" b="0" a="1"/>
+                        </Texture>
+                        <Texture parentKey="TopRightCorner" atlas="editmode-actionbar-highlight-nineslice-corner" useAtlasSize="true">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT"/>
+                            </Anchors>
+							<TexCoords left="1" right="0" top="0" bottom="1"/>
+                            <Color r="0" g="1" b="0" a="1"/>
+                        </Texture>
+                        <Texture parentKey="BottomLeftCorner" atlas="editmode-actionbar-highlight-nineslice-corner" useAtlasSize="true">
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT"/>
+                            </Anchors>
+							<TexCoords left="0" right="1" top="1" bottom="0"/>
+                            <Color r="0" g="1" b="0" a="1"/>
+                        </Texture>
+                        <Texture parentKey="BottomRightCorner" atlas="editmode-actionbar-highlight-nineslice-corner" useAtlasSize="true">
+                            <Anchors>
+                                <Anchor point="BOTTOMRIGHT"/>
+                            </Anchors>
+							<TexCoords left="1" right="0" top="1" bottom="0"/>
+                            <Color r="0" g="1" b="0" a="1"/>
+                        </Texture>
+                        <Texture parentKey="TopEdge" atlas="_editmode-actionbar-highlight-nineslice-edgetop" useAtlasSize="true" horizTile="true">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" relativeKey="$parent.TopLeftCorner" relativePoint="TOPRIGHT"/>
+                                <Anchor point="TOPRIGHT" relativeKey="$parent.TopRightCorner" relativePoint="TOPLEFT"/>
+                            </Anchors>
+                            <Color r="0" g="1" b="0" a="1"/>
+                        </Texture>
+                        <Texture parentKey="BottomEdge" atlas="_editmode-actionbar-highlight-nineslice-edgebottom" useAtlasSize="true" horizTile="true">
+                            <Anchors>
+                                <Anchor point="BOTTOMLEFT" relativeKey="$parent.BottomLeftCorner" relativePoint="BOTTOMRIGHT"/>
+                                <Anchor point="BOTTOMRIGHT" relativeKey="$parent.BottomRightCorner" relativePoint="BOTTOMLEFT"/>
+                            </Anchors>
+                            <Color r="0" g="1" b="0" a="1"/>
+                        </Texture>
+                        <Texture parentKey="LeftEdge" atlas="!editmode-actionbar-highlight-nineslice-edgeleft" useAtlasSize="true" vertTile="true">
+                            <Anchors>
+                                <Anchor point="TOPLEFT" relativeKey="$parent.TopLeftCorner" relativePoint="BOTTOMLEFT"/>
+                                <Anchor point="BOTTOMLEFT" relativeKey="$parent.BottomLeftCorner" relativePoint="TOPLEFT"/>
+                            </Anchors>
+                            <Color r="0" g="1" b="0" a="1"/>
+                        </Texture>
+                        <Texture parentKey="RightEdge" atlas="!editmode-actionbar-highlight-nineslice-edgeright" useAtlasSize="true" vertTile="true">
+                            <Anchors>
+                                <Anchor point="TOPRIGHT" relativeKey="$parent.TopRightCorner" relativePoint="BOTTOMRIGHT"/>
+                                <Anchor point="BOTTOMRIGHT" relativeKey="$parent.BottomRightCorner" relativePoint="TOPRIGHT"/>
+                            </Anchors>
+                            <Color r="0" g="1" b="0" a="1"/>
+                        </Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+		</Frames>
+		
+		<Animations>
+			<AnimationGroup parentKey="PulseAnim" looping="REPEAT">
+				<Alpha childKey="NineSlice" fromAlpha=".3" toAlpha=".5" duration=".2" order="1"/>
+				<Alpha childKey="NineSlice" fromAlpha=".5" toAlpha=".3" startDelay=".2" duration=".4" order="1"/>
+			</AnimationGroup>
+		</Animations>
+	</Frame>
+	
+    <Frame name="HUI_BarsListSpacerTemplate" virtual="true">
 		<Size y="18"/>
 	</Frame>
 
-	<Frame name="ABE_BarsListTemplate" mixin="ABE_BarsListMixin" virtual="true">
+	<Frame name="HUI_BarsListTemplate" mixin="HUI_BarsListMixin" virtual="true">
 		<Frames>
 			<Frame parentKey="ScrollBox" inherits="WowScrollBoxList">
 				<Anchors>
@@ -214,7 +291,7 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="ABE_BarsListHeaderTemplate" mixin="ABE_BarsListHeaderMixin" virtual="true">
+	<Frame name="HUI_BarsListHeaderTemplate" mixin="HUI_BarsListHeaderMixin" virtual="true">
 		<Size x="190" y="31"/>
 		<Layers>
 			<Layer level="ARTWORK">
@@ -238,7 +315,7 @@
 			</Layer>
 		</Layers>
 	</Frame>
-	<Frame name="ABE_BarsListCreateGroupFrameTemplate" virtual="true">
+	<Frame name="HUI_BarsListCreateGroupFrameTemplate" virtual="true">
 		<Size x="175" y="20"/>
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -251,7 +328,7 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Button name="CreateGroupIcons" mixin="ABE_BarsGroupButtonIconMixin" virtual="true">
+			<Button name="CreateGroupIcons" mixin="HUI_BarsGroupButtonIconMixin" virtual="true">
 				<Size x="175" y="20"/>
 				<Anchors>
 					<Anchor point="CENTER"/>
@@ -284,7 +361,7 @@
 			</Button>
 		</Frames>
 	</Frame>
-	<Button name="ABE_BarsListCreateGroupButtonTemplate" mixin="ABE_BarsGroupButtonMixin" virtual="true">
+	<Button name="HUI_BarsListCreateGroupButtonTemplate" mixin="HUI_BarsGroupButtonMixin" virtual="true">
 		<Size x="175" y="20"/>
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -318,7 +395,7 @@
 		</PushedTexture>
 	</Button>
 
-	<Button name="ABE_BarsListButtonTemplate" mixin="ABE_BarsButtonMixin" virtual="true">
+	<Button name="HUI_BarsListButtonTemplate" mixin="HUI_BarsButtonMixin" virtual="true">
 		<Size x="175" y="20"/>
 		<Layers>
 			<Layer level="BACKGROUND">
@@ -361,9 +438,9 @@
 				<Anchors>
 					<Anchor point="RIGHT" relativeKey="$parent" relativePoint="RIGHT" x="-2" y="0"/>
 				</Anchors>
-				<NormalTexture file="Interface/addons/ActionBarsEnhanced/assets/copy_icon.png" alpha="0.3"/>
-				<HighlightTexture file="Interface/addons/ActionBarsEnhanced/assets/copy_icon.png" alphaMode="ADD" alpha="0.2"/>
-				<PushedTexture file="Interface/addons/ActionBarsEnhanced/assets/copy_icon.png" alpha="0.3">
+				<NormalTexture file="Interface/AddOns/HUI/assets/copy_icon.png" alpha="0.3"/>
+				<HighlightTexture file="Interface/AddOns/HUI/assets/copy_icon.png" alphaMode="ADD" alpha="0.2"/>
+				<PushedTexture file="Interface/AddOns/HUI/assets/copy_icon.png" alpha="0.3">
 					<Color r="0.5" g="0.5" b="0.5"/>	
 				</PushedTexture>
 			</Button>
@@ -372,9 +449,9 @@
 				<Anchors>
 					<Anchor point="RIGHT" relativeKey="$parent" relativePoint="RIGHT" x="-2" y="0"/>
 				</Anchors>
-				<NormalTexture file="Interface/addons/ActionBarsEnhanced/assets/paste_icon.png" alpha="0.3"/>
-				<HighlightTexture file="Interface/addons/ActionBarsEnhanced/assets/paste_icon.png" alphaMode="ADD" alpha="0.2"/>
-				<PushedTexture file="Interface/addons/ActionBarsEnhanced/assets/paste_icon.png" alpha="0.3">
+				<NormalTexture file="Interface/AddOns/HUI/assets/paste_icon.png" alpha="0.3"/>
+				<HighlightTexture file="Interface/AddOns/HUI/assets/paste_icon.png" alphaMode="ADD" alpha="0.2"/>
+				<PushedTexture file="Interface/AddOns/HUI/assets/paste_icon.png" alpha="0.3">
 					<Color r="0.5" g="0.5" b="0.5"/>	
 				</PushedTexture>
 			</Button>

@@ -1,0 +1,14 @@
+## Interface: 120100
+## Title: ActionBarsEnhanced (profiles migration)
+## Notes: Legacy placeholder that keeps your old settings readable
+## Author: Hndrxuprt
+## Version: 0.1.0
+## SavedVariables: ABDB
+## SavedVariablesPerCharacter: ABE_FAKE_AURAS
+
+## X-Curse-Project-ID: 1343483
+## X-Wago-ID: QKywgEN7
+## X-Contributors: Hndrxuprt
+## X-eMail: hndrxuprt@gmail.com
+
+ActionBarsEnhanced.lua

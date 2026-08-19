@@ -78,8 +78,8 @@ local function ReanchorFrame(self)
         pointY = (self:GetTop() + self:GetBottom()) / 2
     end
 
-    local offsetX = pointX - screenCenterX
-    local offsetY = pointY - screenCenterY
+    local offsetX = Addon.PP.Snap(pointX - screenCenterX)
+    local offsetY = Addon.PP.Snap(pointY - screenCenterY)
 
     local frameName = self:GetName()
 
@@ -175,13 +175,9 @@ local function OnEditModeExit()
     end
 end
 
-local function ProcessEvent(self, event, ...)
-    if event == "PLAYER_LOGIN" then
-        self:AddDynamicEventMethod(EventRegistry, "EditMode.Enter", OnEditModeEnter)
-        self:AddDynamicEventMethod(EventRegistry, "EditMode.Exit", OnEditModeExit)
-    end
-end
-
 local eventHandlerFrame = CreateFrame('Frame', nil, nil, "CallbackRegistrantTemplate")
-eventHandlerFrame:SetScript('OnEvent', ProcessEvent)
-eventHandlerFrame:RegisterEvent('PLAYER_LOGIN')
+
+Addon:RegisterEvent("PLAYER_LOGIN", function()
+    eventHandlerFrame:AddDynamicEventMethod(EventRegistry, "EditMode.Enter", OnEditModeEnter)
+    eventHandlerFrame:AddDynamicEventMethod(EventRegistry, "EditMode.Exit", OnEditModeExit)
+end, "Core")

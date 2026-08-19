@@ -9,7 +9,7 @@ Addon.L = L
 -- ==========================================
 -- Welcome Messages
 -- ==========================================
-L.welcomeMessage1 = "Спасибо за использование |cff1df2a8ActionBars Enhanced|r"
+L.welcomeMessage1 = "Спасибо за использование |cff1df2a8HUI|r"
 L.welcomeMessage2 = "Вы можете открыть настройки командой |cff1df2a8/"
 
 -- ==========================================
@@ -225,6 +225,7 @@ L.BuffBarCooldownViewer     = "Полоски"
 L.IconPadding = "Расстояние между иконками"
 L.CDMBackdrop = "Добавить границу"
 L.CDMCenteredGrid = "Центрировать иконки"
+L.MinimapButton = "Отображать кнопку на миникарте"
 L.CDMRemoveIconMask = "Убрать маску иконки"
 L.CDMRemovePandemic = "Убрать анимацию пандемика"
 L.CDMSwipeColor = "Цвет Swipe анимации кулдауна"
@@ -379,9 +380,15 @@ L.HorizontalGrowthLEFT = "Слева"
 
 L.DirectionHORIZONTAL = "Горизонтально"
 L.DirectionVERTICAL = "Вертикально"
+L.ColorizedCooldownFont = "Красить текст КД по времени"
+L.ColorizedAuraFont = "Красить текст Ауры по времени"
 
-L.ColorizedCooldownFont = "Красить текст по времени"
-
+L.AuraSound = "Звук ауры"
+L.AuraSoundTriggerAdded = "При наложении"
+L.AuraSoundTriggerApplicationsIncreased = "При получении стака"
+L.AuraSoundTriggerRemoved = "При снятии"
+L.AuraSoundNone = "Нет"
+L.AuraSoundPlaySample = "Прослушать"
 
 -- ========================================
 -- Cast Bars
@@ -462,6 +469,7 @@ L.JustifyH = "Горизонтальное выравнивание"
 
 L.EnableAttach = "Использовать привязку к фрейму"
 L.CDMCustomFrameAttachFrameName = "Привязать к фрейму:"
+L.FramePickerSelect = "Выбрать"
 L.CDMCutomFrameAttachPoint = "Точка крепления"
 L.CDMCutomFrameAttachOffset = "Смещение точки крепления"
 
@@ -482,6 +490,12 @@ L.CreateChargeBarsFrame = "Создать фрейм Полосок стаков
 L.SetStages = "Максимум стаков"
 L.SetStagesDesc = "Максимальное количество стаков, которое будет использоваться для ауры."
 L.Stages = "Использовать заряды"
+L.EnableStackThreshold = "Включить порог стаков"
+L.StackThresholdValue = "Стаков"
+L.StackThresholdsTitle = "Пороги стаков"
+L.AddStackThreshold = "Добавить порог"
+L.RemoveStackThreshold = "Удалить"
+L.StackThresholdsTooltip = "Если пересечено несколько порогов, приоритет у старшего."
 
 L.ConfigureRacials = "Отслеживание Расовых"
 
@@ -504,6 +518,7 @@ L.BarDisplayOnAuraAndCD = "Ауру, затем КД"
 
 L.EnableName = "Показывать Название"
 L.EnableStacks = "Показывать Стаки"
+L.AlwaysShowStacks = "Всегда показывать стаки"
 L.EnableTimer = "Показывать Таймер"
 
 L.RealAuraDisabled = "Аура отключена так как установлена Фейк-аура"

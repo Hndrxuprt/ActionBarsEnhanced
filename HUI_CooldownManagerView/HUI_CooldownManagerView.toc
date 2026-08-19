@@ -1,0 +1,17 @@
+## Interface: 120100
+## Title: HUI | CooldownManagerView
+## IconTexture: Interface\AddOns\HUI\assets\icon
+## Notes: HUI CooldownManagerView module
+## LoadOnDemand: 1
+## Dependencies: HUI
+
+## X-Curse-Project-ID: 1343483
+## X-Wago-ID: QKywgEN7
+## X-Contributors: Hndrxuprt
+## X-eMail: hndrxuprt@gmail.com
+
+CooldownManagerViewerCustomization.lua
+
+CooldownManagerViewer.lua
+
+CooldownManagerSettings.lua

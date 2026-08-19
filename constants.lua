@@ -2,8 +2,8 @@ local AddonName, Addon = ...
 
 local L = Addon.L
 
-Addon.command = "ActionBarsEnhanced"
-Addon.shortCommand = "abe"
+Addon.command = "HUI"
+Addon.shortCommand = "hui"
 
 Addon.BarsToHide = {
     --"BagsBar",
@@ -156,6 +156,11 @@ Addon.AuraTimeFormat = {
     [1] = L.CastTimeRemaining,
     [2] = L.CastTimeMax,
     [3] = L.CastTimeRemainingAndMax,
+}
+Addon.AuraSoundTriggers = {
+    [Enum.UnitAuraSoundTrigger.Added] = L.AuraSoundTriggerAdded,
+    [Enum.UnitAuraSoundTrigger.ApplicationsIncreased] = L.AuraSoundTriggerApplicationsIncreased,
+    [Enum.UnitAuraSoundTrigger.Removed] = L.AuraSoundTriggerRemoved,
 }
 
 do
@@ -531,7 +536,11 @@ Addon.Defaults = {
 
     CurrentHideWhenInactive = 1,
 
+    AlwaysShowStacks = false,
+
     ColorizedCooldownFont = false,
+
+    ColorizedAuraFont = false,
 
     CastBarEnable = false,
 
@@ -771,11 +780,11 @@ Addon.Templates = {
         },
         {
             name = "Modern Blizzard Assist White Glow",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/flipbook2.tga",
+            texture = "Interface/AddOns/HUI/assets/flipbook2.tga",
         },
         {
             name = "Modern Blizzard Assist Rainbow Glow",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_flipbook_rainbow.png",
+            texture = "Interface/AddOns/HUI/assets/HUI_flipbook_rainbow.png",
             rows = 6,
             columns = 10,
             frames = 60,
@@ -796,8 +805,8 @@ Addon.Templates = {
             scale = 0.85,
         },
         {
-            name = "ABE Classic-like Blizzard Glow",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/AB_ClassicLike_Glow.tga",
+            name = "HUI Classic-like Blizzard Glow",
+            texture = "Interface/AddOns/HUI/assets/AB_ClassicLike_Glow.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -807,8 +816,8 @@ Addon.Templates = {
             scale = 1,
         },
         {
-            name = "ABE Star 1",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/stars_new2.tga",
+            name = "HUI Star 1",
+            texture = "Interface/AddOns/HUI/assets/stars_new2.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -818,8 +827,8 @@ Addon.Templates = {
             scale = 0.9,
         },
         {
-            name = "ABE Star 2",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/stars_new.tga",
+            name = "HUI Star 2",
+            texture = "Interface/AddOns/HUI/assets/stars_new.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -829,8 +838,8 @@ Addon.Templates = {
             scale = 0.9,
         },
         {
-            name = "ABE Star 2 Rainbow",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/stars_rainbow_new.tga",
+            name = "HUI Star 2 Rainbow",
+            texture = "Interface/AddOns/HUI/assets/stars_rainbow_new.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -840,8 +849,8 @@ Addon.Templates = {
             scale = 0.9,
         },
         {
-            name = "ABE Lines",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/AB_Lines.tga",
+            name = "HUI Lines",
+            texture = "Interface/AddOns/HUI/assets/AB_Lines.tga",
             rows = 6,
             columns = 4,
             frames = 24,
@@ -851,8 +860,8 @@ Addon.Templates = {
             scale = 0.85,
         },
         {
-            name = "ABE Lines Pixel-like",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/AB_Lines_Pixel.tga",
+            name = "HUI Lines Pixel-like",
+            texture = "Interface/AddOns/HUI/assets/AB_Lines_Pixel.tga",
             rows = 6,
             columns = 2,
             frames = 12,
@@ -862,8 +871,8 @@ Addon.Templates = {
             scale = 0.85,
         },
         {
-            name = "ABE Leaves",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/AB_Leaves.tga",
+            name = "HUI Leaves",
+            texture = "Interface/AddOns/HUI/assets/AB_Leaves.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -873,8 +882,8 @@ Addon.Templates = {
             scale = 0.85,
         },
         {
-            name = "ABE Void",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/AB_Void.tga",
+            name = "HUI Void",
+            texture = "Interface/AddOns/HUI/assets/AB_Void.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -884,8 +893,8 @@ Addon.Templates = {
             scale = 0.85,
         },
         {
-            name = "ABE Garg",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/AB_Garg.tga",
+            name = "HUI Garg",
+            texture = "Interface/AddOns/HUI/assets/AB_Garg.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -895,8 +904,8 @@ Addon.Templates = {
             scale = 0.85,
         },
         {
-            name = "ABE Energy",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Energy.tga",
+            name = "HUI Energy",
+            texture = "Interface/AddOns/HUI/assets/HUI_Energy.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -906,8 +915,8 @@ Addon.Templates = {
             scale = 0.85,
         },
         {
-            name = "ABE Fire",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Fire.tga",
+            name = "HUI Fire",
+            texture = "Interface/AddOns/HUI/assets/HUI_Fire.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -917,8 +926,8 @@ Addon.Templates = {
             scale = 0.9,
         },
         {
-            name = "ABE Fire2",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Fire2.tga",
+            name = "HUI Fire2",
+            texture = "Interface/AddOns/HUI/assets/HUI_Fire2.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -928,8 +937,8 @@ Addon.Templates = {
             scale = 0.9,
         },
         {
-            name = "ABE Antorus",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Antorus.tga",
+            name = "HUI Antorus",
+            texture = "Interface/AddOns/HUI/assets/HUI_Antorus.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -939,8 +948,8 @@ Addon.Templates = {
             scale = 0.85,
         },
         {
-            name = "ABE Lightning",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Lightning.tga",
+            name = "HUI Lightning",
+            texture = "Interface/AddOns/HUI/assets/HUI_Lightning.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -950,8 +959,8 @@ Addon.Templates = {
             scale = 0.85,
         },
         {
-            name = "ABE Zereth Square",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/proc_4.tga",
+            name = "HUI Zereth Square",
+            texture = "Interface/AddOns/HUI/assets/proc_4.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -961,8 +970,8 @@ Addon.Templates = {
             scale = 1.01,
         },
         {
-            name = "ABE Pulse",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/pulse_01.tga",
+            name = "HUI Pulse",
+            texture = "Interface/AddOns/HUI/assets/pulse_01.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -972,8 +981,8 @@ Addon.Templates = {
             scale = 0.95,
         },
         {
-            name = "ABE Square Pixel-like",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Square_PixelLike.png",
+            name = "HUI Square Pixel-like",
+            texture = "Interface/AddOns/HUI/assets/HUI_Square_PixelLike.png",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -983,8 +992,8 @@ Addon.Templates = {
             scale = 0.82,
         },
         {
-            name = "ABE Arc Raiders |cff1df2a8*new*",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_ArcRaiders.png",
+            name = "HUI Arc Raiders |cff1df2a8*new*",
+            texture = "Interface/AddOns/HUI/assets/HUI_ArcRaiders.png",
             rows = 10,
             columns = 6,
             frames = 60,
@@ -1004,7 +1013,7 @@ Addon.Templates = {
         }, 
         {
             name = "GCD 2",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/GCD_2.tga",
+            texture = "Interface/AddOns/HUI/assets/GCD_2.tga",
             rows = 6,
             columns = 2,
             frames = 12,
@@ -1121,7 +1130,7 @@ Addon.Templates = {
         },
         {
             name = "Modern Blizzard Proc Short",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ProcStartYellow.tga",
+            texture = "Interface/AddOns/HUI/assets/ProcStartYellow.tga",
             rows = 3,
             columns = 6,
             frames = 18,
@@ -1130,7 +1139,7 @@ Addon.Templates = {
         },
         {
             name = "Modern Blizzard Proc Shorter",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ProcStartYellow_Shorter.tga",
+            texture = "Interface/AddOns/HUI/assets/ProcStartYellow_Shorter.tga",
             rows = 2,
             columns = 5,
             frames = 10,
@@ -1143,7 +1152,7 @@ Addon.Templates = {
         },
         {
             name = "Modern Blizzard Blue Proc Short",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ProcStartBlue.tga",
+            texture = "Interface/AddOns/HUI/assets/ProcStartBlue.tga",
             rows = 3,
             columns = 6,
             frames = 18,
@@ -1152,7 +1161,7 @@ Addon.Templates = {
         },
         {
             name = "Modern Blizzard Blue Proc Shorter",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ProcStartBlue_Shorter.tga",
+            texture = "Interface/AddOns/HUI/assets/ProcStartBlue_Shorter.tga",
             rows = 2,
             columns = 5,
             frames = 10,
@@ -1161,7 +1170,7 @@ Addon.Templates = {
         },
         {
             name = "Modern Blizzard White Proc Short",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ProcStartWhite.tga",
+            texture = "Interface/AddOns/HUI/assets/ProcStartWhite.tga",
             rows = 3,
             columns = 6,
             frames = 18,
@@ -1170,7 +1179,7 @@ Addon.Templates = {
         },
         {
             name = "Modern Blizzard White Proc Shorter",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ProcStartWhite_Shorter.tga",
+            texture = "Interface/AddOns/HUI/assets/ProcStartWhite_Shorter.tga",
             rows = 2,
             columns = 5,
             frames = 10,
@@ -1179,7 +1188,7 @@ Addon.Templates = {
         },
         {
             name = "Modern Blizzard Rainbow Proc Short",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_ProcRainbow_Short.png",
+            texture = "Interface/AddOns/HUI/assets/HUI_ProcRainbow_Short.png",
             rows = 3,
             columns = 6,
             frames = 18,
@@ -1188,7 +1197,7 @@ Addon.Templates = {
         },
         {
             name = "Modern Blizzard Rainbow Proc Shorter",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_ProcRainbow_Shorter.png",
+            texture = "Interface/AddOns/HUI/assets/HUI_ProcRainbow_Shorter.png",
             rows = 2,
             columns = 5,
             frames = 10,
@@ -1197,7 +1206,7 @@ Addon.Templates = {
         },
         {
             name = "Classic-like Blizzard Proc",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ClassicLike_Flipbook.tga",
+            texture = "Interface/AddOns/HUI/assets/ClassicLike_Flipbook.tga",
             rows = 4,
             columns = 3,
             frames = 12,
@@ -1207,8 +1216,8 @@ Addon.Templates = {
             scale = 0.9,
         },
         {
-            name = "ABE Burst Square",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/burst_square.tga",
+            name = "HUI Burst Square",
+            texture = "Interface/AddOns/HUI/assets/burst_square.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -1218,8 +1227,8 @@ Addon.Templates = {
             scale = 0.38,
         },
         {
-            name = "ABE Burst Rune Square",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/burst_2.tga",
+            name = "HUI Burst Rune Square",
+            texture = "Interface/AddOns/HUI/assets/burst_2.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -1229,8 +1238,8 @@ Addon.Templates = {
             scale = 0.38,
         },
         {
-            name = "ABE Burst Rune Square 2",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/burst_3.tga",
+            name = "HUI Burst Rune Square 2",
+            texture = "Interface/AddOns/HUI/assets/burst_3.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -1240,8 +1249,8 @@ Addon.Templates = {
             scale = 0.38,
         },
         {
-            name = "ABE Burst Zereth Square",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/burst_4.tga",
+            name = "HUI Burst Zereth Square",
+            texture = "Interface/AddOns/HUI/assets/burst_4.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -1251,8 +1260,8 @@ Addon.Templates = {
             scale = 0.42,
         },
         {
-            name = "ABE Burst Ring",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/burst_5.tga",
+            name = "HUI Burst Ring",
+            texture = "Interface/AddOns/HUI/assets/burst_5.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -1262,8 +1271,8 @@ Addon.Templates = {
             scale = 0.38,
         },
         {
-            name = "ABE Burst Ring 2",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/burst_6.tga",
+            name = "HUI Burst Ring 2",
+            texture = "Interface/AddOns/HUI/assets/burst_6.tga",
             rows = 6,
             columns = 5,
             frames = 30,
@@ -1391,36 +1400,36 @@ Addon.Templates = {
             size = {45,45},
         }, --18
         {
-            name = "ABE Border Square 2 |cff1df2a8*new*",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Border_Square_2.png",
+            name = "HUI Border Square 2 |cff1df2a8*new*",
+            texture = "Interface/AddOns/HUI/assets/HUI_Border_Square_2.png",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {43,43},
         },
         {
-            name = "ABE Border Square 3 |cff1df2a8*new*",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Border_Square_3.png",
+            name = "HUI Border Square 3 |cff1df2a8*new*",
+            texture = "Interface/AddOns/HUI/assets/HUI_Border_Square_3.png",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {43,43},
         },
         {
-            name = "ABE Border Square 4 |cff1df2a8*new*",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Border_Square_4.png",
+            name = "HUI Border Square 4 |cff1df2a8*new*",
+            texture = "Interface/AddOns/HUI/assets/HUI_Border_Square_4.png",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {43,43},
         },
         {
-            name = "ABE Border Square 6 |cff1df2a8*new*",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Border_Square_6.png",
+            name = "HUI Border Square 6 |cff1df2a8*new*",
+            texture = "Interface/AddOns/HUI/assets/HUI_Border_Square_6.png",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {43,43},
         },
         {
-            name = "ABE Border Square 8 |cff1df2a8*new*",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Border_Square_8.png",
+            name = "HUI Border Square 8 |cff1df2a8*new*",
+            texture = "Interface/AddOns/HUI/assets/HUI_Border_Square_8.png",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {43,43},
@@ -1482,36 +1491,36 @@ Addon.Templates = {
             size = {45,45},
         },
         {
-            name = "ABE Highlight Square 1 |cff1df2a8*new*",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Highlight_Square.png",
+            name = "HUI Highlight Square 1 |cff1df2a8*new*",
+            texture = "Interface/AddOns/HUI/assets/HUI_Highlight_Square.png",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {43,43},
         },
         {
-            name = "ABE Highlight Square 2 |cff1df2a8*new*",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Highlight_Square1.png",
+            name = "HUI Highlight Square 2 |cff1df2a8*new*",
+            texture = "Interface/AddOns/HUI/assets/HUI_Highlight_Square1.png",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {43,43},
         },
         {
-            name = "ABE Highlight Square 3 |cff1df2a8*new*",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Highlight_Square2.png",
+            name = "HUI Highlight Square 3 |cff1df2a8*new*",
+            texture = "Interface/AddOns/HUI/assets/HUI_Highlight_Square2.png",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {43,43},
         },
         {
-            name = "ABE Highlight CooldownManager |cff1df2a8*new*",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Highlight_CooldownManager.png",
+            name = "HUI Highlight CooldownManager |cff1df2a8*new*",
+            texture = "Interface/AddOns/HUI/assets/HUI_Highlight_CooldownManager.png",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {43,43},
         },
         {
-            name = "ABE Highlight CooldownManager 2 |cff1df2a8*new*",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Checked_CooldownManager.png",
+            name = "HUI Highlight CooldownManager 2 |cff1df2a8*new*",
+            texture = "Interface/AddOns/HUI/assets/HUI_Checked_CooldownManager.png",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {43,43},
@@ -1527,7 +1536,7 @@ Addon.Templates = {
         },
         {
             name = "Default Blizzard Border Thick",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Border_Default_Thick.png",
+            texture = "Interface/AddOns/HUI/assets/HUI_Border_Default_Thick.png",
             point = "CENTER",
             size = {46, 45},
         },
@@ -1566,43 +1575,43 @@ Addon.Templates = {
             size = {58,65},
         }, ]]
         {
-            name = "ABE Border Thin",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Border_Thin",
+            name = "HUI Border Thin",
+            texture = "Interface/AddOns/HUI/assets/HUI_Border_Thin",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {43,43},
         },
         {
-            name = "ABE Border Square 2",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Border_Square_2.png",
+            name = "HUI Border Square 2",
+            texture = "Interface/AddOns/HUI/assets/HUI_Border_Square_2.png",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {43,43},
         },
         {
-            name = "ABE Border Square 3",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Border_Square_3.png",
+            name = "HUI Border Square 3",
+            texture = "Interface/AddOns/HUI/assets/HUI_Border_Square_3.png",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {43,43},
         },
         {
-            name = "ABE Border Square 4",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Border_Square_4.png",
+            name = "HUI Border Square 4",
+            texture = "Interface/AddOns/HUI/assets/HUI_Border_Square_4.png",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {43,43},
         },
         {
-            name = "ABE Border Square 6",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Border_Square_6.png",
+            name = "HUI Border Square 6",
+            texture = "Interface/AddOns/HUI/assets/HUI_Border_Square_6.png",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {43,43},
         },
         {
-            name = "ABE Border Square 8",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Border_Square_8.png",
+            name = "HUI Border Square 8",
+            texture = "Interface/AddOns/HUI/assets/HUI_Border_Square_8.png",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {43,43},
@@ -1668,22 +1677,22 @@ Addon.Templates = {
             size = {42,41},
         },
         {
-            name = "ABE Classic Light",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Backdrop_Light.tga",
+            name = "HUI Classic Light",
+            texture = "Interface/AddOns/HUI/assets/HUI_Backdrop_Light.tga",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {42,42},
         },
         {
-            name = "ABE Gradient",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Backdrop_Gradient.png",
+            name = "HUI Gradient",
+            texture = "Interface/AddOns/HUI/assets/HUI_Backdrop_Gradient.png",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {42,42},
         },
         {
-            name = "ABE Gradient 2",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Backdrop_GradientUp.png",
+            name = "HUI Gradient 2",
+            texture = "Interface/AddOns/HUI/assets/HUI_Backdrop_GradientUp.png",
             point = "CENTER",
             padding = {-0.5, 0.5},
             size = {42,42},
@@ -1775,7 +1784,7 @@ Addon.Templates = {
     IconMaskTextures = {
         {
             name = "Default Blizzard Icon Mask",
-            texture = "common-iconmask",
+            texture = "Interface/Common/common-iconmask",
             point = "CENTER",
             padding = {0, 0},
             size = {45,45},
@@ -1788,15 +1797,15 @@ Addon.Templates = {
             size = {45,45},
         },
         {
-            name = "ABE Cooldown Manager Mask",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Mask_CooldownTracker.png",
+            name = "HUI Cooldown Manager Mask",
+            texture = "Interface/AddOns/HUI/assets/HUI_Mask_CooldownTracker.png",
             point = "CENTER",
             padding = {0, 0},
             size = {45,45},
         },
         {
             name = "Square Mask",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Mask_Square.png",
+            texture = "Interface/AddOns/HUI/assets/HUI_Mask_Square.png",
             point = "CENTER",
             padding = {0, 0},
             size = {45,45},
@@ -1823,8 +1832,8 @@ Addon.Templates = {
             size = {45,45},
         },
         {
-            name = "ABE Circle Mask",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_Mask_Circle.png",
+            name = "HUI Circle Mask",
+            texture = "Interface/AddOns/HUI/assets/HUI_Mask_Circle.png",
             point = "CENTER",
             padding = {0, 0},
             size = {45,45},
@@ -1833,23 +1842,23 @@ Addon.Templates = {
     SwipeTextures = {
         {
             name = "Default Blizzard Swipe",
-            texture = "interface/hud/ui-hud-cooldownmanager-icon-swipe",
+            texture = "Interface\\Cooldown\\ui-hud-cooldown-swipe",
         },
         {
-            name = "ABE Button",
-            texture = "Interface\\addons\\ActionBarsEnhanced\\assets\\ABE_CooldownSwipe_Button.png",
+            name = "HUI Button",
+            texture = "Interface\\AddOns\\HUI\\assets\\HUI_CooldownSwipe_Button.png",
         },
         {
-            name = "ABE Button Blured",
-            texture = "Interface\\addons\\ActionBarsEnhanced\\assets\\ABE_CooldownSwipe_Blured.png",
+            name = "HUI Button Blured",
+            texture = "Interface\\AddOns\\HUI\\assets\\HUI_CooldownSwipe_Blured.png",
         },
         {
-            name = "ABE Square",
-            texture = "Interface\\addons\\ActionBarsEnhanced\\assets\\ABE_Mask_Square.png",
+            name = "HUI Square",
+            texture = "Interface\\AddOns\\HUI\\assets\\HUI_Mask_Square.png",
         },
         {
-            name = "ABE Cooldown Tracker",
-            texture = "Interface\\addons\\ActionBarsEnhanced\\assets\\ABE_Mask_CooldownTracker3.png",
+            name = "HUI Cooldown Tracker",
+            texture = "Interface\\AddOns\\HUI\\assets\\HUI_Mask_CooldownTracker3.png",
         },
     },
     EdgeTextures = {
@@ -1858,36 +1867,36 @@ Addon.Templates = {
             texture = "Interface\\Cooldown\\UI-HUD-ActionBar-SecondaryCooldown",
         },
         {
-            name = "ABE Edge White",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_CooldownEdge_White.png",
+            name = "HUI Edge White",
+            texture = "Interface/AddOns/HUI/assets/HUI_CooldownEdge_White.png",
         },
         {
-            name = "ABE Edge Black and White",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_CooldownEdge_BW.png",
+            name = "HUI Edge Black and White",
+            texture = "Interface/AddOns/HUI/assets/HUI_CooldownEdge_BW.png",
         },
         {
-            name = "ABE Edge Line",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_CooldownEdge_Line.png",
+            name = "HUI Edge Line",
+            texture = "Interface/AddOns/HUI/assets/HUI_CooldownEdge_Line.png",
         },
         {
-            name = "ABE Edge Line Black and White",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_CooldownEdge_LineBW.png",
+            name = "HUI Edge Line Black and White",
+            texture = "Interface/AddOns/HUI/assets/HUI_CooldownEdge_LineBW.png",
         },
         {
-            name = "ABE Edge Blade",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_CooldownEdge_Blade2.png",
+            name = "HUI Edge Blade",
+            texture = "Interface/AddOns/HUI/assets/HUI_CooldownEdge_Blade2.png",
         },
         {
-            name = "ABE Edge Blade 2",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_CooldownEdge_Blade.png",
+            name = "HUI Edge Blade 2",
+            texture = "Interface/AddOns/HUI/assets/HUI_CooldownEdge_Blade.png",
         },
         {
-            name = "ABE Edge Blade 3",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_CooldownEdge_Blade3.png",
+            name = "HUI Edge Blade 3",
+            texture = "Interface/AddOns/HUI/assets/HUI_CooldownEdge_Blade3.png",
         },
         {
-            name = "ABE Edge Blade RGB",
-            texture = "Interface/addons/ActionBarsEnhanced/assets/ABE_CooldownEdge_BladeRGB.png",
+            name = "HUI Edge Blade RGB",
+            texture = "Interface/AddOns/HUI/assets/HUI_CooldownEdge_BladeRGB.png",
         },
     },
     StatusBarTextures = {},

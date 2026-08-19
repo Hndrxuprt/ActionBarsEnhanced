@@ -15,14 +15,14 @@ Addon.config.containers["CDMCustomFrameBarContainer"] = {
             type            = "editbox",
             name            = L.CDMCustomFrameName,
             defaultText     = function()
-                local frame = _G[ABE_BarsListMixin:GetFrameLebel()]
+                local frame = _G[HUI_BarsListMixin:GetFrameLebel()]
                 if frame then
                     local frameName = frame:GetDisplayName()
                     return frameName
                 end
             end,
             OnEnterPressed  = function(self)
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
                 local name = self:GetText()
                 self.currentName = name
@@ -45,7 +45,7 @@ Addon.config.containers["CDMCustomFrameBarContainer"] = {
             name            = L.CDMCustomFrameDelete,
             buttonName      = L.Delete,
             OnClick         = function(self)
-                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                 EventRegistry:TriggerEvent("CDMCustomItemList.DeleteFrame", frameLabel)
             end
         },
@@ -55,7 +55,7 @@ Addon.config.containers["CDMCustomFrameBarContainer"] = {
             defaultText     = "",
             numeric         = true,
             OnEnterPressed  = function(self)
-                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                 local id = self:GetText()
                 EventRegistry:TriggerEvent("CDMCustomItemList.AddSpellByID", id, frameLabel)
                 self:ClearFocus()
@@ -68,7 +68,7 @@ Addon.config.containers["CDMCustomFrameBarContainer"] = {
             defaultText     = "",
             numeric         = true,
             OnEnterPressed  = function(self)
-                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                 local id = self:GetText()
                 EventRegistry:TriggerEvent("CDMCustomItemList.AddItemByID", id, frameLabel)
                 self:ClearFocus()
@@ -80,7 +80,7 @@ Addon.config.containers["CDMCustomFrameBarContainer"] = {
             name            = L.CDMCustomFrameTrackSlot13,
             value           = "CDMCustomTrackTrink1",
             callback        = function(checked)
-                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                 EventRegistry:TriggerEvent("CDMCustomItemList.AddItemBySlot", 13, frameLabel, checked)
             end
         },
@@ -89,7 +89,7 @@ Addon.config.containers["CDMCustomFrameBarContainer"] = {
             name            = L.CDMCustomFrameTrackSlot14,
             value           = "CDMCustomTrackTrink2",
             callback        = function(checked)
-                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                 EventRegistry:TriggerEvent("CDMCustomItemList.AddItemBySlot", 14, frameLabel, checked)
             end
         },
@@ -98,7 +98,7 @@ Addon.config.containers["CDMCustomFrameBarContainer"] = {
             name            = L.CDMCustomFrameTrackSlot16,
             value           = "CDMCustomTrackWeapon1",
             callback        = function(checked)
-                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                 EventRegistry:TriggerEvent("CDMCustomItemList.AddItemBySlot", 16, frameLabel, checked)
             end
         },
@@ -107,7 +107,7 @@ Addon.config.containers["CDMCustomFrameBarContainer"] = {
             name            = L.CDMCustomFrameTrackSlot17,
             value           = "CDMCustomTrackWeapon2",
             callback        = function(checked)
-                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                 EventRegistry:TriggerEvent("CDMCustomItemList.AddItemBySlot", 17, frameLabel, checked)
             end
         },
@@ -116,7 +116,7 @@ Addon.config.containers["CDMCustomFrameBarContainer"] = {
             name            = L.CDMCustomFrameHideWhen0,
             value           = "CDMCustomHideEmpty",
             callback        = function(checked)
-                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameLabel]
                 frame:RefreshLayout()
             end
@@ -131,7 +131,7 @@ Addon.config.containers["CDMCustomFrameBarContainer"] = {
             step            = 0.1,
             sliderName      = {top = L.Alpha},
             callback        = function()
-                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameLabel]
                 frame:RefreshLayout()
             end,
@@ -152,9 +152,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             name            = L.EnableName,
             value           = "CustomFrameBarNameEnable",
             callback        = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshName(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshName(frame, frameName)
             end,
         },
         ["CDMCustomFrameBarNameFont"] = {
@@ -167,9 +167,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             showNew     = false,
             OnEnter     = false,
             OnClose     = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshName(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshName(frame, frameName)
             end,
         },
         ["CDMCustomFrameBarNameSize"] = {
@@ -182,9 +182,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             step            = 1,
             sliderName      = {top = L.Size},
             callback        = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshName(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshName(frame, frameName)
             end,
         },
         ["CDMCustomFrameBarNameColor"] = {
@@ -194,9 +194,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             checkboxValues  = {"UsCustomFrameBarNameColor"},
             alpha           = true,
             callback        = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshName(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshName(frame, frameName)
             end,
         },
         ["CDMCustomFrameBarNamePoint"] = {
@@ -218,14 +218,14 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             },
             OnClose     = {
                 function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshName(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshName(frame, frameName)
                 end,
                 function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshName(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshName(frame, frameName)
                 end,
             },
         },
@@ -239,9 +239,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             step            = 1,
             sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
             callback        = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshName(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshName(frame, frameName)
             end,
         },
         ["CDMCustomFrameBarNameJustifyH"] = {
@@ -253,9 +253,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             showNew     = false,
             OnEnter     = false,
             OnClose     = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshName(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshName(frame, frameName)
             end,
         },
 
@@ -264,9 +264,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             name            = L.EnableStacks,
             value           = "CustomFrameBarStacksEnable",
             callback        = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
             end,
         },
         ["CDMCustomFrameBarStacksFont"] = {
@@ -279,9 +279,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             showNew     = false,
             OnEnter     = false,
             OnClose     = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
             end,
         },
         ["CDMCustomFrameBarStacksSize"] = {
@@ -294,9 +294,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             step            = 1,
             sliderName      = {top = L.Size},
             callback        = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
             end,
         },
         ["CDMCustomFrameBarStacksColor"] = {
@@ -306,9 +306,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             checkboxValues  = {"UsCustomFrameBarStacksColor"},
             alpha           = true,
             callback        = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
             end,
         },
         ["CDMCustomFrameBarStacksPoint"] = {
@@ -330,14 +330,14 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             },
             OnClose     = {
                 function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
                 end,
                 function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
                 end,
             },
         },
@@ -351,9 +351,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             step            = 1,
             sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
             callback        = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
             end,
         },
         ["CDMCustomFrameBarStacksJustifyH"] = {
@@ -365,9 +365,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             showNew     = false,
             OnEnter     = false,
             OnClose     = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshStacks(frame, frameName)
             end,
         },
 
@@ -377,9 +377,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             name            = L.EnableTimer,
             value           = "CustomFrameBarTimeEnable",
             callback        = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
             end,
         },
         ["CDMCustomFrameBarTimeFormat"] = {
@@ -391,9 +391,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             showNew     = false,
             OnEnter     = false,
             OnClose     = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
             end,
         },
         ["CDMCustomFrameBarTimeFont"] = {
@@ -406,9 +406,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             showNew     = false,
             OnEnter     = false,
             OnClose     = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
             end,
         },
         ["CDMCustomFrameBarTimeSize"] = {
@@ -421,9 +421,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             step            = 1,
             sliderName      = {top = L.Size},
             callback        = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
             end,
         },
         ["CDMCustomFrameBarTimeColor"] = {
@@ -433,9 +433,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             checkboxValues  = {"UseCustomFrameBarTimeColor"},
             alpha           = true,
             callback        = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
             end,
         },
         ["CDMCustomFrameBarTimePoint"] = {
@@ -457,14 +457,14 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             },
             OnClose     = {
                 function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
                 end,
                 function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
                 end,
             },
         },
@@ -478,9 +478,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             step            = 1,
             sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
             callback        = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
             end,
         },
         ["CDMCustomFrameBarTimeJustifyH"] = {
@@ -492,9 +492,9 @@ Addon.config.containers["CDMCustomFrameBarFontContainer"] = {
             showNew     = false,
             OnEnter     = false,
             OnClose     = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshDuration(frame, frameName)
             end,
         },
     }
@@ -514,7 +514,7 @@ Addon.config.containers["CDMCustomFrameBarIconOptionsContainer"] = {
             step            = 1,
             sliderName      = {top = L.Size},
             callback        = function()
-                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameLabel]
                 frame:RefreshLayout()
             end,
@@ -528,7 +528,7 @@ Addon.config.containers["CDMCustomFrameBarIconOptionsContainer"] = {
             showNew     = false,
             OnEnter     = false,
             OnClose     = function()
-                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameLabel]
                 frame:RefreshLayout()
             end,
@@ -543,7 +543,7 @@ Addon.config.containers["CDMCustomFrameBarIconOptionsContainer"] = {
             step            = 1,
             sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
             callback        = function()
-                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameLabel]
                 frame:RefreshLayout()
             end,
@@ -557,7 +557,7 @@ Addon.config.containers["CDMCustomFrameBarIconOptionsContainer"] = {
             showNew     = false,
             OnEnter     = false,
             OnClose     = function()
-                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameLabel]
                 frame:RefreshLayout()
             end,
@@ -572,7 +572,7 @@ Addon.config.containers["CDMCustomFrameBarIconOptionsContainer"] = {
             step            = 0.01,
             sliderName      = {top = L.Scale},
             callback        = function()
-                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameLabel]
                 frame:RefreshLayout()
             end,
@@ -587,7 +587,7 @@ Addon.config.containers["CDMCustomFrameBarIconOptionsContainer"] = {
             step            = 0.01,
             sliderName      = {top = L.Scale},
             callback        = function()
-                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameLabel]
                 frame:RefreshLayout()
             end,

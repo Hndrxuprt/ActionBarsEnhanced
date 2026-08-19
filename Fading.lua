@@ -183,7 +183,7 @@ local function HoverHookExternal(frame, isHover)
         frame = frame:GetParent()
         frameName = frame:GetName()
         if frame.fade and frameName then
-            AAddon:ExternalBarsFadeAnim(frame, Addon.externalFadeBars[frameName], isHover)
+            Addon:ExternalBarsFadeAnim(frame, Addon.externalFadeBars[frameName], isHover)
             return
         end
     end
@@ -191,10 +191,14 @@ end
 
 function Addon:SetFrameAlpha(frame, toAlpha)
     local frameName = frame:GetName()
-    if Addon.externalFadeBars[frameName] and not toAlpha then
-        toAlpha = Addon.externalFadeBars[frameName].alpha
-    else
-        toAlpha = toAlpha or Addon:GetValue("FadeBarsAlpha", nil, frameName)
+    if not toAlpha then
+        if Addon.externalFadeBars[frameName] then
+            toAlpha = Addon.externalFadeBars[frameName].alpha
+        elseif Addon:GetValue("FadeBars", nil, frameName) then
+            toAlpha = Addon:GetValue("FadeBarsAlpha", nil, frameName)
+        else
+            toAlpha = 1
+        end
     end
 
     local currentAlpha = frame:GetAlpha()
@@ -211,7 +215,12 @@ end
 function Addon:Fade(frame, isHover)
     local frameName = frame:GetName()
     if not tContains(fadeBars, frameName) then return end
-    if not Addon:GetValue("FadeBars", nil, frameName) then return end
+    if not Addon:GetValue("FadeBars", nil, frameName) then
+        if frame:GetAlpha() < 1 then
+            Addon:SetFrameAlpha(frame, 1)
+        end
+        return
+    end
 
     if ShouldFadeIn(frame, isHover) then
         
@@ -235,6 +244,8 @@ function Addon:BarsFadeAnim(frame)
                     else
                         Addon:SetFrameAlpha(frame)
                     end
+                elseif frame:GetAlpha() < 1 then
+                    Addon:SetFrameAlpha(frame, 1)
                 end
             end
         end
@@ -248,6 +259,8 @@ function Addon:BarsFadeAnim(frame)
             else
                 Addon:SetFrameAlpha(frame)
             end
+        elseif frame:GetAlpha() < 1 then
+            Addon:SetFrameAlpha(frame, 1)
         end
     end
 end
@@ -271,11 +284,11 @@ function Addon:ExternalBarsFadeAnim(frame, options, isHover)
     end
 end
 
---/run ABE_RegisterFrameForFading("Minimap", { alpha = 0 })
---/run ABE_RegisterFrameForFading("PlayerFrame", { alpha = 0 })
---/run ABE_RegisterFrameForFading("EssentialCooldownViewer", { alpha = 0, inCombat = true, onTarget = true, onCasting = true, onHover = true })
+--/run HUI_RegisterFrameForFading("Minimap", { alpha = 0 })
+--/run HUI_RegisterFrameForFading("PlayerFrame", { alpha = 0 })
+--/run HUI_RegisterFrameForFading("EssentialCooldownViewer", { alpha = 0, inCombat = true, onTarget = true, onCasting = true, onHover = true })
 
-function ABE_RegisterFrameForFading(frame, options)
+function HUI_RegisterFrameForFading(frame, options)
     if not frame then return end
     local frameName
     if type(frame) == "string" then

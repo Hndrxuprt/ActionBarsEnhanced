@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/">
-    <Frame name="ActionBarsEnhancedImportDialog" mixin="ActionBarsEnhancedImportDialogMixin" virtual="true" frameStrata="DIALOG" frameLevel="120" enableMouse="true" hidden="false">
+    <Frame name="HUIImportDialog" mixin="HUIImportDialogMixin" virtual="true" frameStrata="DIALOG" frameLevel="120" enableMouse="true" hidden="false">
 		<Size x="550" y="350"/>
 		<Anchors>
 			<Anchor point="CENTER"/>
@@ -22,7 +22,7 @@
 					<Anchor point="BOTTOMRIGHT" x="-40" y="25"/>
 				</Anchors>
 			</Frame>
-            <Frame parentKey="ImportControl" mixin="ActionBarsEnhancedImportDialogMixin">
+            <Frame parentKey="ImportControl" mixin="HUIImportDialogMixin">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.ContentArea"/>
 					<Anchor point="TOPRIGHT" relativeKey="$parent.ContentArea"/>
@@ -53,7 +53,7 @@
 				</Frames>
 			</Frame>
 			
-			<Frame parentKey="NameControl" mixin="ActionBarsEnhancedImportDialogMixin" virtual="true" hidden="false">
+			<Frame parentKey="NameControl" mixin="HUIImportDialogMixin" virtual="true" hidden="false">
                 <Size x="260" y="50"/>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativePoint="BOTTOMLEFT" relativeKey="$parent.ImportControl" y="-25"/>
@@ -81,7 +81,7 @@
                 </Frames>
 			</Frame>
 			
-            <Button parentKey="AcceptButton" mixin="ActionBarsEnhancedImportDialogMixin" inherits="UIPanelButtonTemplate" text="ACCEPT">
+            <Button parentKey="AcceptButton" mixin="HUIImportDialogMixin" inherits="UIPanelButtonTemplate" text="ACCEPT">
                 <Size x="200" y="25"/>
                 <Anchors>
                     <Anchor point="BOTTOMRIGHT" relativePoint="BOTTOM" relativeKey="$parent.ContentArea" x="-5"/>
@@ -103,7 +103,7 @@
             </Button>
 		</Frames>
     </Frame>
-    <Frame name="ActionBarsEnhancedExportDialog" mixin="ActionBarsEnhancedExportDialogMixin" virtual="true" frameStrata="DIALOG" frameLevel="120" enableMouse="true" hidden="true">
+    <Frame name="HUIExportDialog" mixin="HUIExportDialogMixin" virtual="true" frameStrata="DIALOG" frameLevel="120" enableMouse="true" hidden="true">
 		<Size x="550" y="350"/>
 		<Anchors>
 			<Anchor point="CENTER"/>
@@ -126,7 +126,7 @@
 					<Anchor point="BOTTOMRIGHT" x="-40" y="25"/>
 				</Anchors>
 			</Frame>
-            <Frame parentKey="ExportControl" mixin="ActionBarsEnhancedExportDialogMixin">
+            <Frame parentKey="ExportControl" mixin="HUIExportDialogMixin">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent.ContentArea"/>
 					<Anchor point="TOPRIGHT" relativeKey="$parent.ContentArea"/>
@@ -168,7 +168,7 @@
             </Button>
 		</Frames>
     </Frame>
-    <Frame name="ActionBarsEnhancedProfilesTemplate" mixin="ActionBarsEnhancedProfilesMixin" frameStrata="HIGH" virtual="true" parent="UIParent" enableMouse="true" hidden="false">
+    <Frame name="HUIProfilesTemplate" mixin="HUIProfilesMixin" frameStrata="HIGH" virtual="true" parent="UIParent" enableMouse="true" hidden="false">
         <Size x="650" y="480"/>
         <Anchors>
             <Anchor point="CENTER" relativeKey="$parent" relativePoint="CENTER"/>
@@ -316,7 +316,7 @@
                             </Layer>
                         </Layers>
                     </Frame>
-                    <Button parentKey="ResetButton" mixin="ActionBarsEnhancedProfilesMixin" inherits="UIPanelButtonTemplate" text="Reset">
+                    <Button parentKey="ResetButton" mixin="HUIProfilesMixin" inherits="UIPanelButtonTemplate" text="Reset">
                         <Size x="100" y="25"/>
                         <Anchors>
                             <Anchor point="LEFT" relativeKey="$parent.Header.CurrentProfile" relativePoint="RIGHT" x="10" y="0"/>
@@ -610,7 +610,7 @@
                             </Layer>
                         </Layers>
                         <Frames>
-                            <Button parentKey="ImportButton"  mixin="ActionBarsEnhancedProfilesMixin" inherits="UIPanelButtonTemplate" text="Import Profile">
+                            <Button parentKey="ImportButton"  mixin="HUIProfilesMixin" inherits="UIPanelButtonTemplate" text="Import Profile">
                                 <Size x="200" y="25"/>
                                 <Anchors>
                                     <Anchor point="TOPLEFT" relativeKey="$parent.ImportExportText" relativePoint="BOTTOMLEFT" x="0" y="-10"/>
@@ -619,7 +619,7 @@
                                     <OnClick method="ImportProfile"/>
                                 </Scripts>
                             </Button>
-                            <Button parentKey="ExportButton" mixin="ActionBarsEnhancedProfilesMixin" inherits="UIPanelButtonTemplate" text="Export Profile">
+                            <Button parentKey="ExportButton" mixin="HUIProfilesMixin" inherits="UIPanelButtonTemplate" text="Export Profile">
                                 <Size x="200" y="25"/>
                                 <Anchors>
                                     <Anchor point="LEFT" relativeKey="$parent.ImportButton" relativePoint="RIGHT" x="4" y="0"/>

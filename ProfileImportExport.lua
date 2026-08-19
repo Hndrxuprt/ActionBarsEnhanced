@@ -6,9 +6,9 @@ local LibSerialize = LibStub("LibSerialize")
 local L = Addon.L
 Addon.P = {}
 
-ActionBarsEnhancedProfilesMixin = {}
-ActionBarsEnhancedImportDialogMixin = {}
-ActionBarsEnhancedExportDialogMixin = {}
+HUIProfilesMixin = {}
+HUIImportDialogMixin = {}
+HUIExportDialogMixin = {}
 
 local DefaultProfiles = {
     ["ElvUI Style"] = "fIv3pXX1vCwpEJlqDbwZcgd2G)G2sBDSJ)inon0nSGHjTH4nGDm8qLUZU7fMrSSZvZmRPBEPvwQs0h6l8MLCLI4H(E8B5Ti(l4O1(XKA6MQkv1Mi1Tp1xA65(1mZDbR6x8o35Ep3Z5353535mK5pXYTOFLgHlg4SnDvgTwTIob7EE25MVrqaTE08oHr4k8)7dWDSOF9OdkvZP5vxHUzJAobhO2Wd9Qg5EY(yJ8GqAQZCFp0QEFmLWU8XBWvO1CI8EeTKVx9ObyJREDyrNkBvnWNnVFn)GInVFtgAJZMyCZnqyJ0LDV3gBesJwllB00EJtWM0O7w3PCnQ7XfIC3LhI7jcXI(1QIE0X63k)nV5BFVk(1l5hEQy3H7LBg43OEvHFUyoNswx)1FZCLZKBZm5cY8k871Z099AGtd1sTQn1Bt3OPzNPlRWH8XydMaxYnsWnAyvvuKJ)OTxv69P)6OI(bvPiIo9Xapc8ZWvY2DgxF94DDmzlc7cMMD1iNOgHLDc4xDJa6kR6xZRANKJkiweJiutQYRHbzgLWM4v5YcA7knk7T1vxMw1RX2Sjn3AsEs5hW4SZ)QSMiW7NL)brE18IAoVpYt83P(h5r3HgS7fydn)clVcDB)hrxA(fwDhpK62cJZkBfQzL7XjkRwXPg1UqNH)4x(TF7)LnmpMxy55Ae4WdWajXUL26A(JDHV6p(77b)xmh6a8GIBHJjU4TlDB5nYJCykCrLz4MpLP8ETppTPqyw6bRqFenqz2KkfPjnY)9Ygs63cQVt1QE13KWgvUMoRhFPksrYBKR2j1k8GWAV445HSXnprjN6vPB7vrEY2M38e90I)0YoHBjqxlKARdiE(qgp7HRPPmdQbgoqXVWXnsvRNvKnxkWR67700VrexiYkvgw7oez(RBuM0ojnWT(Lfh1mhJzclrgWUW)8l(srQnWUWZYLBk8NTnJEcgqPZfQCGUSweFkgCVS8CvmQG4IydsHfI87EnysWc((2f(x)JFhEfNao)4W3Ha9MfUuwz2ujo4jsgy2rvQ(HpmTi2T5E5HLkr4o8Myeyx4G927t6PNmSH7spijmdSeB1sIwjIMs0MaJ2pCwcmbbUiwaE2Ju5PvhHt0swnR6cbN8k5GSe41gGDUUAaL6CUWPisToJBDTj6rsynvyue2rpQ8M4nUqFUWfoIEM(0)IgiOVrt7tbNEGJBpC7O3Jf0pmfmyMoPCnoYpRbqg7tgajCMXGBBH9HCKk4Vx9iAqqdw0C1922nDhZe0qkp)Qq31YiT2roY4Wy8tz2aXJPOBxeohmUic(WgEv2ArV6EHUUWWei3mDmzuRFhyern)8ia4VTGvg2hlFXgBSb)wn1tNc(zKhRE1TK1k2f(6zNvY7Sl83gzKPe1mwjD3WcMLseYheFgXHuu6deLuQUIZOT(n1wV9kROT(F9fV4qP17OReJBMEUKRt2gRyCBm8whnwJquUJ6gQoRWRNQpCk1hKd8JaP2YhrdI8qbSLc83jY1cUgbUEsPpUb9SyGnCZy05n0()F)Z(SdvvLyn6F5t)uUipCll9gVXrcuXg)6V8pZvF0762YDzjGHOOFRsyQTOiVNwsSO4sDPji6Kuod8wZaVTvB5MuW(ANgPQDevqlSSwr8IijpoSstN(PeOagZiQ31jiMwD970EPA(LDQTknIRZfUBrH42tEYVbBRcZq2xK4uYX4VT9J2I2u(8JVB1nf9zSl8FEYt4X1Zs9AtjR4z9CPv2IQhuyuCD(ErBunD20TZh4Jx2c0qKze4erDHB8aOmMKNR3NHV4E3BzvZpE77uTCipw)kDw6RE(Zpurhp86x)Dv5Hx(s(IzGFOOtE7YnK8uf(Vp3hWq5xsBQA62vFos7fD4Yf3dNSy7YorUhiobkHWHBHxjrcLxHJ7Gzc)GTDQPICfcYpM4iXtEWZnY(XVdQSQw0gRzQXRBuNESwPn)64o10BEkrTPt3wUjTtpzlJbhmghcHKNoXei6i6K(jdoOqvOC8pHPZ(yEiJExOl8U9AC)RH3VMhAeKdjNIo9qyKNjtxhLIWNelEYocCNSSChfXKNqLMew3yKfIOfS5udKoIFjwtn14)(M3KhQInhdTkoohaNR2oondx11Fhx8BmKbM(E0diGYntjCaZPXAP0k1dZnsCAvUlnY0rTEPa)kyf4oYp44999z8NuK7eAOPJRpSE7xlM9KKXXPuUTDHVzJn4AuWv7TLHTJrECSPN(0pxLS)cXpv4Ib3HGssX54sncDJlHNPLUuWgvRXo7ZEXwynyQsxEbRwPG0sZIMRgZ1riylCOK9JJvw0pmu9ThI2B7ojCcmEMeR)fZPGJIWh667Dk(Cx9dFx(0eNppoSaotbmq83jglNoyg4KNSpi30yd)0dPPOVei)qTnxAgy0SQHPWoZyVByOb4TJhrmCfCP(zJWf65KIU64om2Xn98HhVcthr)TKptGa(eoJc7uH9KGBLbf7H9D564VDwwEzHq3av7yrfjFbL85frjZpJnlbhsGcInfKptkao5pDXXIZkq(s9Zrye0))GW8Kq(b4jejgoMedNqGEigo0qcmSpx2O3nme5tE8aWaeVcheFhboQ(cpuZbMXf5X825icHatexKa7tcL3xopl)p5a2GaUcj5t24e4u9derFGLkReR(PdJFab(XgFBx8B(jU60ZByPspVPl8wtd7tGFUezJ)SJ0FmcEumjmDwy2ld)brt5H7QFIkvDJF1)l",
@@ -35,17 +35,18 @@ function NewProfile_OnAcceptClick(self)
         Addon.P.profilesList = {}
     end
     if not Addon.P.profilesList[profileName] then
-        ActionBarsEnhancedProfilesMixin:CreateProfile(profileName)
-        ActionBarsEnhancedProfilesMixin:SetProfile(profileName, true)
+        HUIProfilesMixin:CreateProfile(profileName)
+        HUIProfilesMixin:SetProfile(profileName, true)
+        Addon:RefreshPresetsPreview()
         editBox:SetText("")
         editBox:ClearFocus()
     else
         Addon.Print("Profile name already exists")
     end
 end
-function ActionBarsEnhancedProfilesMixin:Init()
-    if not ActionBarEnhancedProfilesFrame then
-        local profilesFrame = CreateFrame("Frame", "ActionBarEnhancedProfilesFrame", UIParent, "ActionBarsEnhancedProfilesTemplate")
+function HUIProfilesMixin:Init()
+    if not HUIProfilesFrame then
+        local profilesFrame = CreateFrame("Frame", "HUIProfilesFrame", UIParent, "HUIProfilesTemplate")
         profilesFrame:SetParent(UIParent)
         profilesFrame:SetPoint("CENTER", UIParent, "CENTER", 0, 0)
         profilesFrame:SetMovable(true)
@@ -71,11 +72,11 @@ function ActionBarsEnhancedProfilesMixin:Init()
         local function SelectProfileSetup()
             local frame = profilesFrame.Content.NewProfileFrame.ProfileSelect
             local IsSelected = function(id)
-                return id == ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+                return id == HUIProfilesMixin:GetPlayerProfile()
             end
 
             local OnSelect = function(id)
-                ActionBarsEnhancedProfilesMixin:SetProfile(id, true)
+                HUIProfilesMixin:SetProfile(id, true)
                 profilesFrame.Content.Header.CurrentProfile:SetText(id)
             end
 
@@ -95,13 +96,13 @@ function ActionBarsEnhancedProfilesMixin:Init()
 
             local menuGenerator = function(_, rootDescription)
                 rootDescription:CreateTitle("Copy Profile")
-                local currProfile = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+                local currProfile = HUIProfilesMixin:GetPlayerProfile()
 
                 for index, profileName in ipairs(Addon.P.profilesOrder) do
                     if profileName ~= currProfile then
                         rootDescription:CreateButton(profileName, function()
-                            ActionBarsEnhancedProfilesMixin:CopyProfile(profileName, currProfile)
-                            ActionBarsEnhancedProfilesMixin:SetProfile(currProfile, true)
+                            HUIProfilesMixin:CopyProfile(profileName, currProfile)
+                            HUIProfilesMixin:SetProfile(currProfile, true)
                         end)
                     end
                 end
@@ -113,12 +114,13 @@ function ActionBarsEnhancedProfilesMixin:Init()
 
             local menuGenerator = function(_, rootDescription)
                 rootDescription:CreateTitle("Delete Profile")
-                local currProfile = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+                local currProfile = HUIProfilesMixin:GetPlayerProfile()
 
                 for index, profileName in ipairs(Addon.P.profilesOrder) do
                     if profileName ~= currProfile and profileName ~= "Default" and not DefaultProfiles[profileName]  then
                         rootDescription:CreateButton(profileName, function()
-                            ActionBarsEnhancedProfilesMixin:DeleteProfile(profileName)
+                            HUIProfilesMixin:DeleteProfile(profileName)
+                            Addon:RefreshPresetsPreview()
                         end)
                     end
                 end
@@ -173,7 +175,7 @@ function ActionBarsEnhancedProfilesMixin:Init()
 
                 local OnSelect = function(id)                    
                     if currentSpec == i then
-                        ActionBarsEnhancedProfilesMixin:SetProfile(id, false)
+                        HUIProfilesMixin:SetProfile(id, true)
                         profilesFrame.Content.Header.CurrentProfile:SetText(id)
                     else
                         local playerID = Addon:GetPlayerID()
@@ -183,7 +185,7 @@ function ActionBarsEnhancedProfilesMixin:Init()
 
                 local menuGenerator = function(_, rootDescription)
                     rootDescription:CreateTitle("Select Spec Profile")
-                    local currProfile = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+                    local currProfile = HUIProfilesMixin:GetPlayerProfile()
 
                     for index, profileName in ipairs(Addon.P.profilesOrder) do
                         local categoryID = profileName
@@ -202,18 +204,19 @@ function ActionBarsEnhancedProfilesMixin:Init()
         DeleteProfileSetup()
         SetupSpecProfiles()
     else
-        ActionBarEnhancedProfilesFrame:Show()
+        HUIProfilesFrame:Show()
     end
     
 end
 
 function Addon:GetPlayerID()
     local name, server = UnitFullName("player")
+    server = server or GetRealmName()
     local playerID = name.."-"..server
     return playerID
 end
 
-function ActionBarsEnhancedProfilesMixin:SetProfile(profileName, reload, config)
+function HUIProfilesMixin:SetProfile(profileName, reload, config)
     local playerID = Addon:GetPlayerID()
 
     local currentProfile = profileName
@@ -222,7 +225,7 @@ function ActionBarsEnhancedProfilesMixin:SetProfile(profileName, reload, config)
         return
     end
 
-    ActionBarsEnhancedProfilesMixin:CheckProfile2420(currentProfile)
+    HUIProfilesMixin:CheckProfile2420(currentProfile)
     
     if profileData.FontHotKeyScale and profileData.FontHotKeyScale < 1.0 then
         profileData.FontHotKeyScale = 1.0
@@ -230,6 +233,8 @@ function ActionBarsEnhancedProfilesMixin:SetProfile(profileName, reload, config)
     if profileData.FontStacksScale and profileData.FontStacksScale < 1.0 then
         profileData.FontStacksScale = 1.0
     end
+
+    wipe(Addon.C)
 
     Addon.C["GlobalSettings"] = {}
     for key, defaultValue in pairs(Addon.Defaults) do
@@ -272,46 +277,78 @@ function ActionBarsEnhancedProfilesMixin:SetProfile(profileName, reload, config)
     Addon.P.mapping[playerID].specProfiles[activeSpec] = currentProfile
 
     if reload then
-        if not StaticPopup_Visible("ABE_RELOAD") then
-            StaticPopup_Show("ABE_RELOAD")
+        EventRegistry:TriggerEvent("CDMCustomItemList.ProfileChanged")
+        Addon:RefreshAll()
+        Addon:RefreshProfileUI(currentProfile)
+        if HUI_BarsListMixin then
+            HUI_BarsListMixin:OnProfileChanged()
         end
     end
 end
 
-function ActionBarsEnhancedProfilesMixin:InstallDefaultPresets()
+function Addon:RefreshProfileUI(profileName)
+    if HUIDropdownMixin and HUIDropdownMixin.RefreshPresetButtons then
+        HUIDropdownMixin:RefreshPresetButtons(profileName)
+    end
+
+    if not HUIProfilesFrame then
+        return
+    end
+
+    local content = HUIProfilesFrame.Content
+    content.Header.CurrentProfile:SetText(profileName)
+
+    if not HUIProfilesFrame:IsVisible() then
+        return
+    end
+
+    local selectDropdown = content.NewProfileFrame.ProfileSelect.Dropdown
+    if selectDropdown then
+        selectDropdown:Update()
+    end
+
+    for i = 1, GetNumSpecializations() do
+        local dropDown = content.SpecProfilesFrame["SpecDropdown"..i]
+        if dropDown then
+            dropDown:Update()
+        end
+    end
+end
+
+function HUIProfilesMixin:InstallDefaultPresets()
     for profileName, profileString in pairs(DefaultProfiles) do
         if not Addon.P.profilesList[profileName] then
-            ActionBarsEnhancedImportDialogMixin:AcceptImport(_, DefaultProfiles[profileName], profileName)
+            HUIImportDialogMixin:AcceptImport(_, DefaultProfiles[profileName], profileName)
         end
     end
 end
 
-function ActionBarsEnhancedProfilesMixin:ResetProfile()
+function HUIProfilesMixin:ResetProfile()
     local profileName = self:GetPlayerProfile()
     if DefaultProfiles[profileName] then
         self:DeleteProfile(profileName)
-        ActionBarsEnhancedImportDialogMixin:AcceptImport(_, DefaultProfiles[profileName], profileName, true)
+        HUIImportDialogMixin:AcceptImport(_, DefaultProfiles[profileName], profileName, true)
     else
         wipe(Addon.P.profilesList[profileName])
         self:SetProfile(profileName, true)
     end
 end
 
-function ActionBarsEnhancedProfilesMixin:CreateProfile(profileName)
+function HUIProfilesMixin:CreateProfile(profileName)
     Addon.P.profilesList[profileName] = { ["GlobalSettings"] = {} }
 
     self:AddProfileOrder(profileName)
 end
 
-function ActionBarsEnhancedProfilesMixin:ResetCatOptions(catName)
+function HUIProfilesMixin:ResetCatOptions(catName)
     local profileName = self:GetPlayerProfile()
     if Addon.P.profilesList[profileName][catName] then
         Addon.P.profilesList[profileName][catName] = nil
-        StaticPopup_Show("ABE_RELOAD")
+        self:SetProfile(profileName, true)
     end
 end
 
-function ActionBarsEnhancedProfilesMixin:DeleteProfile(profileName)
+function HUIProfilesMixin:DeleteProfile(profileName)
     if Addon.P.profilesList[profileName] ~= nil then
         Addon.P.profilesList[profileName] = nil
         self:RemoveProfileOrder(profileName)
@@ -320,7 +357,7 @@ function ActionBarsEnhancedProfilesMixin:DeleteProfile(profileName)
     return false
 end
 
-function ActionBarsEnhancedProfilesMixin:CopyProfileCategory(fromCatName, toCatName, reload)
+function HUIProfilesMixin:CopyProfileCategory(fromCatName, toCatName, reload)
     local profileName = self:GetPlayerProfile()
     if Addon.P.profilesList[profileName][toCatName] == nil then
         Addon.P.profilesList[profileName][toCatName] = {}
@@ -328,31 +365,28 @@ function ActionBarsEnhancedProfilesMixin:CopyProfileCategory(fromCatName, toCatN
     wipe(Addon.P.profilesList[profileName][toCatName])
     Addon.P.profilesList[profileName][toCatName] = CopyTable(Addon.P.profilesList[profileName][fromCatName])
     if reload then
-        if not StaticPopup_Visible("ABE_RELOAD") then
-            StaticPopup_Show("ABE_RELOAD")
-        end
+        self:SetProfile(profileName, true)
     end
 end
-function ActionBarsEnhancedProfilesMixin:CopyProfile(fromProfileName, toProfileName)
+function HUIProfilesMixin:CopyProfile(fromProfileName, toProfileName)
     if Addon.P.profilesList[fromProfileName] ~= nil then
         wipe(Addon.P.profilesList[toProfileName])
         for key, value in pairs(Addon.P.profilesList[fromProfileName]) do
             Addon.P.profilesList[toProfileName][key] = type(value) == "table" and CopyTable(value) or value
         end
-        StaticPopup_Show("ABE_RELOAD")
     end
 end
 
-function ActionBarsEnhancedProfilesMixin:NeedMigrateProfile()
+function HUIProfilesMixin:NeedMigrateProfile()
     local playerID = Addon:GetPlayerID()
 
     local migrate = false
     local tmp = {}
     for key, defaulValue in pairs(Addon.Defaults) do
-        if ABDB[key] ~= nil then
+        if HUIDB[key] ~= nil then
             migrate = true
-            tmp[key] = type(ABDB[key]) == "table" and CopyTable(ABDB[key]) or ABDB[key]
-            ABDB[key] = nil
+            tmp[key] = type(HUIDB[key]) == "table" and CopyTable(HUIDB[key]) or HUIDB[key]
+            HUIDB[key] = nil
         end
     end
     if migrate then
@@ -361,7 +395,7 @@ function ActionBarsEnhancedProfilesMixin:NeedMigrateProfile()
     return false
 end
 
-function ActionBarsEnhancedProfilesMixin:CheckProfiles15()
+function HUIProfilesMixin:CheckProfiles15()
     local anyMigrated = false
     for profileName, profileData in pairs(Addon.P.profilesList) do
         local needMigrate = self:NeedMigrateProfile15(profileName)
@@ -379,7 +413,7 @@ function ActionBarsEnhancedProfilesMixin:CheckProfiles15()
     end
 end
 
-function ActionBarsEnhancedProfilesMixin:CheckProfiles247()
+function HUIProfilesMixin:CheckProfiles247()
     local playerID = Addon:GetPlayerID()
     local numSpec = GetNumSpecializations()
     local mapping = Addon.P.mapping
@@ -397,7 +431,7 @@ function ActionBarsEnhancedProfilesMixin:CheckProfiles247()
         Addon.Print("Character "..playerID.." migrated to v2.4.7")
     end
 end
-function ActionBarsEnhancedProfilesMixin:CheckProfile2420(profileName) -- convert fakeAuras[id] = duration to fakeAuras[id] = {duration, type}
+function HUIProfilesMixin:CheckProfile2420(profileName) -- convert fakeAuras[id] = duration to fakeAuras[id] = {duration, type}
     if Addon.P.profilesList[profileName] and Addon.P.profilesList[profileName]["CDMCustomFrames"] then
         local customFrames = Addon.P.profilesList[profileName]["CDMCustomFrames"]
         for i, customFrame in ipairs(customFrames) do
@@ -418,11 +452,11 @@ function ActionBarsEnhancedProfilesMixin:CheckProfile2420(profileName) -- conver
     end
 end
 
-function ActionBarsEnhancedProfilesMixin:NeedMigrateProfile15(profileName)
+function HUIProfilesMixin:NeedMigrateProfile15(profileName)
     return not Addon.P.profilesList[profileName]["GlobalSettings"]
 end
 
-function ActionBarsEnhancedProfilesMixin:MigrateProfile15(profileName)
+function HUIProfilesMixin:MigrateProfile15(profileName)
     Addon.Print("Start migrating profie "..profileName.." to v2.0")
     if not Addon.P.profilesList[profileName]["GlobalSettings"] then
         Addon.P.profilesList[profileName]["GlobalSettings"] = {}
@@ -437,7 +471,7 @@ function ActionBarsEnhancedProfilesMixin:MigrateProfile15(profileName)
     Addon.Print(profileName.." migrated to v2.0")
 end
 
-function ActionBarsEnhancedProfilesMixin:CheckProfilesOrer(profileName)
+function HUIProfilesMixin:CheckProfilesOrer(profileName)
     if Addon.P.profilesOrder == nil then
         Addon.P.profilesOrder = {}
     end
@@ -449,17 +483,17 @@ function ActionBarsEnhancedProfilesMixin:CheckProfilesOrer(profileName)
     end
 end
 
-function ActionBarsEnhancedProfilesMixin:AddProfileOrder(profileName)
+function HUIProfilesMixin:AddProfileOrder(profileName)
     table.insert(Addon.P.profilesOrder, profileName)
 end
-function ActionBarsEnhancedProfilesMixin:RemoveProfileOrder(profileName)
+function HUIProfilesMixin:RemoveProfileOrder(profileName)
     tDeleteItem(Addon.P.profilesOrder, profileName)
 end
-function ActionBarsEnhancedProfilesMixin:GetProfileOrder(profileName)
+function HUIProfilesMixin:GetProfileOrder(profileName)
     return tIndexOf(Addon.P.profilesOrder, profileName)
 end
 
-function ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+function HUIProfilesMixin:GetPlayerProfile()
     local playerID = Addon:GetPlayerID()
     if Addon.P.mapping == nil then
         Addon.P.mapping = {}
@@ -524,7 +558,7 @@ function Addon.DecompressData(data)
     return Addon.Print("Cant deserialize string")
 end
 
-function ActionBarsEnhancedProfilesMixin:SelfTest()
+function HUIProfilesMixin:SelfTest()
     local profileName = self:GetPlayerProfile()
     local profile = Addon.P.profilesList[profileName]
     local exportTbl = CopyTable(profile)
@@ -538,31 +572,31 @@ function ActionBarsEnhancedProfilesMixin:SelfTest()
     end
 end
 
-function ActionBarsEnhancedProfilesMixin:ExportProfile()
+function HUIProfilesMixin:ExportProfile()
     local profileName = self:GetPlayerProfile()
     if Addon.P.profilesList[profileName] then
         local exportTbl = CopyTable(Addon.P.profilesList[profileName])
+        local payload = exportTbl
+        local exportString = Addon.CompressData(payload)
 
-        local exportString = Addon.CompressData(exportTbl)
-
-        if not ActionBarEnhancedExportProfile then
-            local ExportProfile = CreateFrame("Frame", "ActionBarEnhancedExportProfile", ActionBarEnhancedProfilesFrame, "ActionBarsEnhancedExportDialog")
-            ExportProfile:SetParent(ActionBarEnhancedProfilesFrame)
-            ExportProfile:SetPoint("CENTER", ActionBarEnhancedProfilesFrame, "CENTER", 0, 0)
+        if not HUIExportProfile then
+            local ExportProfile = CreateFrame("Frame", "HUIExportProfile", HUIProfilesFrame, "HUIExportDialog")
+            ExportProfile:SetParent(HUIProfilesFrame)
+            ExportProfile:SetPoint("CENTER", HUIProfilesFrame, "CENTER", 0, 0)
             ExportProfile.ExportControl.ExportContainer.EditBox:SetText(exportString)
             ExportProfile.ExportControl.ExportContainer.EditBox:HighlightText()
             ExportProfile.ExportControl.ExportContainer.EditBox:SetAutoFocus(true)
             ExportProfile:Show()
         else
-            ActionBarEnhancedExportProfile.ExportControl.ExportContainer.EditBox:SetText(exportString)
-            ActionBarEnhancedExportProfile.ExportControl.ExportContainer.EditBox:HighlightText()
-            ActionBarEnhancedExportProfile.ExportControl.ExportContainer.EditBox:SetAutoFocus(true)
-            ActionBarEnhancedExportProfile:Show()
+            HUIExportProfile.ExportControl.ExportContainer.EditBox:SetText(exportString)
+            HUIExportProfile.ExportControl.ExportContainer.EditBox:HighlightText()
+            HUIExportProfile.ExportControl.ExportContainer.EditBox:SetAutoFocus(true)
+            HUIExportProfile:Show()
         end
     end
 end
 
-function ActionBarsEnhancedImportDialogMixin:HasDefaultProfiles()
+function HUIImportDialogMixin:HasDefaultProfiles()
     if not Addon.P.profilesList then return false end
     
     local i = 0
@@ -575,12 +609,12 @@ function ActionBarsEnhancedImportDialogMixin:HasDefaultProfiles()
     return i == 0
 end
 
-function ActionBarsEnhancedImportDialogMixin:AcceptImport(_, profileString, profileName, shouldSet, rewrite)
+function HUIImportDialogMixin:AcceptImport(_, profileString, profileName, shouldSet, rewrite)
     if not profileString then
-        profileString = ActionBarEnhancedImportProfile.ImportControl.InputContainer.EditBox:GetText()
+        profileString = HUIImportProfile.ImportControl.InputContainer.EditBox:GetText()
     end
     if not profileName then
-        profileName = ActionBarEnhancedImportProfile.NameControl.EditBox:GetText()
+        profileName = HUIImportProfile.NameControl.EditBox:GetText()
     end
     if profileString ~= "" and profileName ~= "" then
         if Addon.P.profilesList[profileName] ~= nil then
@@ -588,39 +622,44 @@ function ActionBarsEnhancedImportDialogMixin:AcceptImport(_, profileString, prof
                 Addon.Print("Profile with this name already exists")
                 return false
             else
-                ActionBarsEnhancedProfilesMixin:DeleteProfile(profileName)
+                HUIProfilesMixin:DeleteProfile(profileName)
             end
         end
         if Addon.P.profilesList[profileName] == nil then            
             local profileTable = Addon.DecompressData(profileString)
             if profileTable then
+                if type(profileTable.data) == "table" then
+                    profileTable = profileTable.data
+                end
+                Addon.RemapMedia(profileTable)
                 Addon.P.profilesList[profileName] = CopyTable(profileTable)
-                if ActionBarEnhancedImportProfile and ActionBarEnhancedImportProfile:IsVisible() then
-                    ActionBarEnhancedImportProfile:Hide()
+                if HUIImportProfile and HUIImportProfile:IsVisible() then
+                    HUIImportProfile:Hide()
                 end
 
-                ActionBarsEnhancedProfilesMixin:AddProfileOrder(profileName)
+                HUIProfilesMixin:AddProfileOrder(profileName)
 
                 if shouldSet then
-                    ActionBarsEnhancedProfilesMixin:SetProfile(profileName, true)
+                    HUIProfilesMixin:SetProfile(profileName, true)
                 end
+                Addon:RefreshPresetsPreview()
                 return true
             end
         end
     end
 end
 
-function ActionBarsEnhancedProfilesMixin:ImportProfile()
-    if not ActionBarEnhancedImportProfile then
-        local ImportProfile = CreateFrame("Frame", "ActionBarEnhancedImportProfile", ActionBarEnhancedProfilesFrame, "ActionBarsEnhancedImportDialog")
-        ImportProfile:SetParent(ActionBarEnhancedProfilesFrame)
-        ImportProfile:SetPoint("CENTER", ActionBarEnhancedProfilesFrame, "CENTER", 0, 0)
+function HUIProfilesMixin:ImportProfile()
+    if not HUIImportProfile then
+        local ImportProfile = CreateFrame("Frame", "HUIImportProfile", HUIProfilesFrame, "HUIImportDialog")
+        ImportProfile:SetParent(HUIProfilesFrame)
+        ImportProfile:SetPoint("CENTER", HUIProfilesFrame, "CENTER", 0, 0)
     else
-        ActionBarEnhancedImportProfile:Show()
+        HUIImportProfile:Show()
     end
 end
 
-function ActionBarsEnhancedProfilesMixin:GetProfiles()
+function HUIProfilesMixin:GetProfiles()
     local profileTbl = {}
     for index, profileName in ipairs(Addon.P.profilesOrder) do
         if Addon.P.profilesList[profileName] then
@@ -631,21 +670,21 @@ function ActionBarsEnhancedProfilesMixin:GetProfiles()
     return profileTbl
 end
 
-function ABE_ImportProfile(profileName, profileString, shouldSet, rewrite)
-    return ActionBarsEnhancedImportDialogMixin:AcceptImport(_, profileString, profileName, shouldSet, rewrite)
+function HUI_ImportProfile(profileName, profileString, shouldSet, rewrite)
+    return HUIImportDialogMixin:AcceptImport(_, profileString, profileName, shouldSet, rewrite)
 end
 
-function ABE_GetProfiles()
-    return ActionBarsEnhancedProfilesMixin:GetProfiles()
+function HUI_GetProfiles()
+    return HUIProfilesMixin:GetProfiles()
 end
 
 function Addon:GetCurrentProfileTable()
-    local profileName = ActionBarsEnhancedProfilesMixin:GetPlayerProfile()
+    local profileName = HUIProfilesMixin:GetPlayerProfile()
     local profileTable = Addon.P.profilesList[profileName]
     return profileTable
 end
 
-function ActionBarsEnhancedProfilesMixin:OnSpecChanged(profile)
+function HUIProfilesMixin:OnSpecChanged(profile)
     local playerID = Addon:GetPlayerID()
     local currentSpec = GetSpecialization()
     local isSpecEnabled = Addon.P.mapping[playerID].specEnabled
@@ -654,14 +693,20 @@ function ActionBarsEnhancedProfilesMixin:OnSpecChanged(profile)
 
     local specProfile = Addon.P.mapping[playerID].specProfiles[currentSpec]
 
-    --print(profile, specProfile, specProfile ~= profile)
-
     if specProfile ~= profile then
-        --print("Set specProfile: ", profile, specProfile)
-        ActionBarsEnhancedProfilesMixin:SetProfile(specProfile, false)
+        HUIProfilesMixin:SetProfile(specProfile, false)
+        Addon:RefreshProfileUI(specProfile)
+        EventRegistry:TriggerEvent("CDMCustomItemList.ProfileChanged")
+        if HUI_BarsListMixin then
+            HUI_BarsListMixin:OnProfileChanged()
+        end
         C_Timer.After(1.0, function()
-            Addon:RefreshButtons()
-            ABE_CastingBarMixin.SetLook(PlayerCastingBarFrame)
+            if Addon.RefreshButtons then
+                Addon:RefreshButtons()
+            end
+            if HUI_CastingBarMixin then
+                HUI_CastingBarMixin.SetLook(PlayerCastingBarFrame)
+            end
         end)
     end
 

@@ -4,7 +4,7 @@ local L = Addon.L
 local T = Addon.Templates
 
 local function RefreshAuraFrameSettings()
-    local frameName = ABE_BarsListMixin:GetFrameLebel()
+    local frameName = HUI_BarsListMixin:GetFrameLebel()
     local frame = frameName and _G[frameName]
     if frame and frame.RefreshSettings then
         frame:RefreshSettings()
@@ -23,14 +23,14 @@ Addon.config.containers["CDMAuraFrameContainer"] = {
             type            = "editbox",
             name            = L.CDMCustomFrameName,
             defaultText     = function()
-                local frame = _G[ABE_BarsListMixin:GetFrameLebel()]
+                local frame = _G[HUI_BarsListMixin:GetFrameLebel()]
                 if frame then
                     local frameName = frame:GetDisplayName()
                     return frameName
                 end
             end,
             OnEnterPressed  = function(self)
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
                 local name = self:GetText()
                 self.currentName = name
@@ -53,7 +53,7 @@ Addon.config.containers["CDMAuraFrameContainer"] = {
             name            = L.CDMCustomFrameDelete,
             buttonName      = L.Delete,
             OnClick         = function(self)
-                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                 EventRegistry:TriggerEvent("CDMCustomItemList.DeleteFrame", frameLabel)
             end
         },
@@ -63,7 +63,7 @@ Addon.config.containers["CDMAuraFrameContainer"] = {
             defaultText     = "",
             numeric         = true,
             OnEnterPressed  = function(self)
-                local frameLabel = ABE_BarsListMixin:GetFrameLebel()
+                local frameLabel = HUI_BarsListMixin:GetFrameLebel()
                 local id = self:GetText()
                 EventRegistry:TriggerEvent("CDMCustomItemList.AddSpellByID", id, frameLabel)
                 self:ClearFocus()
@@ -172,17 +172,29 @@ Addon.config.containers["CDMAuraFrameAttachContainer"] = {
             name            = L.EnableAttach,
             value           = "CDMEnableAttach",
             callback        = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
             end,
         },
         ["CDMCustomFrameAttachTo"] = {
-            type            = "editbox",
+            type            = "editboxPicker",
             name            = L.CDMCustomFrameAttachFrameName,
             numLetters      = 100,
+            pickerButtonName = L.FramePickerSelect,
+            pickerOnClick   = function(self)
+                Addon.FramePicker:Start(function(frameName)
+                    local editBox = self:GetParent().EditBox
+                    editBox:SetText(frameName)
+                    editBox.currentName = frameName
+                    Addon:SaveSetting("CurrentAttachFrame", frameName, true)
+                    local customFrameName = HUI_BarsListMixin:GetFrameLebel()
+                    local customFrame = _G[customFrameName]
+                    HUI_CDMCustomFrameCustomized:RefreshAnchors(customFrame, customFrameName)
+                end)
+            end,
             defaultText     = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local name = Addon:GetValue("CurrentAttachFrame", nil, frameName)
                 return name or ""
             end,
@@ -193,9 +205,9 @@ Addon.config.containers["CDMAuraFrameAttachContainer"] = {
                     self.currentName = frameName
 
                     Addon:SaveSetting("CurrentAttachFrame", frameName, true)
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
                 else
                     Addon.Print("Cant find frame with name: |cffff0000", frameName)
                 end
@@ -227,14 +239,14 @@ Addon.config.containers["CDMAuraFrameAttachContainer"] = {
             },
             OnClose     = {
                 function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
                 end,
                 function()
-                    local frameName = ABE_BarsListMixin:GetFrameLebel()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
-                    ABE_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
+                    HUI_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
                 end,
             },
         },
@@ -248,9 +260,9 @@ Addon.config.containers["CDMAuraFrameAttachContainer"] = {
             step            = 1,
             sliderName      = {{top = L.OffsetX}, {top = L.OffsetY}},
             callback        = function()
-                local frameName = ABE_BarsListMixin:GetFrameLebel()
+                local frameName = HUI_BarsListMixin:GetFrameLebel()
                 local frame = _G[frameName]
-                ABE_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
+                HUI_CDMCustomFrameCustomized:RefreshAnchors(frame, frameName)
             end,
         },
     }
@@ -338,6 +350,12 @@ Addon.config.containers["CDMAuraFrameCDContainer"] = {
             value           = "EdgeAlwaysShow",
             callback        = RefreshAuraFrameSettings,
         },
+        ["CDMAuraFrameRemovePandemic"] = {
+            type            = "checkbox",
+            name            = L.CDMRemovePandemic,
+            value           = "CDMRemovePandemic",
+            callback        = RefreshAuraFrameSettings,
+        },
     }
 }
 
@@ -384,6 +402,19 @@ Addon.config.containers["CDMAuraFrameFontContainer"] = {
             value           = "CooldownFontColor",
             checkboxValues  = {"UseCooldownFontColor"},
             alpha           = true,
+            callback        = RefreshAuraFrameSettings,
+        },
+        ["CDMAuraFrameColorizedAuraFont"] = {
+            type            = "checkbox",
+            name            = L.ColorizedAuraFont,
+            value           = "ColorizedAuraFont",
+            showNew         = true,
+            callback        = RefreshAuraFrameSettings,
+        },
+        ["CDMAuraFrameAlwaysShowStacks"] = {
+            type            = "checkbox",
+            name            = L.AlwaysShowStacks,
+            value           = "AlwaysShowStacks",
             callback        = RefreshAuraFrameSettings,
         },
         ["CDMAuraFrameStacksFont"] = {
@@ -763,6 +794,12 @@ Addon.config.containers["CDMAuraBarFontContainer"] = {
             type            = "checkbox",
             name            = L.EnableStacks,
             value           = "CustomFrameBarStacksEnable",
+            callback        = RefreshAuraFrameSettings,
+        },
+        ["CDMAuraBarAlwaysShowStacks"] = {
+            type            = "checkbox",
+            name            = L.AlwaysShowStacks,
+            value           = "AlwaysShowStacks",
             callback        = RefreshAuraFrameSettings,
         },
         ["CDMCustomFrameBarStacksFont"] = {

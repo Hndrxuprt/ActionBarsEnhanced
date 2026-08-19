@@ -9,7 +9,7 @@ Addon.L = L
 -- ==========================================
 -- 欢迎信息
 -- ==========================================
-L.welcomeMessage1 = "感谢使用 |cff1df2a8动作条增强|r"
+L.welcomeMessage1 = "感谢使用 |cff1df2a8HUI|r"
 L.welcomeMessage2 = "你可以使用 |cff1df2a8/"
 
 -- ==========================================
@@ -225,6 +225,7 @@ L.BuffBarCooldownViewer     = "增益条"
 L.IconPadding = "图标间距"
 L.CDMBackdrop = "添加边框"
 L.CDMCenteredGrid = "图标居中"
+L.MinimapButton = "显示小地图按钮"
 L.CDMRemoveIconMask = "移除图标遮罩"
 L.CDMRemovePandemic = "移除流行病动画"
 L.CDMSwipeColor = "冷却扫掠颜色"
@@ -374,7 +375,15 @@ L.HorizontalGrowthLEFT = "向左"
 L.DirectionHORIZONTAL = "水平"
 L.DirectionVERTICAL = "垂直"
 
-L.ColorizedCooldownFont = "按时间着色字体"
+L.ColorizedCooldownFont = "按时间着色冷却文本"
+L.ColorizedAuraFont = "按时间着色光环文本"
+
+L.AuraSound = "光环声音"
+L.AuraSoundTriggerAdded = "施加时"
+L.AuraSoundTriggerApplicationsIncreased = "获得层数时"
+L.AuraSoundTriggerRemoved = "移除时"
+L.AuraSoundNone = "无"
+L.AuraSoundPlaySample = "试听"
 
 -- ========================================
 -- 施法条
@@ -456,6 +465,7 @@ L.AttachDesc = "选择要附着的框架和锚点"
 
 L.EnableAttach = "启用框架附着"
 L.CDMCustomFrameAttachFrameName = "附着到框架："
+L.FramePickerSelect = "选择"
 L.CDMCutomFrameAttachPoint = "附着点"
 L.CDMCutomFrameAttachOffset = "附着点偏移"
 
@@ -472,6 +482,14 @@ L.CreateChargeBarsFrame = "创建充能条框架"
 L.SetStages = "最大充能数"
 L.SetStagesDesc = "此光环的最大充能数量。"
 L.Stages = "自定义充能"
+L.EnableStackThreshold = "启用堆叠阈值"
+L.StackThresholdValue = "层数"
+L.StackThresholdsTitle = "堆叠阈值"
+L.AddStackThreshold = "添加阈值"
+L.RemoveStackThreshold = "移除"
+L.StackThresholdsTooltip = "如果跨过了多个阈值，以最高的阈值为准。"
+
+L.AlwaysShowStacks = "始终显示堆叠数量"
 
 L.ConfigureRacials = "配置种族技能"
 

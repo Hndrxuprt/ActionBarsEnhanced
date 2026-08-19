@@ -7,7 +7,7 @@ Addon.L = L
 -- ==========================================
 -- Welcome Messages
 -- ==========================================
-L.welcomeMessage1 = "Thank you for using |cff1df2a8ActionBars Enhanced|r"
+L.welcomeMessage1 = "Thank you for using |cff1df2a8HUI|r"
 L.welcomeMessage2 = "You may access options by using |cff1df2a8/"
 
 -- ==========================================
@@ -223,6 +223,7 @@ L.BuffBarCooldownViewer     = "Buff Bars"
 L.IconPadding = "Icon Padding"
 L.CDMBackdrop = "Add Border"
 L.CDMCenteredGrid = "Center Icons"
+L.MinimapButton = "Show minimap button"
 L.CDMRemoveIconMask = "Remove Icon Mask"
 L.CDMRemovePandemic = "Remove Pandemic Animation"
 L.CDMSwipeColor = "Cooldown Swipe Color"
@@ -373,7 +374,15 @@ L.HorizontalGrowthLEFT = "Left"
 L.DirectionHORIZONTAL = "Horizontal"
 L.DirectionVERTICAL = "Vertical"
 
-L.ColorizedCooldownFont = "Colorize font by time"
+L.ColorizedCooldownFont = "Colorize cooldown text by time"
+L.ColorizedAuraFont = "Colorize aura text by time"
+
+L.AuraSound = "Aura Sound"
+L.AuraSoundTriggerAdded = "On Applied"
+L.AuraSoundTriggerApplicationsIncreased = "On Stack Gained"
+L.AuraSoundTriggerRemoved = "On Removed"
+L.AuraSoundNone = "None"
+L.AuraSoundPlaySample = "Play Sample"
 
 -- ========================================
 -- Cast Bars
@@ -456,6 +465,7 @@ L.AttachDesc = "Select the frame and anchor point to attach to"
 
 L.EnableAttach = "Enable frame Attachment"
 L.CDMCustomFrameAttachFrameName = "Attach to frame:"
+L.FramePickerSelect = "Select"
 L.CDMCutomFrameAttachPoint = "Attach Point"
 L.CDMCutomFrameAttachOffset = "Attach point Offset"
 
@@ -473,6 +483,12 @@ L.CreateChargeBarsFrame = "Create Charge Bars frame"
 L.SetStages = "Max Charges"
 L.SetStagesDesc = "Maximum number of Charges for this Aura."
 L.Stages = "Custom Charges"
+L.EnableStackThreshold = "Enable Stack Threshold"
+L.StackThresholdValue = "Stacks"
+L.StackThresholdsTitle = "Stack Thresholds"
+L.AddStackThreshold = "Add Threshold"
+L.RemoveStackThreshold = "Remove"
+L.StackThresholdsTooltip = "If multiple thresholds are crossed, the highest one takes precedence."
 
 L.ConfigureRacials = "Configure Racials"
 
@@ -495,6 +511,7 @@ L.BarDisplayOnAuraAndCD = "Aura, then Cooldown"
 
 L.EnableName = "Enable Name"
 L.EnableStacks = "Enable Stacks"
+L.AlwaysShowStacks = "Always show Stacks"
 L.EnableTimer = "Enable Timer"
 
 L.RealAuraDisabled = "Real Aura disabled because FakeAura was set"
