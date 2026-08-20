@@ -68,33 +68,6 @@ function HUI_CDMCustomItemMixin:OnShow()
             self:RefreshData()
         end)
     end ]]
-    
-    if not self.registeredEvents then
-        self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
-        self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
-        self:RegisterEvent("SPELL_UPDATE_ICON")
-        self:RegisterEvent("SPELL_UPDATE_CHARGES")
-        self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
-        self:RegisterEvent("SPELL_UPDATE_USES")
-        self:RegisterEvent("SPELL_UPDATE_USABLE")
-        self:RegisterEvent("ITEM_COUNT_CHANGED")
-        self:RegisterEvent("BAG_UPDATE_DELAYED")
-        self:RegisterEvent("BAG_UPDATE_COOLDOWN")
-        --self:RegisterEvent("PLAYER_IN_COMBAT_CHANGED")
-        self:RegisterEvent("ENCOUNTER_END")
-        self:RegisterEvent("SPELL_RANGE_CHECK_UPDATE")
-
-        --because icon bugged on AuraButton after STOP_MOVIE event
-        self:RegisterEvent("CINEMATIC_STOP")
-        self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
-        self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
-        self:RegisterUnitEvent("UNIT_FACTION", "player")
-        self:RegisterUnitEvent("UNIT_FLAGS", "player")
-
-        self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player", "pet")
-        self.registeredEvents = true
-    end
-    
 end
 
 local function IsHealthstoneCreateCast(spellID)
@@ -119,120 +92,6 @@ local function IsHealthstoneItem(spellID)
 end
 
 function HUI_CDMCustomItemMixin:OnEvent(event, ...)
-    if event == "SPELL_UPDATE_COOLDOWN" then
-		local spellID, baseSpellID, category, startRecoveryCategory = ...
-        if spellID and (self.spellID == spellID or (baseSpellID and (self.baseSpellID == baseSpellID))
-        or (self.overrideID == spellID)) then
-            if self.slotID == 13 or self.slotID == 14 then
-                local frame = _G[self.parentName]
-                frame:UpdateAllTrinkets(self.slotID)
-            end
-            self:OnSpellUpdateCooldownEvent()
-        elseif startRecoveryCategory == 133 then
-            local cooldownFrame = self:GetCooldownFrame()
-            if cooldownFrame.showGCDSwipe then
-                self:OnSpellUpdateCooldownEvent()
-            end
-        end
-    elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
-        local unitTarget, castGUID, spellID = ...
-        if self.spellID == spellID or self.baseSpellID == spellID or self.overrideID == spellID then
-            if self.fakeAura then
-                self:RefreshFakeAuraInfo(true)
-                self:RefreshData()
-            end
-            -- HACK for spells withour GCD at all, interrupts for example
-            self.isOnActualCooldown = true
-        end
-        if IsHealthstoneCreateCast(spellID) then
-            C_Timer.After(0.5, function()
-                self:RefreshCount()
-            end)
-        end
-    elseif event == "SPELL_UPDATE_USES" then
-        local spellID, baseSpellID = ...
-        if self.spellID == spellID or (baseSpellID and (self.baseSpellID == baseSpellID))
-        or (self.overrideID == spellID) then
-            self:OnSpellUpdateUsesEvent()
-        end        
-    elseif event == "ITEM_COUNT_CHANGED" then
-        local itemID = ...
-        if self.itemID == itemID then
-            self:RefreshCount()
-        end
-    elseif event == "BAG_UPDATE_DELAYED" then
-        if self.type == "item" then
-            self:RefreshData()
-        end
-    elseif event == "BAG_UPDATE_COOLDOWN" then
-        if self.type == "item" then
-            self:RefreshCount()
-        end
-    elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" or event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
-        local spellID = ...
-        local baseSpellID = C_Spell.GetBaseSpell(spellID)
-        local isBar = self:IsBarFrame()
-        if not isBar and (self.type == "spell" and (self.spellID == spellID or self.baseSpellID == spellID)
-        or (self.spellID == baseSpellID or self.baseSpellID == baseSpellID)) then
-            local isSpellOverlayed = spellID and C_SpellActivationOverlay.IsSpellOverlayed(spellID) or false
-            local parent = self.realAuraFrame or self
-            if isSpellOverlayed then
-                ActionButtonSpellAlertManager:ShowAlert(self)
-                if self.SpellActivationAlert then
-                    self.SpellActivationAlert:SetFrameLevel(self:GetFrameLevel() + 10)
-                end
-            else
-                ActionButtonSpellAlertManager:HideAlert(self)
-            end
-
-            --self:ShowProcGlow()
-        end
-    elseif event == "SPELL_UPDATE_ICON" then
-        local spellID = ...
-        if self.spellID == spellID or self.baseSpellID == spellID then
-            self:RefreshSpellTexture()
-        end
-    elseif event == "SPELL_UPDATE_CHARGES" then
-        if self.type == "spell" then
-            self:RefreshData()
-        end
-    elseif event == "ENCOUNTER_END" then
-        local encounterID, encounterName, difficultyID, groupSize, success = ...
-        if difficultyID > 13 and difficultyID < 18 then
-            self.isOnActualCooldown = false
-            self.isOnChargeCooldown = false
-            RunNextFrame(function()
-                self:RefreshData()
-            end)
-        end
-    elseif event == "PLAYER_IN_COMBAT_CHANGED" then
-        local inCombat = ...
-        --self:RefreshProcAnim(inCombat)
-    elseif event == "SPELL_RANGE_CHECK_UPDATE" then
-        if self.type == "spell" then
-            local spellID, inRange, checksRange = ...
-            if self.rangeCheckSpellID == spellID then
-                if not checksRange or inRange then
-                    self.spellOutOfRange = false
-                else
-                    self.spellOutOfRange = true
-                end
-                self:RefreshIconColor()
-            end
-        end
-    elseif event == "SPELL_UPDATE_USABLE" then
-        if self.type == "spell" then
-            self:RefreshIconColor()
-        end
-    elseif event == "CINEMATIC_STOP"
-        or event == "UNIT_FACTION"
-        or event == "UNIT_FLAGS"
-        or event == "UNIT_ENTERED_VEHICLE"
-        or event == "UNIT_EXITED_VEHICLE" then
-            if not self.auraResetTimer then
-                self:ResetAuraContainerAfterMovie()
-            end
-    end
 end
 
 function HUI_CDMCustomItemMixin:OnEnter()
@@ -279,6 +138,7 @@ function HUI_CDMCustomItemMixin:SetSlotID(slotID, fallbackItemID)
     self.spellID = spellID
     self.baseSpellID = nil
     self.overrideID = nil
+    self:InvalidateAura()
 end
 
 function HUI_CDMCustomItemMixin:SetSpellID(spellID, baseSpellID)
@@ -295,6 +155,7 @@ function HUI_CDMCustomItemMixin:SetSpellID(spellID, baseSpellID)
     if C_Spell.SpellHasRange(spellID) then
         C_Spell.EnableSpellRangeCheck(spellID, true)
     end
+    self:InvalidateAura()
 end
 
 function HUI_CDMCustomItemMixin:SetItemID(itemID)
@@ -305,6 +166,7 @@ function HUI_CDMCustomItemMixin:SetItemID(itemID)
     self.spellID = spellID
     self.baseSpellID = nil
     self.overrideID = nil
+    self:InvalidateAura()
 end
 
 function HUI_CDMCustomItemMixin:GetSpellID()
@@ -318,11 +180,15 @@ end
 function HUI_CDMCustomItemMixin:GetCooldownInfo()
     if self.type == "item" then
         local start, duration, enable = C_Item.GetItemCooldown(self.itemID)
-        self.cooldownInfo = {
-            startTime = start,
-            duration = duration,
-            enable = enable,
-        }
+        local cooldownInfo = self.__cooldownInfoBuf
+        if not cooldownInfo then
+            cooldownInfo = {}
+            self.__cooldownInfoBuf = cooldownInfo
+        end
+        cooldownInfo.startTime = start
+        cooldownInfo.duration = duration
+        cooldownInfo.enable = enable
+        self.cooldownInfo = cooldownInfo
     elseif self.type == "spell" then
         self.overrideID = C_Spell.GetOverrideSpell(self.spellID)
         local spellID = self.overrideID or self.spellID
@@ -330,11 +196,15 @@ function HUI_CDMCustomItemMixin:GetCooldownInfo()
     elseif self.type == "slot" then
         --self.cooldownInfo = C_Spell.GetSpellCooldown(self:GetSpellID())
         local start, duration, enable = GetInventoryItemCooldown("player", self.slotID)
-        self.cooldownInfo = {
-            startTime = start,
-            duration = duration,
-            enable = enable,
-        }
+        local cooldownInfo = self.__cooldownInfoBuf
+        if not cooldownInfo then
+            cooldownInfo = {}
+            self.__cooldownInfoBuf = cooldownInfo
+        end
+        cooldownInfo.startTime = start
+        cooldownInfo.duration = duration
+        cooldownInfo.enable = enable
+        self.cooldownInfo = cooldownInfo
     end
     return self.cooldownInfo
 end
@@ -380,6 +250,16 @@ function HUI_CDMCustomItemMixin:IsBarFrame()
     return self.barType ~= nil
 end
 
+function HUI_CDMCustomItemMixin:GetIndexKeys()
+    if self.type == "spell" then
+        return self.spellID, self.baseSpellID, self.overrideID, self.rangeCheckSpellID
+    elseif self.type == "item" then
+        return nil, nil, nil, nil, self.itemID
+    elseif self.type == "slot" then
+        return nil, nil, nil, nil, nil, self.slotID
+    end
+end
+
 function HUI_CDMCustomItemMixin:RefreshSpellTexture()
     local spellTexture = self:GetSpellTexture()
 
@@ -403,34 +283,34 @@ end
 function HUI_CDMCustomItemMixin:RefreshIconColor()
     local isBar = self:IsBarFrame()
     local frameName = self.parentName
-    local color = {1,1,1,1}
     local desaturated = false
     local isUsable, notEnoughMana
     if self.spellID then
         isUsable, notEnoughMana = C_Spell.IsSpellUsable(self.spellID)
     end
 
+    local r, g, b, a = 1, 1, 1, 1
     if (not self.isOnAuraTimer or isBar) and self.isOnActualCooldown and Addon:GetValue("UseCDColor", nil, frameName) then
-        color = {Addon:GetRGBA("CDColor", nil, frameName)}
+        r, g, b, a = Addon:GetRGBA("CDColor", nil, frameName)
         desaturated = Addon:GetValue("CDColorDesaturate", nil, frameName)
     elseif Addon:GetValue("UseAuraColor", nil, frameName) and self.isOnAuraTimer then
-        color = {Addon:GetRGBA("AuraColor", nil, frameName)}
+        r, g, b, a = Addon:GetRGBA("AuraColor", nil, frameName)
         desaturated = Addon:GetValue("AuraColorDesaturate", nil, frameName)
     elseif self.spellOutOfRange and Addon:GetValue("UseOORColor", nil, frameName) then
-        color = {Addon:GetRGBA("OORColor", nil, frameName)}
+        r, g, b, a = Addon:GetRGBA("OORColor", nil, frameName)
         desaturated = Addon:GetValue("OORDesaturate", nil, frameName)
     elseif notEnoughMana and Addon:GetValue("UseOOMColor", nil, frameName) then
-        color = {Addon:GetRGBA("OOMColor", nil, frameName)}
+        r, g, b, a = Addon:GetRGBA("OOMColor", nil, frameName)
         desaturated = Addon:GetValue("OOMDesaturate", nil, frameName)
     elseif not isUsable and Addon:GetValue("UseNoUseColor", nil, frameName) then
-        color = {Addon:GetRGBA("NoUseColor", nil, frameName)}
+        r, g, b, a = Addon:GetRGBA("NoUseColor", nil, frameName)
         desaturated = Addon:GetValue("NoUseDesaturate", nil, frameName)
     elseif Addon:GetValue("UseNormalColor", nil, frameName) then
-        color = {Addon:GetRGBA("NormalColor", nil, frameName)}
+        r, g, b, a = Addon:GetRGBA("NormalColor", nil, frameName)
         desaturated = Addon:GetValue("NormalColorDesaturate", nil, frameName)
     end
     local icon = self.Icon.Icon or self.Icon
-    icon:SetVertexColor(color[1], color[2], color[3], color[4])
+    icon:SetVertexColor(r, g, b, a)
     self:RefreshIconDesaturation(desaturated)
 end
 
@@ -442,7 +322,7 @@ function HUI_CDMCustomItemMixin:RefreshCount()
     elseif self.type == "spell" then
         if not self.spellID then return end
 
-        local charges = C_Spell.GetSpellCharges(self.spellID) or {}
+        local charges = self.__charges or C_Spell.GetSpellCharges(self.spellID) or {}
 
         count = charges and charges.currentCharges or ""
 
@@ -475,15 +355,23 @@ function HUI_CDMCustomItemMixin:GetChargesCooldownInfo()
 
     if not self.spellID then return false end
 
-    local charges = C_Spell.GetSpellCharges(self.spellID)
+    local charges = self.__charges
+    if charges == nil then
+        charges = C_Spell.GetSpellCharges(self.spellID)
+        self.__charges = charges
+    end
 
     if charges and charges.cooldownStartTime and charges.cooldownDuration then
-        return {
-            startTime = charges.cooldownStartTime,
-            duration = charges.cooldownDuration,
-            currentCharges = charges.currentCharges,
-            maxCharges = charges.maxCharges
-        }
+        local chargeInfo = self.__chargeInfoBuf
+        if not chargeInfo then
+            chargeInfo = {}
+            self.__chargeInfoBuf = chargeInfo
+        end
+        chargeInfo.startTime = charges.cooldownStartTime
+        chargeInfo.duration = charges.cooldownDuration
+        chargeInfo.currentCharges = charges.currentCharges
+        chargeInfo.maxCharges = charges.maxCharges
+        return chargeInfo
     end
 
     return false
@@ -613,7 +501,10 @@ function HUI_CDMCustomItemMixin:RefreshSpellCooldownInfo()
     if self.type == "spell" then
         durationObj = self:GetCooldownDurationObj()
     else
-        durationObj = C_DurationUtil.CreateDuration()
+        if not self.durationObj then
+            self.durationObj = C_DurationUtil.CreateDuration()
+        end
+        durationObj = self.durationObj
         if cooldownInfo then
             durationObj:SetTimeFromStart(cooldownInfo.startTime or 0, cooldownInfo.duration or 0)
         end
@@ -632,8 +523,10 @@ function HUI_CDMCustomItemMixin:RefreshSpellCooldownInfo()
             self.isOnActualCooldown = false
         end
         
-        if self.type == "spell" and durationObj then
-            cooldownFrame:SetCooldownFromDurationObject(durationObj, true)
+        if self.type == "spell" then
+            if durationObj then
+                cooldownFrame:SetCooldownFromDurationObject(durationObj, true)
+            end
         else
             cooldownFrame:SetCooldown(chargeCooldownInfo.startTime, chargeCooldownInfo.duration)
         end
@@ -651,7 +544,7 @@ function HUI_CDMCustomItemMixin:RefreshSpellCooldownInfo()
         end
 
         --cooldownFrame:SetAlphaFromBoolean((self.isOnAuraTimer == true) or (cooldownFrame.showGCDSwipe == false and (cooldownInfo.isOnGCD == true)), 0,1)
-        if not self.isOnAuraTimer then
+        if not self.isOnAuraTimer and durationObj then
             cooldownFrame:SetAlpha(durationObj:EvaluateRemainingDuration(Addon.alphaCurve, 0))
         end
     elseif cooldownInfo and cooldownInfo.startTime and cooldownInfo.duration then
@@ -701,10 +594,14 @@ function HUI_CDMCustomItemMixin:RefreshData()
     --self:RefreshSpellTexture()
     self:AddAuraSlot()
     if self.type == "item" and IsHealthstoneItem(self.itemID) then
-        C_Timer.After(0.5, function()
-            self:RefreshCount()
-            self:RefreshVisibility()
-        end)
+        if not self.__hsTimerPending then
+            self.__hsTimerPending = true
+            C_Timer.After(0.5, function()
+                self.__hsTimerPending = nil
+                self:RefreshCount()
+                self:RefreshVisibility()
+            end)
+        end
     else
         self:RefreshCount()
         self:RefreshVisibility()
@@ -712,23 +609,18 @@ function HUI_CDMCustomItemMixin:RefreshData()
     self:RefreshBackdrop()
     self:RefreshIconColor()
 
-    
+    self.__charges = nil
+
     --self:RefreshProcAnim()
 end
 
 function HUI_CDMCustomItemMixin:RefreshVisibility()
+    if not self.spellID then return end
     if not self.parentName then return end
     local parentFrame = _G[self.parentName]
 
     if not parentFrame then return end
     
-    --[[ if (self.isOnActualCooldown or self.isOnAuraTimer or self.isOnChargeCooldown) then
-        self:SetAlpha(1)
-    elseif Addon:GetValue("UseCDMCustomAlphaNoCD", nil, self.parentName) then
-        self:SetAlpha(Addon:GetValue("CDMCustomAlphaNoCD", nil, self.parentName))
-    else
-        self:SetAlpha(1)
-    end ]]
     self.Icon:Show()
     if self.iconBorder then
         self.iconBorder:Show()
@@ -738,56 +630,48 @@ function HUI_CDMCustomItemMixin:RefreshVisibility()
 
     local hideType = parentFrame.Container.hideInactiveType
 
-    local hideEmpty = Addon:GetValue("CDMCustomHideEmpty", nil, self.parentName)
+    local newIsActive
     if hideType == 5 then
-        if self.isOnActualCooldown then
-            self.__isActive = true
-        else
-            self.__isActive = false
-        end
-        parentFrame:RefreshVisibileOnCD()
+        newIsActive = self.isOnActualCooldown and true or false
     elseif hideType == 4 then
-        
-        if not self.isOnActualCooldown or self.isOnAuraTimer then
-            self.__isActive = true
-        else
-            self.__isActive = false
-        end
-        parentFrame:RefreshVisibileOnCD()
+        newIsActive = (not self.isOnActualCooldown or self.isOnAuraTimer) and true or false
     elseif hideType == 3 then
-        if self.isOnActualCooldown or self.isOnAuraTimer or self.isOnChargeCooldown then
-            self.__isActive = true
-        else
-            self.__isActive = false
-        end
-        parentFrame:RefreshVisibileOnCD()
+        newIsActive = (self.isOnActualCooldown or self.isOnAuraTimer or self.isOnChargeCooldown) and true or false
     elseif hideType == 2 then
         if self.isOnAuraTimer or self.AuraSet then
-            self.__isActive = true
+            newIsActive = true
             if self.AuraSet then
                 self.Icon:Hide()
                 if self.iconBorder then
                     self.iconBorder:Hide()
                 end
             end
-            local cooldownFrame = self:GetCooldownFrame()
             if cooldownFrame then cooldownFrame:Hide() end
         else
-            self.__isActive = false
+            newIsActive = false
         end
-        parentFrame:RefreshVisibileOnCD()
     elseif hideType == 1 then
-        self.__isActive = nil
+        newIsActive = nil
     end
 
-    if hideEmpty and self.type == "item" then
+    local newShouldBeVisible
+    if Addon:GetValue("CDMCustomHideEmpty", nil, self.parentName) and self.type == "item" then
         if not self.isOnAuraTimer and not self.AuraSet and self.count == 0 then
-            self.__isActive = false
-            self.__shouldBeVisible = false
+            newIsActive = false
+            newShouldBeVisible = false
         else
-            self.__shouldBeVisible = true
+            newShouldBeVisible = true
         end
+    end
+    self.__shouldBeVisible = newShouldBeVisible
+
+    if newIsActive ~= self.__prevIsActive or newShouldBeVisible ~= self.__prevShouldBeVisible then
+        self.__isActive = newIsActive
+        self.__prevIsActive = newIsActive
+        self.__prevShouldBeVisible = newShouldBeVisible
         parentFrame:RefreshVisibileOnCD()
+    else
+        self.__isActive = newIsActive
     end
 end
 
@@ -800,28 +684,37 @@ end
 
 function HUI_CDMCustomItemMixin:OnSpellUpdateUsesEvent()
     --self.count = C_Spell.GetSpellCharges(self:GetSpellID())
+    self:ScheduleCountRefresh()
+end
+
+function HUI_CDMCustomItemMixin:ScheduleCountRefresh()
+    if self.__countRefreshPending then return end
+    self.__countRefreshPending = true
     RunNextFrame(function()
+        self.__countRefreshPending = nil
         self:RefreshCount()
     end)
-    
+end
+
+function HUI_CDMCustomItemMixin:ScheduleRefreshData()
+    if self.__refreshDataPending then return end
+    self.__refreshDataPending = true
+    RunNextFrame(function()
+        self.__refreshDataPending = nil
+        self:RefreshData()
+    end)
 end
 
 function HUI_CDMCustomItemMixin:OnAuraDone()
     self.isOnAuraTimer = false
-    --[[ self.Cooldown:SetAlpha(1)
-    self.Cooldown:Show() ]]
-    RunNextFrame(function()
-        self:RefreshData()
-    end)
+    self:ScheduleRefreshData()
 end
 
 function HUI_CDMCustomItemMixin:OnCooldownDone()
     self.isOnActualCooldown = false
     self.isOnChargeCooldown = false
     --self.isOnAuraTimer = false
-    RunNextFrame(function()
-        self:RefreshData()
-    end)
+    self:ScheduleRefreshData()
 end
 
 --[[ function HUI_CDMCustomItemMixin:ShowProcGlow()
@@ -885,21 +778,42 @@ function HUI_CDMCustomItemMixin:SaveRealAuraInit(spellIDs)
         end
     end
 
+    self:InvalidateAura()
+
+end
+
+function HUI_CDMCustomItemMixin:InvalidateAura()
+    self.__hasAuraLink = nil
+    self.__auraFilterDirty = true
+    self.auraSpellID = nil
+    self.auraUnit = nil
+    self.elemShamHack = nil
 end
 
 function HUI_CDMCustomItemMixin:GetRealAura()
     if not self.spellID then return end
-    local frameName = self.parentName
-    local parentFrame = _G[frameName]
-    if not parentFrame then return end
-    local frameIndex = parentFrame:GetFrameIndexByName(frameName)
-    local spellID = self.itemID or self.baseSpellID or self.spellID
 
-    if profileTable["CDMCustomFrames"] then
-        local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
-        if frameTbl and frameTbl.realAuras and frameTbl.realAuras[spellID] then
-            return frameTbl.realAuras[spellID] or {}
+    if self.__hasAuraLink == nil then
+        local frameName = self.parentName
+        local parentFrame = _G[frameName]
+        if not parentFrame then return end
+        local frameIndex = parentFrame:GetFrameIndexByName(frameName)
+        local spellID = self.itemID or self.baseSpellID or self.spellID
+
+        if profileTable["CDMCustomFrames"] then
+            local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
+            if frameTbl and frameTbl.realAuras and frameTbl.realAuras[spellID] then
+                self.__realAuraList = frameTbl.realAuras[spellID]
+                self.__hasAuraLink = next(self.__realAuraList) ~= nil
+                return self.__realAuraList
+            end
         end
+        self.__realAuraList = nil
+        self.__hasAuraLink = false
+    end
+
+    if self.__hasAuraLink then
+        return self.__realAuraList
     end
 end
 
@@ -1037,6 +951,13 @@ function HUI_CDMCustomItemMixin:ClearAuraSlots()
     if not container then return end
 
     container:SetEnabled(false)
+    container:Hide()
+    self.realAuraFrame = nil
+    self.realAuraCooldownFrame = nil
+    self.aura = nil
+    self.AuraContainer = nil
+    self.__auraFilterDirty = true
+    self.AuraSet = nil
 end
 
 function HUI_CDMCustomItemMixin:AddAuraSlot()
@@ -1048,20 +969,26 @@ function HUI_CDMCustomItemMixin:AddAuraSlot()
     end
 
     local spellIDsRaw = self:GetRealAura()
-    if not spellIDsRaw or not next(spellIDsRaw) then return end
+    if not spellIDsRaw then return end
 
-    local spellIDs = {}
+    local spellIDs = self.__spellIDs or {}
+    wipe(spellIDs)
+    local hasValid = false
     for _, spellID in ipairs(spellIDsRaw) do
-        spellIDs[tonumber(spellID)] = true
+        local id = tonumber(spellID)
+        if id then
+            spellIDs[id] = true
+            hasValid = true
+        end
     end
-    if not next(spellIDs) then return end
+    if not hasValid then return end
+    self.__spellIDs = spellIDs
 
     local container = self:CreateAuraContainer()
 
     local auraUnit = self:GetAuraUnit()
     local filterString = auraUnit == "player" and "HELPFUL|PLAYER" or "HARMFUL|PLAYER"
     local IsElemHackNeeded = self:IsElemHackNeeded() == true
-    local candidateFilters = {includeSpellIDs = IsElemHackNeeded and elemEB or spellIDs}
 
     if not self.AuraSet then
         self.aura = container:AddAuraSlot("1", filterString, {
@@ -1084,9 +1011,17 @@ function HUI_CDMCustomItemMixin:AddAuraSlot()
         })
         self.AuraSet = true
     end
-    container:SetAuraSlotFilterString("1", filterString)
-    container:SetAuraSlotCandidateFilters("1", candidateFilters)
-    container:SetAuraSlotSortMethod("1", AuraContainerSortMethod.ExpirationOnly, AuraContainerSortDirection.Reverse)
+
+    if self.__auraFilterDirty then
+        local candidateFilters = self.__candidateFilters or {}
+        wipe(candidateFilters)
+        candidateFilters.includeSpellIDs = IsElemHackNeeded and elemEB or spellIDs
+        self.__candidateFilters = candidateFilters
+        container:SetAuraSlotFilterString("1", filterString)
+        container:SetAuraSlotCandidateFilters("1", candidateFilters)
+        container:SetAuraSlotSortMethod("1", AuraContainerSortMethod.ExpirationOnly, AuraContainerSortDirection.Reverse)
+        self.__auraFilterDirty = nil
+    end
     container:SetEnabled(true)
     container:Show()
 end
@@ -1097,29 +1032,28 @@ function HUI_CDMCustomItemMixin:ResetAuraContainerAfterMovie()
 
     container:SetEnabled(false)
 
-    self.auraResetTimer = C_Timer.After(0.4, function()
-        local spellIDsRaw = self:GetRealAura()
-        local spellIDs = {}
-        if spellIDsRaw then
-            for _, spellID in ipairs(spellIDsRaw) do
-                spellIDs[tonumber(spellID)] = true
-            end
+    local spellIDsRaw = self:GetRealAura()
+    local spellIDs = {}
+    if spellIDsRaw then
+        for _, spellID in ipairs(spellIDsRaw) do
+            spellIDs[tonumber(spellID)] = true
         end
+    end
 
-        local auraUnit = self:GetAuraUnit()
-        local filterString = auraUnit == "player" and "HELPFUL" or "HARMFUL|PLAYER"
-        local candidateFilters = {includeSpellIDs = self:IsElemHackNeeded() and elemEB or spellIDs}
+    local auraUnit = self:GetAuraUnit()
+    local filterString = auraUnit == "player" and "HELPFUL" or "HARMFUL|PLAYER"
+    local candidateFilters = {includeSpellIDs = self:IsElemHackNeeded() and elemEB or spellIDs}
 
-        container:SetAuraSlotFilterString("1", filterString)
-        container:SetAuraSlotCandidateFilters("1", candidateFilters)
-        container:SetEnabled(true)
-        --container:UpdateAllAuras()
-
-        self.auraResetTimer = nil
-    end)
+    container:SetAuraSlotFilterString("1", filterString)
+    container:SetAuraSlotCandidateFilters("1", candidateFilters)
+    container:SetUnit(auraUnit)
+    container:SetEnabled(true)
+    container:UpdateAllAuras()
 end
 
 function HUI_CDMCustomItemMixin:GetAuraUnit()
+
+    if self.auraUnit then return self.auraUnit end
 
     local auraTbl = self:GetRealAura()
     self.auraSpellID = auraTbl and tonumber(auraTbl[1]) or self.auraSpellID or self.spellID
@@ -1136,6 +1070,9 @@ function HUI_CDMCustomItemMixin:GetAuraUnit()
 end
 
 function HUI_CDMCustomItemMixin:IsElemHackNeeded()
+    if self.elemShamHack ~= nil then
+        return self.elemShamHack
+    end
     local auraSpellIDs = self:GetRealAura()
     if not self.elemShamHack then
         for i, auraSpellID in ipairs(auraSpellIDs or {}) do
@@ -1218,10 +1155,21 @@ function HUI_CDMCustomFrameMixin:OnLoad()
         itemFrame.elemShamHack = nil
         itemFrame.AuraFrameCreated = nil
         itemFrame.spellOutOfRange = nil
+        itemFrame.__realAuraList = nil
+        itemFrame.__hasAuraLink = nil
+        itemFrame.__auraFilterDirty = nil
+        itemFrame.__prevIsActive = nil
+        itemFrame.__prevShouldBeVisible = nil
+        itemFrame.__refreshDataPending = nil
+        itemFrame.__countRefreshPending = nil
+        itemFrame.__hsTimerPending = nil
         itemFrame:ClearAuraSlots()
 	end
 
     self.itemPool = CreateFramePool("Frame", self.Container, self.itemTemplate, itemResetCallback)
+
+    self:ResetIndexes()
+    self.__pendingItemLoads = {}
 
     self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.EndOrderChange", self.OnCustomItemListReorderEnded)
     self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.ItemAdded", self.OnCustomItemListItemUpdate)
@@ -1290,9 +1238,67 @@ end
 function HUI_CDMCustomFrameMixin:OnRealAuraAdded(spellID, auraSpellIDs)
     for itemFrame in self.itemPool:EnumerateActive() do
         if itemFrame.itemID == spellID or itemFrame.spellID == spellID then
+            itemFrame:InvalidateAura()
             itemFrame:AddAuraSlot()
         end
     end
+end
+
+function HUI_CDMCustomFrameMixin:IndexItemFrame(itemFrame)
+    if not itemFrame.type then return end
+    if not self.__spellIndex then self:ResetIndexes() end
+    if itemFrame.type == "spell" then
+        if itemFrame.spellID then self:AddToIndex(self.__spellIndex, itemFrame.spellID, itemFrame) end
+        if itemFrame.baseSpellID then self:AddToIndex(self.__spellIndex, itemFrame.baseSpellID, itemFrame) end
+        if itemFrame.overrideID then self:AddToIndex(self.__spellIndex, itemFrame.overrideID, itemFrame) end
+        if itemFrame.rangeCheckSpellID then self:AddToIndex(self.__rangeIndex, itemFrame.rangeCheckSpellID, itemFrame) end
+        table.insert(self.__allSpellItems, itemFrame)
+    elseif itemFrame.type == "item" then
+        if itemFrame.itemID then self:AddToIndex(self.__itemIndex, itemFrame.itemID, itemFrame) end
+        table.insert(self.__allItemItems, itemFrame)
+    elseif itemFrame.type == "slot" then
+        if itemFrame.slotID then self:AddToIndex(self.__slotIndex, itemFrame.slotID, itemFrame) end
+        if itemFrame.spellID then self:AddToIndex(self.__spellIndex, itemFrame.spellID, itemFrame) end
+        if itemFrame.overrideID then self:AddToIndex(self.__spellIndex, itemFrame.overrideID, itemFrame) end
+        table.insert(self.__allItemItems, itemFrame)
+    end
+end
+
+function HUI_CDMCustomFrameMixin:AddToIndex(index, key, itemFrame)
+    local list = index[key]
+    if not list then
+        list = {}
+        index[key] = list
+    end
+    for _, f in ipairs(list) do
+        if f == itemFrame then return end
+    end
+    table.insert(list, itemFrame)
+end
+
+function HUI_CDMCustomFrameMixin:ResetIndexes()
+    self.__spellIndex = {}
+    self.__itemIndex = {}
+    self.__slotIndex = {}
+    self.__rangeIndex = {}
+    self.__allSpellItems = {}
+    self.__allItemItems = {}
+    self.__dispatchSeen = self.__dispatchSeen or {}
+end
+
+function HUI_CDMCustomFrameMixin:GetSpellIndexed(spellID)
+    if not self.__spellIndex then self:ResetIndexes() end
+    return self.__spellIndex[spellID]
+end
+
+function HUI_CDMCustomFrameMixin:GetItemIndexed(itemID)
+    if not self.__spellIndex then self:ResetIndexes() end
+    return self.__itemIndex[itemID]
+end
+
+function HUI_CDMCustomFrameMixin:GetRangeIndexed(spellID)
+    if not self.__spellIndex then self:ResetIndexes() end
+    return self.__rangeIndex[spellID]
 end
 
 function HUI_CDMCustomFrameMixin:GetDisplayName()
@@ -1367,6 +1373,26 @@ function HUI_CDMCustomFrameMixin:OnShow()
     self:RegisterUnitEvent("UNIT_PET", "player")
     --self:RegisterEvent("PLAYER_TOTEM_UPDATE")
     self:RegisterUnitEvent("PLAYER_TARGET_CHANGED")
+
+    self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_SHOW")
+    self:RegisterEvent("SPELL_ACTIVATION_OVERLAY_GLOW_HIDE")
+    self:RegisterEvent("SPELL_UPDATE_ICON")
+    self:RegisterEvent("SPELL_UPDATE_CHARGES")
+    self:RegisterEvent("SPELL_UPDATE_COOLDOWN")
+    self:RegisterEvent("SPELL_UPDATE_USES")
+    self:RegisterEvent("SPELL_UPDATE_USABLE")
+    self:RegisterEvent("ITEM_COUNT_CHANGED")
+    self:RegisterEvent("BAG_UPDATE_DELAYED")
+    self:RegisterEvent("BAG_UPDATE_COOLDOWN")
+    self:RegisterEvent("ENCOUNTER_END")
+    self:RegisterEvent("SPELL_RANGE_CHECK_UPDATE")
+    --because icon bugged on AuraButton after STOP_MOVIE event
+    self:RegisterEvent("CINEMATIC_STOP")
+    self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
+    self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
+    self:RegisterUnitEvent("UNIT_FACTION", "player")
+    self:RegisterUnitEvent("UNIT_FLAGS", "player")
+    self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player", "pet")
 end
 
 function HUI_CDMCustomFrameMixin:OnHide()
@@ -1388,12 +1414,73 @@ end
 function HUI_CDMCustomFrameMixin:UpdateAllTrinkets(usedSlot)
     for itemFrame in self.itemPool:EnumerateActive() do
         if itemFrame.slotID and itemFrame.slotID ~= usedSlot and itemFrame.slotID < 16 then
-            itemFrame:RefreshData()
+            itemFrame:RefreshSpellCooldownInfo()
+            itemFrame:RefreshVisibility()
+        end
+    end
+end
+
+function HUI_CDMCustomFrameMixin:DispatchCooldown(list, seen)
+    if not list then return end
+    for i = 1, #list do
+        local itemFrame = list[i]
+        if not seen[itemFrame] then
+            seen[itemFrame] = true
+            if itemFrame.slotID == 13 or itemFrame.slotID == 14 then
+                self:UpdateAllTrinkets(itemFrame.slotID)
+            end
+            itemFrame:OnSpellUpdateCooldownEvent()
+        end
+    end
+end
+
+function HUI_CDMCustomFrameMixin:DispatchUsesItems(list, seen)
+    if not list then return end
+    for i = 1, #list do
+        local itemFrame = list[i]
+        if not seen[itemFrame] then
+            seen[itemFrame] = true
+            itemFrame:OnSpellUpdateUsesEvent()
+        end
+    end
+end
+
+function HUI_CDMCustomFrameMixin:DispatchOverlay(list, seen, isSpellOverlayed)
+    if not list then return end
+    for i = 1, #list do
+        local itemFrame = list[i]
+        if not seen[itemFrame] and itemFrame.type == "spell" and not itemFrame:IsBarFrame() then
+            seen[itemFrame] = true
+            local parent = itemFrame.realAuraFrame or itemFrame
+            if isSpellOverlayed then
+                ActionButtonSpellAlertManager:ShowAlert(itemFrame)
+                if itemFrame.SpellActivationAlert then
+                    itemFrame.SpellActivationAlert:SetFrameLevel(itemFrame:GetFrameLevel() + 10)
+                end
+            else
+                ActionButtonSpellAlertManager:HideAlert(itemFrame)
+            end
+        end
+    end
+end
+
+function HUI_CDMCustomFrameMixin:DispatchCast(list, seen)
+    if not list then return end
+    for i = 1, #list do
+        local itemFrame = list[i]
+        if not seen[itemFrame] then
+            seen[itemFrame] = true
+            if itemFrame.fakeAura then
+                itemFrame:RefreshFakeAuraInfo(true)
+                itemFrame:RefreshData()
+            end
+            itemFrame.isOnActualCooldown = true
         end
     end
 end
 
 function HUI_CDMCustomFrameMixin:OnEvent(event, ...)
+    if not self.__spellIndex then self:ResetIndexes() end
     if event == "PLAYER_IN_COMBAT_CHANGED" or event == "PLAYER_LEVEL_CHANGED" then
 		--self:UpdateShownState()
     elseif event == "PLAYER_EQUIPMENT_CHANGED" then
@@ -1436,6 +1523,146 @@ function HUI_CDMCustomFrameMixin:OnEvent(event, ...)
                 end
             end
         end
+    elseif event == "SPELL_UPDATE_COOLDOWN" then
+        local spellID, baseSpellID, category, startRecoveryCategory = ...
+        local seen = self.__dispatchSeen
+        wipe(seen)
+        self:DispatchCooldown(self:GetSpellIndexed(spellID), seen)
+        self:DispatchCooldown(self:GetSpellIndexed(baseSpellID), seen)
+        if startRecoveryCategory == 133 then
+            for _, itemFrame in ipairs(self.__allSpellItems) do
+                if not seen[itemFrame] then
+                    local cooldownFrame = itemFrame:GetCooldownFrame()
+                    if cooldownFrame.showGCDSwipe then
+                        itemFrame.isOnChargeCooldown = false
+                        itemFrame.isOnActualCooldown = false
+                        itemFrame:RefreshSpellCooldownInfo()
+                        itemFrame:RefreshVisibility()
+                    end
+                end
+            end
+            for _, itemFrame in ipairs(self.__allItemItems) do
+                if itemFrame.type == "slot" and not seen[itemFrame] then
+                    local cooldownFrame = itemFrame:GetCooldownFrame()
+                    if cooldownFrame.showGCDSwipe then
+                        itemFrame.isOnChargeCooldown = false
+                        itemFrame.isOnActualCooldown = false
+                        itemFrame:RefreshSpellCooldownInfo()
+                        itemFrame:RefreshVisibility()
+                    end
+                end
+            end
+        end
+    elseif event == "SPELL_UPDATE_CHARGES" then
+        for _, itemFrame in ipairs(self.__allSpellItems) do
+            itemFrame:RefreshSpellCooldownInfo()
+            itemFrame:RefreshCount()
+            itemFrame:RefreshVisibility()
+        end
+    elseif event == "SPELL_UPDATE_USES" then
+        local spellID, baseSpellID = ...
+        local seen = self.__dispatchSeen
+        wipe(seen)
+        self:DispatchUsesItems(self:GetSpellIndexed(spellID), seen)
+        self:DispatchUsesItems(self:GetSpellIndexed(baseSpellID), seen)
+    elseif event == "SPELL_UPDATE_USABLE" then
+        for _, itemFrame in ipairs(self.__allSpellItems) do
+            itemFrame:RefreshIconColor()
+        end
+    elseif event == "SPELL_UPDATE_ICON" then
+        local spellID = ...
+        local list = self:GetSpellIndexed(spellID)
+        if list then
+            for i = 1, #list do
+                list[i]:RefreshSpellTexture()
+            end
+        end
+    elseif event == "ITEM_COUNT_CHANGED" then
+        local itemID = ...
+        local list = self:GetItemIndexed(itemID)
+        if list then
+            for i = 1, #list do
+                list[i]:RefreshCount()
+            end
+        end
+    elseif event == "BAG_UPDATE_DELAYED" then
+        for _, itemFrame in ipairs(self.__allItemItems) do
+            if itemFrame.type == "item" then
+                itemFrame:RefreshSpellCooldownInfo()
+                itemFrame:RefreshCount()
+                itemFrame:RefreshVisibility()
+            end
+        end
+    elseif event == "BAG_UPDATE_COOLDOWN" then
+        for _, itemFrame in ipairs(self.__allItemItems) do
+            if itemFrame.type == "item" then
+                itemFrame:RefreshCount()
+            end
+        end
+    elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" or event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
+        local spellID = ...
+        local baseSpellID = C_Spell.GetBaseSpell(spellID)
+        local isSpellOverlayed = spellID and C_SpellActivationOverlay.IsSpellOverlayed(spellID) or false
+        local seen = self.__dispatchSeen
+        wipe(seen)
+        self:DispatchOverlay(self:GetSpellIndexed(spellID), seen, isSpellOverlayed)
+        self:DispatchOverlay(self:GetSpellIndexed(baseSpellID), seen, isSpellOverlayed)
+    elseif event == "ENCOUNTER_END" then
+        local encounterID, encounterName, difficultyID, groupSize, success = ...
+        if difficultyID > 13 and difficultyID < 18 then
+            local function clearEncounterFlags(itemFrame)
+                itemFrame.isOnActualCooldown = false
+                itemFrame.isOnChargeCooldown = false
+                itemFrame:ScheduleRefreshData()
+            end
+            for _, itemFrame in ipairs(self.__allSpellItems) do
+                clearEncounterFlags(itemFrame)
+            end
+            for _, itemFrame in ipairs(self.__allItemItems) do
+                clearEncounterFlags(itemFrame)
+            end
+        end
+    elseif event == "SPELL_RANGE_CHECK_UPDATE" then
+        local spellID, inRange, checksRange = ...
+        local list = self:GetRangeIndexed(spellID)
+        if list then
+            for i = 1, #list do
+                local itemFrame = list[i]
+                if not checksRange or inRange then
+                    itemFrame.spellOutOfRange = false
+                else
+                    itemFrame.spellOutOfRange = true
+                end
+                itemFrame:RefreshIconColor()
+            end
+        end
+    elseif event == "CINEMATIC_STOP"
+        or event == "UNIT_FACTION"
+        or event == "UNIT_FLAGS"
+        or event == "UNIT_ENTERED_VEHICLE"
+        or event == "UNIT_EXITED_VEHICLE" then
+            for _, itemFrame in ipairs(self.__allSpellItems) do
+                if not itemFrame.auraResetTimer then
+                    itemFrame:ResetAuraContainerAfterMovie()
+                end
+            end
+            for _, itemFrame in ipairs(self.__allItemItems) do
+                if not itemFrame.auraResetTimer then
+                    itemFrame:ResetAuraContainerAfterMovie()
+                end
+            end
+    elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
+        local unitTarget, castGUID, spellID = ...
+        local seen = self.__dispatchSeen
+        wipe(seen)
+        self:DispatchCast(self:GetSpellIndexed(spellID), seen)
+        if IsHealthstoneCreateCast(spellID) then
+            for _, itemFrame in ipairs(self.__allItemItems) do
+                if itemFrame.type == "item" then
+                    itemFrame:ScheduleCountRefresh()
+                end
+            end
+        end
     end
     
     if event == "PLAYER_SPECIALIZATION_CHANGED" or event == "TRAIT_CONFIG_UPDATED" 
@@ -1443,9 +1670,9 @@ function HUI_CDMCustomFrameMixin:OnEvent(event, ...)
     or event == "UNIT_PET" then
         local currentTime = GetTime()
         if self.lastRunTime and currentTime - self.lastRunTime > 0.1 then
+            self.lastRunTime = currentTime
             self:RefreshLayout()
         end
-        self.lastRunTime = currentTime
     end
     if event == "FIRST_FRAME_RENDERED" then
         HUI_CDMCustomFrameCustomized:RefreshAnchors(self, self.frameName)
@@ -1550,6 +1777,7 @@ function HUI_CDMCustomFrameMixin:GetVisibleChildren()
 
     self.visibleChildren = {}
     self.hasSpellElement = false
+    if not self.__pendingItemLoads then self.__pendingItemLoads = {} end
 
     for index, data in ipairs(self.itemList) do
         local isKnown = false
@@ -1598,9 +1826,13 @@ function HUI_CDMCustomFrameMixin:GetVisibleChildren()
             slotItemID = itemID
             if itemID and not C_Item.IsItemDataCachedByID(itemID) and C_Item.DoesItemExistByID(itemID) then
                 C_Item.RequestLoadItemDataByID(itemID)
-                Item:CreateFromItemID(itemID):ContinueOnItemLoad(function()
-                    self:RefreshLayout()
-                end)
+                if not self.__pendingItemLoads[itemID] then
+                    self.__pendingItemLoads[itemID] = true
+                    Item:CreateFromItemID(itemID):ContinueOnItemLoad(function()
+                        self.__pendingItemLoads[itemID] = nil
+                        self:RefreshLayout()
+                    end)
+                end
                 return
             end
             local spellName, spellID
@@ -1625,10 +1857,14 @@ function HUI_CDMCustomFrameMixin:GetVisibleChildren()
             end
 
             if not C_Item.IsItemDataCachedByID(data.id) then
-                local itemData = Item:CreateFromItemID(tonumber(data.id))
-                itemData:ContinueOnItemLoad(function()
-                    self:RefreshLayout()
-                end)
+                if not self.__pendingItemLoads[data.id] then
+                    self.__pendingItemLoads[data.id] = true
+                    local itemData = Item:CreateFromItemID(tonumber(data.id))
+                    itemData:ContinueOnItemLoad(function()
+                        self.__pendingItemLoads[data.id] = nil
+                        self:RefreshLayout()
+                    end)
+                end
                 return                
             end
             local spellName, spellID = C_Item.GetItemSpell(data.id)
@@ -1656,6 +1892,7 @@ function HUI_CDMCustomFrameMixin:GetVisibleChildren()
             item:Show()
             table.insert(self.visibleChildren, item)
             item.parentName = self.frameName
+            self:IndexItemFrame(item)
             self:OnAcquireItemFrame(item)
         end
 	end
@@ -1674,6 +1911,7 @@ function HUI_CDMCustomFrameMixin:RefreshLayout()
     end
 	local dataProvider = CreateDataProvider(self.itemList)
 
+    self:ResetIndexes()
     local visibleChildren = self:GetVisibleChildren()
 
     if not visibleChildren then
@@ -1699,29 +1937,43 @@ function HUI_CDMCustomFrameMixin:RefreshLayout()
 end
 
 function HUI_CDMCustomFrameMixin:RefreshVisibileOnCD()
-    if self.visibleChildren then
-        for _, frame in ipairs(self.visibleChildren) do
-            frame.__isEditing = self.isEditing
-        end
-            
-        if self.Container.isCentered then
-            Addon:ApplyCenteredGridLayout(self.Container, self.visibleChildren, self.Container.stride, self.Container.childXPadding)
-        else
-            Addon:ApplyStandardGridLayout(self.Container, self.visibleChildren, self.Container.stride, self.Container.childXPadding)
-        end
+    if not self.visibleChildren then return end
 
-        self:ResizeFrame(self, self.visibleChildren)
+    self.__layoutDirty = true
+    if not self.__relayoutScheduled then
+        self.__relayoutScheduled = true
+        RunNextFrame(function()
+            self.__relayoutScheduled = nil
+            if not self.__layoutDirty then return end
+            self.__layoutDirty = nil
+
+            for _, frame in ipairs(self.visibleChildren) do
+                frame.__isEditing = self.isEditing
+            end
+
+            if self.Container.isCentered then
+                Addon:ApplyCenteredGridLayout(self.Container, self.visibleChildren, self.Container.stride, self.Container.childXPadding)
+            else
+                Addon:ApplyStandardGridLayout(self.Container, self.visibleChildren, self.Container.stride, self.Container.childXPadding)
+            end
+
+            self:ResizeFrame(self, self.visibleChildren)
+        end)
     end
 end
 
 function HUI_CDMCustomFrameMixin:ResizeFrame(frame, visibleChildren)
     local layoutChildren = visibleChildren or self.Container:GetLayoutChildren()
 
-    Addon.PP.Size(frame, 1)
-
     if #layoutChildren == 0 then
-        Addon.PP.Size(self.Container, 38)
-        self:UpdateContainerAnchor()
+        Addon.PP.Size(frame, 1)
+        local container = self.Container
+        if container:GetWidth() ~= 38 or container:GetHeight() ~= 38 then
+            Addon.PP.Size(container, 38)
+            self:UpdateContainerAnchor()
+        end
+        self.__lastSize = nil
+        self.__lastSize2 = nil
         return 
     end
 
@@ -1753,6 +2005,13 @@ function HUI_CDMCustomFrameMixin:ResizeFrame(frame, visibleChildren)
         --frame:SetSize(totalWidth, totalHeight)
     end
 
+    if self.__lastSize == totalWidth and self.__lastSize2 == totalHeight then
+        return
+    end
+    self.__lastSize = totalWidth
+    self.__lastSize2 = totalHeight
+
+    Addon.PP.Size(frame, 1)
     Addon.PP.Size(frame, width, height)
     Addon.PP.Size(self.Container, totalWidth, totalHeight)
     self:UpdateContainerAnchor()
@@ -1764,8 +2023,6 @@ function HUI_CDMCustomFrameMixin:UpdateContainerAnchor()
     local goingUp = container.layoutFramesGoingUp
     local isCentered = container.isCentered
 
-    container:ClearAllPoints()
-
     local point, relativePoint
     if isCentered then
         point = "CENTER"
@@ -1775,6 +2032,12 @@ function HUI_CDMCustomFrameMixin:UpdateContainerAnchor()
         point = goingRight and "TOPLEFT" or "TOPRIGHT"
     end
 
+    if self.__lastAnchorPoint == point then
+        return
+    end
+    self.__lastAnchorPoint = point
+
+    container:ClearAllPoints()
     container:SetPoint(point, self, point)
 end
 
