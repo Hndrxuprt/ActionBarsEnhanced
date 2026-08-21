@@ -1255,6 +1255,7 @@ function HUI_CDMCustomFrameMixin:IndexItemFrame(itemFrame)
         table.insert(self.__allSpellItems, itemFrame)
     elseif itemFrame.type == "item" then
         if itemFrame.itemID then self:AddToIndex(self.__itemIndex, itemFrame.itemID, itemFrame) end
+        if itemFrame.spellID then self:AddToIndex(self.__spellIndex, itemFrame.spellID, itemFrame) end
         table.insert(self.__allItemItems, itemFrame)
     elseif itemFrame.type == "slot" then
         if itemFrame.slotID then self:AddToIndex(self.__slotIndex, itemFrame.slotID, itemFrame) end
@@ -1542,7 +1543,7 @@ function HUI_CDMCustomFrameMixin:OnEvent(event, ...)
                 end
             end
             for _, itemFrame in ipairs(self.__allItemItems) do
-                if itemFrame.type == "slot" and not seen[itemFrame] then
+                if (itemFrame.type == "slot" or itemFrame.type == "item") and not seen[itemFrame] then
                     local cooldownFrame = itemFrame:GetCooldownFrame()
                     if cooldownFrame.showGCDSwipe then
                         itemFrame.isOnChargeCooldown = false
@@ -1596,7 +1597,9 @@ function HUI_CDMCustomFrameMixin:OnEvent(event, ...)
     elseif event == "BAG_UPDATE_COOLDOWN" then
         for _, itemFrame in ipairs(self.__allItemItems) do
             if itemFrame.type == "item" then
+                itemFrame:RefreshSpellCooldownInfo()
                 itemFrame:RefreshCount()
+                itemFrame:RefreshVisibility()
             end
         end
     elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" or event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then

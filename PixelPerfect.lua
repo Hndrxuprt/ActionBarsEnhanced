@@ -94,19 +94,27 @@ do
         return false
     end
 
+    local function ScaleDim(x)
+        local s = PP.Scale(x)
+        if type(x) == "number" and x > 0 and s == 0 then
+            return PP.mult
+        end
+        return s
+    end
+
     function PP.Size(frame, w, h)
         if IsGuarded(frame) then return end
-        frame:SetSize(PP.Scale(w), h and PP.Scale(h) or PP.Scale(w))
+        frame:SetSize(ScaleDim(w), h and ScaleDim(h) or ScaleDim(w))
     end
 
     function PP.Width(frame, w)
         if IsGuarded(frame) then return end
-        frame:SetWidth(PP.Scale(w))
+        frame:SetWidth(ScaleDim(w))
     end
 
     function PP.Height(frame, h)
         if IsGuarded(frame) then return end
-        frame:SetHeight(PP.Scale(h))
+        frame:SetHeight(ScaleDim(h))
     end
 
     function PP.Point(obj, anchor, p1, p2, p3, p4)

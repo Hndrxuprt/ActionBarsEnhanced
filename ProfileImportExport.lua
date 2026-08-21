@@ -678,6 +678,14 @@ function HUI_GetProfiles()
     return HUIProfilesMixin:GetProfiles()
 end
 
+function ABE_ImportProfile(profileName, profileString, shouldSet, rewrite)
+    return HUI_ImportProfile(profileName, profileString, shouldSet, rewrite)
+end
+
+function ABE_GetProfiles()
+    return HUI_GetProfiles()
+end
+
 function Addon:GetCurrentProfileTable()
     local profileName = HUIProfilesMixin:GetPlayerProfile()
     local profileTable = Addon.P.profilesList[profileName]
