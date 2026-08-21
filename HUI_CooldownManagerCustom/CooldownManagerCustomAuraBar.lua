@@ -214,7 +214,7 @@ function HUI_CDMCustomAuraBarMixin:AddStages(numStages, parent)
 
         stagePip:SetColorTexture(0, 0, 0, 1)
         stagePip:ClearAllPoints()
-        Addon.PP.Size(stagePip, 1, barHeight)
+        stagePip:SetSize(1, barHeight)
         stagePip:SetPoint("TOPLEFT", parent, "TOPLEFT", off, 0)
         stagePip:Show()
     end
