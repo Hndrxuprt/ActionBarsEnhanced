@@ -2137,7 +2137,7 @@ function HUI_CDMCustomFrameSelectionMixin:OnDragStop()
     local offsetY = Addon.PP.SnapCenterForDim(centerY - uiCenterY, frame:GetHeight())
 
     frame:ClearAllPoints()
-    Addon.PP.Point(frame, "CENTER", UIParent, "CENTER", offsetX, offsetY)
+    frame:SetPoint("CENTER", UIParent, "CENTER", offsetX, offsetY)
 
     if profileTable["CDMCustomFrames"] then
         for index, data in ipairs(profileTable["CDMCustomFrames"]) do
@@ -2179,11 +2179,12 @@ function HUI_CDMCustomFrameSelectionMixin:ProcessMovementKey(key)
 		return
 	end
 
-	local deltaAmount = 1
+	local onePixel = Addon.PP.perfect / (UIParent and UIParent:GetEffectiveScale() or 1)
+	local deltaAmount = onePixel
     if IsShiftKeyDown() then
-        deltaAmount = 10
+        deltaAmount = onePixel * 10
     elseif IsAltKeyDown() then
-        deltaAmount = 100
+        deltaAmount = onePixel * 100
     end
 
 	local xDelta, yDelta = 0, 0
@@ -2212,7 +2213,7 @@ function HUI_CDMCustomFrameSelectionMixin:OnPositionChange(deltaX, deltaY)
     local offsetY = Addon.PP.SnapCenterForDim((centerY - uiCenterY) + deltaY, frame:GetHeight())
 
     frame:ClearAllPoints()
-    Addon.PP.Point(frame, "CENTER", UIParent, "CENTER", offsetX, offsetY)
+    frame:SetPoint("CENTER", UIParent, "CENTER", offsetX, offsetY)
 
     if profileTable["CDMCustomFrames"] then
         for index, data in ipairs(profileTable["CDMCustomFrames"]) do
