@@ -57,7 +57,12 @@ function HUI_CDMCustomAuraFrameMixin:ConfigureAuraButton(auraButton)
 
 	local countFormatter = Addon:GetValue("AlwaysShowStacks", nil, frameName) and { formatter = Addon.defaultCountFormatter } or {}
 	auraButton:SetIcon(auraButton.iconTexture)
-	auraButton:SetApplicationCount(auraButton.countText, countFormatter)
+	if Addon:GetValue("CDMAuraShowStacks", nil, frameName) then
+		auraButton:SetApplicationCount(auraButton.countText, countFormatter)
+	else
+		auraButton:ClearApplicationCount()
+		auraButton.countText:Hide()
+	end
 	auraButton:SetDurationCooldown(auraButton.cooldownFrame)
 
 	auraButton:SetMouseMotionEnabled(false)

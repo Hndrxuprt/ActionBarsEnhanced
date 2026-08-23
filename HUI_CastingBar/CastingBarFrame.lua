@@ -741,6 +741,7 @@ end
 
 function HUI_CastingBarMixin.OnOptionsSelected(self, show)
     if show then
+        self:Show()
         --StartCastbar(self)
     else
         self:Hide()

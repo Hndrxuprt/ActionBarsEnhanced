@@ -626,7 +626,7 @@ function HUI_CDMCustomAuraMixin:OnShow()
 	self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
 	self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
 	self:RegisterUnitEvent("UNIT_FACTION", "player")
-	self:RegisterUnitEvent("UNIT_FLAGS", "player")
+	--self:RegisterUnitEvent("UNIT_FLAGS", "player")
 end
 
 function HUI_CDMCustomAuraMixin:OnHide()
@@ -657,7 +657,7 @@ function HUI_CDMCustomAuraMixin:ResetAuraContainerAfterMovie()
 
 	container:SetEnabled(false)
 
-	self.auraResetTimer = C_Timer.After(0.4, function()
+	self.auraResetTimer = C_Timer.After(0.0, function()
 		if self.useFixedSlots then
 			for slotIndex = 1, self.auraSlotCount do
 				local includeSpellIDs = {}

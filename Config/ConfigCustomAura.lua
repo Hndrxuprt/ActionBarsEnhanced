@@ -272,6 +272,13 @@ Addon.config.containers["CDMAuraFrameCDContainer"] = {
     title = L.CDMCooldownTitle,
     desc = L.CDMCooldownDesc,
     childs = {
+        ["CDMAuraFrameShowSwipe"] = {
+            type            = "checkbox",
+            name            = L.CDMAuraShowSwipe,
+            value           = "CDMAuraShowSwipe",
+            showNew         = true,
+            callback        = RefreshAuraFrameSettings,
+        },
         ["CDMAuraFrameSwipeTexture"] = {
             type        = "dropdown",
             setting     = T.SwipeTextures,
@@ -313,6 +320,13 @@ Addon.config.containers["CDMAuraFrameCDContainer"] = {
             type            = "checkbox",
             name            = L.CDMReverseSwipe,
             value           = "CDMReverseSwipe",
+            callback        = RefreshAuraFrameSettings,
+        },
+        ["CDMAuraFrameShowEdge"] = {
+            type            = "checkbox",
+            name            = L.CDMAuraShowEdge,
+            value           = "CDMAuraShowEdge",
+            showNew         = true,
             callback        = RefreshAuraFrameSettings,
         },
         ["CDMAuraFrameEdgeTexture"] = {
@@ -363,6 +377,13 @@ Addon.config.containers["CDMAuraFrameFontContainer"] = {
     title = L.FontTitle,
     desc = L.FontDesc,
     childs = {
+        ["CDMAuraFrameShowTimer"] = {
+            type            = "checkbox",
+            name            = L.CDMAuraShowTimer,
+            value           = "CDMAuraShowTimer",
+            showNew         = true,
+            callback        = RefreshAuraFrameSettings,
+        },
         ["CDMAuraFrameCooldownFont"] = {
             type        = "dropdown",
             fontOption  = true,
@@ -408,6 +429,12 @@ Addon.config.containers["CDMAuraFrameFontContainer"] = {
             type            = "checkbox",
             name            = L.ColorizedAuraFont,
             value           = "ColorizedAuraFont",
+            callback        = RefreshAuraFrameSettings,
+        },
+        ["CDMAuraFrameShowStacks"] = {
+            type            = "checkbox",
+            name            = L.CDMAuraShowStacks,
+            value           = "CDMAuraShowStacks",
             showNew         = true,
             callback        = RefreshAuraFrameSettings,
         },

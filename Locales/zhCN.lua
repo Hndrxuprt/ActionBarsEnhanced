@@ -226,6 +226,7 @@ L.IconPadding = "图标间距"
 L.CDMBackdrop = "添加边框"
 L.CDMCenteredGrid = "图标居中"
 L.MinimapButton = "显示小地图按钮"
+L.UsePixelPerfect = "使用 PixelPerfect"
 L.CDMRemoveIconMask = "移除图标遮罩"
 L.CDMRemovePandemic = "移除流行病动画"
 L.CDMSwipeColor = "冷却扫掠颜色"
@@ -453,6 +454,11 @@ L.FontTimerSize = "计时器字体大小"
 L.UseCustomBGColor = "自定义背景颜色"
 
 L.CDMAuraRemoveSwipe = "不显示光环"
+
+L.CDMAuraShowSwipe = "显示扫掠动画"
+L.CDMAuraShowTimer = "显示计时器"
+L.CDMAuraShowStacks = "显示堆叠数量"
+L.CDMAuraShowEdge = "显示边缘"
 
 L.JustifyH = "水平文本对齐"
 

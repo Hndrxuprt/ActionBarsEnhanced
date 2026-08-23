@@ -12,6 +12,16 @@ Addon.config.containers = {
         title = "Modules",
         desc = "Enable or disable modules (requires /reload)",
         childs = {
+            ["ModulePixelPerfect"] = {
+                type     = "checkbox",
+                name     = L.UsePixelPerfect,
+                value    = "UsePixelPerfect",
+                callback = function(checked)
+                    if Addon.PP and Addon.PP.SetEnabled then
+                        Addon.PP.SetEnabled(checked)
+                    end
+                end,
+            },
             ["ModuleActionBars"] = { type = "moduleCheckbox", name = "Action Bars", moduleName = "ActionBars" },
             ["ModuleCooldownManagerView"] = { type = "moduleCheckbox", name = "Cooldown Manager", moduleName = "CooldownManagerView" },
             ["ModuleCooldownManagerCustom"] = { type = "moduleCheckbox", name = "Custom Cooldown Frames", moduleName = "CooldownManagerCustom" },
@@ -525,7 +535,6 @@ Addon.config.containers = {
                 type            = "checkbox",
                 name            = L.ColorizedCooldownFont,
                 value           = "ColorizedCooldownFont",
-                showNew         = true,
                 callback        = function()
                     HUIDropdownMixin:RefreshCooldownPreview()
                     Addon:RefreshButtons()
@@ -537,7 +546,6 @@ Addon.config.containers = {
                 setting         = Addon.CooldownFormatType,
                 IsSelected  = function(id) return id == Addon:GetValue("CooldownFormatType", nil, true) end,
                 OnSelect    = function(id) Addon:SaveSetting("CooldownFormatType", id, true) end,
-                showNew     = true,
                 OnEnter     = false,
                 OnClose     = function()
                     HUIDropdownMixin:RefreshCooldownPreview()
@@ -1551,7 +1559,6 @@ Addon.config.containers = {
                 type            = "checkbox",
                 name            = L.ColorizedCooldownFont,
                 value           = "ColorizedCooldownFont",
-                showNew         = true,
                 callback        = function()
                     local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
@@ -1561,7 +1568,6 @@ Addon.config.containers = {
                 type            = "checkbox",
                 name            = L.ColorizedAuraFont,
                 value           = "ColorizedAuraFont",
-                showNew         = true,
                 callback        = function()
                     local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
@@ -1573,7 +1579,6 @@ Addon.config.containers = {
                 setting         = Addon.CooldownFormatType,
                 IsSelected  = function(id) return id == Addon:GetValue("CDMCooldownFormatType", nil, true) end,
                 OnSelect    = function(id) Addon:SaveSetting("CDMCooldownFormatType", id, true) end,
-                showNew     = true,
                 OnEnter     = false,
                 OnClose     = function()
                     local frameName = HUI_BarsListMixin:GetFrameLebel()
@@ -2540,6 +2545,17 @@ Addon.config.containers = {
         title = L.CDMCooldownTitle,
         desc = L.CDMCooldownDesc,
         childs = {
+            ["CDMCustomFrameShowSwipe"] = {
+                type            = "checkbox",
+                name            = L.CDMAuraShowSwipe,
+                value           = "CDMAuraShowSwipe",
+                showNew         = true,
+                callback        = function()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    HUI_CDMCustomFrameCustomized:RefreshAuraSwipe(frame, frameName)
+                end,
+            },
             ["CDMCustomFrameSwipeTexture"] = {
                 type        = "dropdown",
                 setting     = T.SwipeTextures,
@@ -2664,6 +2680,17 @@ Addon.config.containers = {
                     local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
                     HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+                end,
+            },
+            ["CDMCustomFrameShowEdge"] = {
+                type            = "checkbox",
+                name            = L.CDMAuraShowEdge,
+                value           = "CDMAuraShowEdge",
+                showNew         = true,
+                callback        = function()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    HUI_CDMCustomFrameCustomized:RefreshAuraEdge(frame, frameName)
                 end,
             },
             ["CDMCustomFrameEdgeTexture"] = {
@@ -2886,6 +2913,17 @@ Addon.config.containers = {
         title = L.FontTitle,
         desc = L.FontDesc,
         childs = {
+            ["CDMCustomFrameShowTimer"] = {
+                type            = "checkbox",
+                name            = L.CDMAuraShowTimer,
+                value           = "CDMAuraShowTimer",
+                showNew         = true,
+                callback        = function()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    HUI_CDMCustomFrameCustomized:RefreshAuraTimerVisibility(frame, frameName)
+                end,
+            },
             ["CDMCooldownFont"] = {
                 type        = "dropdown",
                 fontOption  = true,
@@ -2952,7 +2990,6 @@ Addon.config.containers = {
                 type            = "checkbox",
                 name            = L.ColorizedCooldownFont,
                 value           = "ColorizedCooldownFont",
-                showNew         = true,
                 callback        = function()
                     local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
@@ -2964,7 +3001,6 @@ Addon.config.containers = {
                 type            = "checkbox",
                 name            = L.ColorizedAuraFont,
                 value           = "ColorizedAuraFont",
-                showNew         = true,
                 callback        = function()
                     local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
@@ -2978,7 +3014,6 @@ Addon.config.containers = {
                 setting         = Addon.CooldownFormatType,
                 IsSelected  = function(id) return id == Addon:GetValue("CDMCooldownFormatType", nil, true) end,
                 OnSelect    = function(id) Addon:SaveSetting("CDMCooldownFormatType", id, true) end,
-                showNew     = true,
                 OnEnter     = false,
                 OnClose     = function()
                     local frameName = HUI_BarsListMixin:GetFrameLebel()
@@ -2987,6 +3022,19 @@ Addon.config.containers = {
                 end,
             },
 
+            ["CDMCustomFrameShowStacks"] = {
+                type            = "checkbox",
+                name            = L.CDMAuraShowStacks,
+                value           = "CDMAuraShowStacks",
+                showNew         = true,
+                callback        = function()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
+                    local frame = frameName and _G[frameName]
+                    if frame then
+                        HUI_CDMCustomFrameCustomized:RefreshAuraStacks(frame, frameName)
+                    end
+                end,
+            },
             ["CDMAlwaysShowStacks"] = {
                 type            = "checkbox",
                 name            = L.AlwaysShowStacks,

@@ -247,6 +247,15 @@ function HUI_CDMCustomFrameCustomized:CustomizeCooldownFrame(cooldownFrame, fram
     cooldownFrame.isReversed = Addon:GetValue(reverseSetting, nil, frameName)
 
     cooldownFrame.showGCDSwipe = not (Addon:GetValue("CDMRemoveGCDSwipe", nil, frameName))
+
+    local parentFrame = _G[frameName]
+    local isAuraFrame = parentFrame and parentFrame.RefreshSettings ~= nil
+    local isBar = parentFrame and parentFrame.IsBarFrame and parentFrame:IsBarFrame()
+
+    if not isBar and (isAuraFrame or isAura) then
+        cooldownFrame:SetDrawSwipe(Addon:GetValue("CDMAuraShowSwipe", nil, frameName))
+        cooldownFrame:SetDrawEdge(Addon:GetValue("CDMAuraShowEdge", nil, frameName))
+    end
 end
 
 function HUI_CDMCustomFrameCustomized:RefreshCooldownColor(cooldownFrame, frameName)
@@ -340,7 +349,7 @@ function HUI_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, for
 
 end
 
-function HUI_CDMCustomFrameCustomized:CustomizeCooldownFont(cooldownFrame, frameName)
+function HUI_CDMCustomFrameCustomized:CustomizeCooldownFont(cooldownFrame, frameName, isAura)
     cooldownFrame:SetCountdownAbbrevThreshold(920)
 
     local color = {r = 1.0, g = 1.0, b = 1.0, a = 1.0}
@@ -370,6 +379,14 @@ function HUI_CDMCustomFrameCustomized:CustomizeCooldownFont(cooldownFrame, frame
     else
         fontString:SetPointsOffset(0, 0)
     end
+
+    local parentFrame = _G[frameName]
+    local isAuraFrame = parentFrame and parentFrame.RefreshSettings ~= nil
+    local isBar = parentFrame and parentFrame.IsBarFrame and parentFrame:IsBarFrame()
+
+    if not isBar and (isAuraFrame or isAura) then
+        cooldownFrame:SetHideCountdownNumbers(not Addon:GetValue("CDMAuraShowTimer", nil, frameName))
+    end
 end
 
 function HUI_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
@@ -380,7 +397,7 @@ function HUI_CDMCustomFrameCustomized:RefreshCooldownFont(frame, frameName)
         local auraCooldown  = itemFrame.Icon.AuraCooldown or itemFrame.AuraCooldown
 
         self:CustomizeCooldownFont(cooldownFrame, frameName)
-        self:CustomizeCooldownFont(auraCooldown, frameName)
+        self:CustomizeCooldownFont(auraCooldown, frameName, true)
 
     end
 end
@@ -415,6 +432,92 @@ function HUI_CDMCustomFrameCustomized:RefreshStacksFont(frame, frameName)
         local stacksString = stacksFrame.Applications
         if stacksString then
             self:CustomizeStacksFont(stacksString, frameName)
+        end
+    end
+end
+
+function HUI_CDMCustomFrameCustomized:RefreshAuraSwipe(frame, frameName)
+    frameName = frameName or frame.frameName
+
+    if frame.RefreshSettings then
+        frame:RefreshSettings()
+        return
+    end
+
+    local showSwipe = Addon:GetValue("CDMAuraShowSwipe", nil, frameName)
+    for itemFrame in frame.itemPool:EnumerateActive() do
+        local auraFrame = itemFrame.Icon.AuraCooldown or itemFrame.AuraCooldown
+        if auraFrame then
+            auraFrame:SetDrawSwipe(showSwipe)
+        end
+        if itemFrame.realAuraCooldownFrame and itemFrame.realAuraCooldownFrame:CanBeAccessedInContext() then
+            itemFrame.realAuraCooldownFrame:SetDrawSwipe(showSwipe)
+        end
+    end
+end
+
+function HUI_CDMCustomFrameCustomized:RefreshAuraEdge(frame, frameName)
+    frameName = frameName or frame.frameName
+
+    if frame.RefreshSettings then
+        frame:RefreshSettings()
+        return
+    end
+
+    local showEdge = Addon:GetValue("CDMAuraShowEdge", nil, frameName)
+    for itemFrame in frame.itemPool:EnumerateActive() do
+        local auraFrame = itemFrame.Icon.AuraCooldown or itemFrame.AuraCooldown
+        if auraFrame then
+            auraFrame:SetDrawEdge(showEdge)
+        end
+        if itemFrame.realAuraCooldownFrame and itemFrame.realAuraCooldownFrame:CanBeAccessedInContext() then
+            itemFrame.realAuraCooldownFrame:SetDrawEdge(showEdge)
+        end
+    end
+end
+
+function HUI_CDMCustomFrameCustomized:RefreshAuraTimerVisibility(frame, frameName)
+    frameName = frameName or frame.frameName
+
+    if frame.RefreshSettings then
+        frame:RefreshSettings()
+        return
+    end
+
+    local hideNumbers = not Addon:GetValue("CDMAuraShowTimer", nil, frameName)
+    for itemFrame in frame.itemPool:EnumerateActive() do
+        local auraFrame = itemFrame.Icon.AuraCooldown or itemFrame.AuraCooldown
+        if auraFrame then
+            auraFrame:SetHideCountdownNumbers(hideNumbers)
+        end
+        if itemFrame.realAuraCooldownFrame and itemFrame.realAuraCooldownFrame:CanBeAccessedInContext() then
+            itemFrame.realAuraCooldownFrame:SetHideCountdownNumbers(hideNumbers)
+        end
+    end
+end
+
+function HUI_CDMCustomFrameCustomized:RefreshAuraStacks(frame, frameName)
+    frameName = frameName or frame.frameName
+
+    if frame.RefreshSettings then
+        frame:RefreshSettings()
+        return
+    end
+
+    local showStacks = Addon:GetValue("CDMAuraShowStacks", nil, frameName)
+    local countFormatter = Addon:GetValue("AlwaysShowStacks", nil, frameName) and { formatter = Addon.defaultCountFormatter } or {}
+
+    for itemFrame in frame.itemPool:EnumerateActive() do
+        itemFrame:RefreshCount()
+
+        local auraButton = itemFrame.aura
+        if auraButton and auraButton.SetApplicationCount and auraButton:CanBeAccessedInContext() and itemFrame.realAuraFrame then
+            if showStacks then
+                auraButton:SetApplicationCount(itemFrame.realAuraFrame.overlayFrame.count, countFormatter)
+            else
+                auraButton:ClearApplicationCount()
+                itemFrame.realAuraFrame.overlayFrame.count:Hide()
+            end
         end
     end
 end

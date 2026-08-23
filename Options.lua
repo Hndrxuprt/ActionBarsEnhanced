@@ -425,20 +425,20 @@ end
 function Addon.SetBackdropBorderSize(frame, borderSize)
     local parent = frame:GetParent()
     local PP = Addon.PP
-    if PP and parent then
+    if PP and parent and PP.IsEnabled() then
         local es = parent:GetEffectiveScale() or (UIParent and UIParent:GetEffectiveScale() or 1)
         borderSize = PP.SnapForES(borderSize, es)
-    else
-        PixelUtil.ConvertPixelsToUIForRegion(borderSize, frame)
     end
 
     frame:SetBackdrop({
         edgeFile = "Interface\\Buttons\\WHITE8x8",
         edgeSize = borderSize,
     })
-    frame:ClearAllPoints()
-    frame:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, 0)
-    frame:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", 0, 0)
+    if parent then
+        frame:ClearAllPoints()
+        frame:SetPoint("TOPLEFT", parent, "TOPLEFT", (borderSize/2), -1 * (borderSize/2))
+        frame:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", -1 * (borderSize/2), (borderSize/2))
+    end
 end
 
 function Addon.CreateBorder(frame, frameName)
@@ -651,6 +651,8 @@ local hardReload = {
 }
 
 local liveRefresh = {
+    ["UsePixelPerfect"] = true,
+
     ["FadeBars"] = true,
     ["CurrentNormalTexture"] = true,
     ["DesaturateNormal"] = true,
@@ -746,6 +748,35 @@ function Addon:GetCurrentProfile()
     return HUIProfilesMixin:GetPlayerProfile()
 end
 
+local function GetRefreshScope(config)
+    if type(config) ~= "string" or config == "GlobalSettings" then
+        return nil
+    end
+
+    if tContains(Addon.CDMFrames, config) then
+        return { cdm = true, frames = { config } }
+    end
+
+    local profileTable = Addon:GetCurrentProfileTable()
+    if profileTable and profileTable["CDMCustomFrames"] then
+        for _, data in ipairs(profileTable["CDMCustomFrames"]) do
+            if data and data.label == config then
+                return { cdm = true, frames = { config } }
+            end
+        end
+    end
+
+    if tContains(Addon.ActionBarNames, config) then
+        return { buttons = true }
+    end
+
+    if Addon.CASTBARS and tContains(Addon.CASTBARS, config) then
+        return { cast = true }
+    end
+
+    return nil
+end
+
 function Addon:SaveSetting(key, value, config)
     local barName
     if config then
@@ -776,7 +807,7 @@ function Addon:SaveSetting(key, value, config)
             StaticPopup_Show("HUI_RELOAD")
         end
     elseif liveRefresh[key] then
-        Addon:ScheduleRefreshAll()
+        Addon:ScheduleRefreshAll(GetRefreshScope(config))
     end
 end
 function Addon:GetValue(valueName, profileName, config)
@@ -835,9 +866,33 @@ local function RefreshCastingBars()
     end
 end
 
-local function RefreshCooldownManager()
+local function RefreshCooldownManager(scopeFrames)
     if Addon.CDM_SetHooks then
         Addon:CDM_SetHooks()
+    end
+
+    if scopeFrames then
+        local frameSet = {}
+        for _, name in ipairs(scopeFrames) do
+            frameSet[name] = true
+        end
+
+        for _, name in ipairs(Addon.CDMFrames) do
+            if frameSet[name] and _G[name] then
+                CooldownManagerEnhanced:ForceUpdate(name)
+            end
+        end
+
+        local profileTable = Addon:GetCurrentProfileTable()
+        if profileTable and profileTable["CDMCustomFrames"] then
+            for _, data in ipairs(profileTable["CDMCustomFrames"]) do
+                local frame = data and data.label and frameSet[data.label] and _G[data.label]
+                if frame and frame.RefreshLayout then
+                    frame:RefreshLayout()
+                end
+            end
+        end
+        return
     end
 
     for _, name in ipairs(Addon.CDMFrames) do
@@ -857,8 +912,11 @@ local function RefreshCooldownManager()
     end
 end
 
-function Addon:RefreshAll()
-    if Addon:IsModuleEnabled("ActionBars") then
+function Addon:RefreshAll(scope)
+    if Addon.PP and Addon.PP.SetEnabled then
+        Addon.PP.SetEnabled(Addon:GetValue("UsePixelPerfect"))
+    end
+    if Addon:IsModuleEnabled("ActionBars") and (not scope or scope.buttons) then
         if Addon.RefreshAllButtons then
             Addon:RefreshAllButtons()
         end
@@ -872,19 +930,59 @@ function Addon:RefreshAll()
             Addon:SetTalkingHeadEnabled(Addon:GetValue("HideTalkingHead"))
         end
     end
-    if HUI_CastingBarMixin then
+    if HUI_CastingBarMixin and (not scope or scope.cast) then
         RefreshCastingBars()
     end
-    if CooldownManagerEnhanced then
-        RefreshCooldownManager()
+    if CooldownManagerEnhanced and (not scope or scope.cdm) then
+        RefreshCooldownManager(scope and scope.frames)
     end
 end
 
-function Addon:ScheduleRefreshAll()
-    if Addon._refreshTimer then return end
+function Addon:ScheduleRefreshAll(scope)
+    local function MergeScope(target, incoming)
+        if not target then
+            return incoming
+        end
+        if not incoming then
+            return nil
+        end
+        local frames = {}
+        if target.frames then
+            for _, name in ipairs(target.frames) do
+                frames[name] = true
+            end
+        end
+        if incoming.frames then
+            for _, name in ipairs(incoming.frames) do
+                frames[name] = true
+            end
+        end
+        local frameList = {}
+        for name in pairs(frames) do
+            table.insert(frameList, name)
+        end
+        return {
+            buttons = target.buttons or incoming.buttons,
+            cast = target.cast or incoming.cast,
+            cdm = target.cdm or incoming.cdm,
+            frames = next(frameList) and frameList or nil,
+        }
+    end
+
+    if Addon._refreshTimer then
+        if Addon._refreshScope then
+            Addon._refreshScope = MergeScope(Addon._refreshScope, scope)
+        else
+            Addon._refreshScope = scope
+        end
+        return
+    end
+    Addon._refreshScope = scope
     Addon._refreshTimer = C_Timer.NewTimer(0.1, function()
         Addon._refreshTimer = nil
-        Addon:RefreshAll()
+        local scope = Addon._refreshScope
+        Addon._refreshScope = nil
+        Addon:RefreshAll(scope)
     end)
 end
 

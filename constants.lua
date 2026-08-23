@@ -221,6 +221,8 @@ do
 end
 
 Addon.Defaults = {
+    UsePixelPerfect = false,
+
     CurrentLoopGlow = 1,
     DesaturateGlow = false,
     UseLoopGlowColor = false,
@@ -674,6 +676,10 @@ Addon.Defaults = {
     CastBarShieldIconOffsetY = 0,
 
     CDMAuraRemoveSwipe = false,
+    CDMAuraShowSwipe = true,
+    CDMAuraShowTimer = true,
+    CDMAuraShowStacks = true,
+    CDMAuraShowEdge = true,
 
     CurrentCastBarCastNameJustifyH = 2,
     CurrentCastBarCastTimeJustifyH = 3,

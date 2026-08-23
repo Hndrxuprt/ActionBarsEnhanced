@@ -408,18 +408,19 @@ function HUI_CDMCustomAuraBarMixin:CustomizeAuraButton(auraButton, spellID)
         Addon.PP.Size(auraButton, w, h)
 
         local iconPos = Addon:GetValue("CurrentCDMCustomFrametBarIconPosition", nil, frameName)
+        local useBackdrop = Addon:GetValue("UseCDMBackdrop", nil, frameName)
 
         if iconPos == 4 then
             auraButton:SetIcon(auraButton.Icon)
             auraButton.Icon:Show()
-            auraButton.Icon.iconBorder:Show()
+            auraButton.Icon.iconBorder:SetShown(useBackdrop)
             auraButton.IconRight:Show()
-            auraButton.IconRight.iconBorder:Show()
+            auraButton.IconRight.iconBorder:SetShown(useBackdrop)
             auraButton.IconRight:SetTexture(spellID and C_Spell.GetSpellTexture(spellID))
         elseif iconPos > 1 then
             auraButton:SetIcon(auraButton.Icon)
             auraButton.Icon:Show()
-            auraButton.Icon.iconBorder:Show()
+            auraButton.Icon.iconBorder:SetShown(useBackdrop)
             auraButton.IconRight:Hide()
             auraButton.IconRight.iconBorder:Hide()
         else
@@ -434,7 +435,7 @@ function HUI_CDMCustomAuraBarMixin:CustomizeAuraButton(auraButton, spellID)
         if stages and type(stages) == "number" then
             self:AddStages(stages, auraButton.Statusbar)
             auraButton:ClearDurationBar()
-            auraButton:ClearDurationText()
+            auraButton:SetDurationText(auraButton.durationText, {textFormat = self:GetDurationFormatter()})
             auraButton:SetApplicationBar(auraButton.Statusbar, {maxApplications = stages})
             auraButton.Statusbar.Pip:Hide()
             self:SetupStageThresholdOverlays(auraButton, spellID, stages)

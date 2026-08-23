@@ -224,6 +224,7 @@ L.IconPadding = "Icon Padding"
 L.CDMBackdrop = "Add Border"
 L.CDMCenteredGrid = "Center Icons"
 L.MinimapButton = "Show minimap button"
+L.UsePixelPerfect = "Use PixelPerfect"
 L.CDMRemoveIconMask = "Remove Icon Mask"
 L.CDMRemovePandemic = "Remove Pandemic Animation"
 L.CDMSwipeColor = "Cooldown Swipe Color"
@@ -453,6 +454,11 @@ L.FontTimerSize = "Timer font Size"
 L.UseCustomBGColor = "Custom background color"
 
 L.CDMAuraRemoveSwipe = "Don't show Aura"
+
+L.CDMAuraShowSwipe = "Show Swipe Animation"
+L.CDMAuraShowTimer = "Show Timer"
+L.CDMAuraShowStacks = "Show Stacks"
+L.CDMAuraShowEdge = "Show Edge"
 
 L.JustifyH = "Horizontal text Justification"
 

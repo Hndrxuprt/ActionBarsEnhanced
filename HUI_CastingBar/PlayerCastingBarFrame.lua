@@ -34,6 +34,11 @@ end
 
 local function Hook_UpdateShownState(self, state)
     if not state then return end
+
+    if not self:IsShown() then
+        self:Show()
+    end
+
     local frameName = self:GetName()
 
     if self.ChannelShadow then

@@ -158,6 +158,8 @@ function Addon:OnLogin()
         self.Templates.StatusBarTextures = self:GetStatusBarTextures()
     end
 
+    self.PP.SetEnabled(self:GetValue("UsePixelPerfect"))
+
     self:ApplyProfiler()
 
     self:Welcome()

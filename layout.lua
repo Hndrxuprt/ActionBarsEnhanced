@@ -164,6 +164,7 @@ Addon.layoutModules = {
     {
         name = "ModulesOptionsContainer",
         childs = {
+            {name = "ModulePixelPerfect", template = "OptionsCheckboxTemplate"},
             {name = "ModuleActionBars", template = "OptionsCheckboxTemplate"},
             {name = "ModuleCooldownManagerView", template = "OptionsCheckboxTemplate"},
             {name = "ModuleCooldownManagerCustom", template = "OptionsCheckboxTemplate"},
@@ -721,6 +722,7 @@ Addon.CustomFrameCooldownViewer = {
     {
         name = "CDMCustomFrameCDContainer",
         childs = {
+            {name = "CDMCustomFrameShowSwipe", template = "OptionsCheckboxTemplate"},
             {name = "CDMCustomFrameSwipeTexture", template = "OptionsDropdownTemplate"},
             {name = "CDMCustomFrameSwipeSize", template = "OptionsCheckboxSliderTemplate"},
             {name = "CDMCustomFrameSwipeColor", template = "OptionsColorOverrideTemplate"},
@@ -737,6 +739,7 @@ Addon.CustomFrameCooldownViewer = {
 
             {name = "Divider", template = "OptionsDividerTemplate"},
 
+            {name = "CDMCustomFrameShowEdge", template = "OptionsCheckboxTemplate"},
             {name = "CDMCustomFrameEdgeTexture", template = "OptionsDropdownTemplate"},
             {name = "CDMCustomFrameEdgeSize", template = "OptionsCheckboxSliderTemplate"},
             {name = "CDMCustomFrameEdgeColor", template = "OptionsColorOverrideTemplate"},
@@ -749,6 +752,7 @@ Addon.CustomFrameCooldownViewer = {
     {
         name = "CDMCustomFrameFontContainer",
         childs = {
+            {name = "CDMCustomFrameShowTimer", template = "OptionsCheckboxTemplate"},
             {name = "CDMCooldownFont", template = "OptionsDropdownTemplate"},
             {name = "CDMCooldownFontSize", template = "OptionsCheckboxSliderTemplate"},
             {name = "CDMCooldownFontOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
@@ -757,6 +761,7 @@ Addon.CustomFrameCooldownViewer = {
             {name = "CDMColorizedAuraFont", template = "OptionsCheckboxTemplate"},
             {name = "CDMCooldownFormatType", template = "OptionsDropdownTemplate"},
             {name = "Divider", template = "OptionsDividerTemplate"},
+            {name = "CDMCustomFrameShowStacks", template = "OptionsCheckboxTemplate"},
             {name = "CDMAlwaysShowStacks", template = "OptionsCheckboxTemplate"},
             {name = "CDMStacksFont", template = "OptionsDropdownTemplate"},
             {name = "CDMStacksPoint", template = "OptionsDoubleDropdownTemplate"},
@@ -1222,12 +1227,14 @@ Addon.CustomFrameAuraViewer = {
     {
         name = "CDMAuraFrameCDContainer",
         childs = {
+            {name = "CDMAuraFrameShowSwipe", template = "OptionsCheckboxTemplate"},
             {name = "CDMAuraFrameSwipeTexture", template = "OptionsDropdownTemplate"},
             {name = "CDMAuraFrameSwipeSize", template = "OptionsCheckboxSliderTemplate"},
             {name = "CDMAuraFrameAuraSwipeColor", template = "OptionsColorOverrideTemplate"},
             {name = "CDMAuraFrameAuraTimerColor", template = "OptionsColorOverrideTemplate"},
             {name = "CDMAuraFrameReverseSwipe", template = "OptionsCheckboxTemplate"},
             {name = "Divider", template = "OptionsDividerTemplate"},
+            {name = "CDMAuraFrameShowEdge", template = "OptionsCheckboxTemplate"},
             {name = "CDMAuraFrameEdgeTexture", template = "OptionsDropdownTemplate"},
             {name = "CDMAuraFrameEdgeSize", template = "OptionsCheckboxSliderTemplate"},
             {name = "CDMAuraFrameEdgeColor", template = "OptionsColorOverrideTemplate"},
@@ -1238,12 +1245,14 @@ Addon.CustomFrameAuraViewer = {
     {
         name = "CDMAuraFrameFontContainer",
         childs = {
+            {name = "CDMAuraFrameShowTimer", template = "OptionsCheckboxTemplate"},
             {name = "CDMAuraFrameCooldownFont", template = "OptionsDropdownTemplate"},
             {name = "CDMAuraFrameCooldownFontSize", template = "OptionsCheckboxSliderTemplate"},
             {name = "CDMAuraFrameCooldownFontOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
             {name = "CDMAuraFrameCooldownFontColor", template = "OptionsColorOverrideTemplate"},
             {name = "CDMAuraFrameColorizedAuraFont", template = "OptionsCheckboxTemplate"},
             {name = "Divider", template = "OptionsDividerTemplate"},
+            {name = "CDMAuraFrameShowStacks", template = "OptionsCheckboxTemplate"},
             {name = "CDMAuraFrameAlwaysShowStacks", template = "OptionsCheckboxTemplate"},
             {name = "CDMAuraFrameStacksFont", template = "OptionsDropdownTemplate"},
             {name = "CDMAuraFrameStacksPoint", template = "OptionsDoubleDropdownTemplate"},

@@ -226,6 +226,7 @@ L.IconPadding = "Расстояние между иконками"
 L.CDMBackdrop = "Добавить границу"
 L.CDMCenteredGrid = "Центрировать иконки"
 L.MinimapButton = "Отображать кнопку на миникарте"
+L.UsePixelPerfect = "Использовать PixelPerfect"
 L.CDMRemoveIconMask = "Убрать маску иконки"
 L.CDMRemovePandemic = "Убрать анимацию пандемика"
 L.CDMSwipeColor = "Цвет Swipe анимации кулдауна"
@@ -464,6 +465,11 @@ L.FontTimerSize = "Размер шрифта Таймера"
 L.UseCustomBGColor = "Свой цвет фона"
 
 L.CDMAuraRemoveSwipe = "Не показывать ауру"
+
+L.CDMAuraShowSwipe = "Показывать Swipe анимацию"
+L.CDMAuraShowTimer = "Показывать таймер"
+L.CDMAuraShowStacks = "Показывать стаки"
+L.CDMAuraShowEdge = "Показывать эдж"
 
 L.JustifyH = "Горизонтальное выравнивание"
 

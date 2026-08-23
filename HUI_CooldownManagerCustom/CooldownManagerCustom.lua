@@ -322,7 +322,7 @@ function HUI_CDMCustomItemMixin:RefreshCount()
     elseif self.type == "spell" then
         if not self.spellID then return end
 
-        local charges = self.__charges or C_Spell.GetSpellCharges(self.spellID) or {}
+        local charges = C_Spell.GetSpellCharges(self.spellID) or {}
 
         count = charges and charges.currentCharges or ""
 
@@ -336,8 +336,14 @@ function HUI_CDMCustomItemMixin:RefreshCount()
         --applications:SetAlpha(charges.currentCharges ~= nil and tonumber(charges.currentCharges) or 1)
     end
     self.count = count
-    applications.Applications:SetText(count)
-    applications:SetAlpha(count)
+
+    if not self:IsBarFrame() and not Addon:GetValue("CDMAuraShowStacks", nil, self.parentName) then
+        applications.Applications:SetText("")
+        applications:SetAlpha(0)
+    else
+        applications.Applications:SetText(count)
+        applications:SetAlpha(count)
+    end
 
     if self.Bar and self.Bar.Count then
         self.Bar.Count:SetText(count)
@@ -355,11 +361,7 @@ function HUI_CDMCustomItemMixin:GetChargesCooldownInfo()
 
     if not self.spellID then return false end
 
-    local charges = self.__charges
-    if charges == nil then
-        charges = C_Spell.GetSpellCharges(self.spellID)
-        self.__charges = charges
-    end
+    local charges = C_Spell.GetSpellCharges(self.spellID)
 
     if charges and charges.cooldownStartTime and charges.cooldownDuration then
         local chargeInfo = self.__chargeInfoBuf
@@ -608,8 +610,6 @@ function HUI_CDMCustomItemMixin:RefreshData()
     end
     self:RefreshBackdrop()
     self:RefreshIconColor()
-
-    self.__charges = nil
 
     --self:RefreshProcAnim()
 end
@@ -913,7 +913,7 @@ function HUI_CDMCustomItemMixin:ConfigureAuraContainer(auraButton)
     HUI_CDMCustomFrameCustomized:CustomizeCooldownFrame(self.realAuraCooldownFrame, self.parentName, self.Icon, true)
     HUI_CDMCustomFrameCustomized:RefreshAuraColor(self.realAuraCooldownFrame, self.parentName)
     HUI_CDMCustomFrameCustomized:RefreshAuraTimer(self.realAuraCooldownFrame, self.parentName)
-    HUI_CDMCustomFrameCustomized:CustomizeCooldownFont(self.realAuraCooldownFrame, self.parentName)
+    HUI_CDMCustomFrameCustomized:CustomizeCooldownFont(self.realAuraCooldownFrame, self.parentName, true)
     HUI_CDMCustomFrameCustomized:CustomizeStacksFont(self.realAuraFrame.overlayFrame.count, self.parentName, self.realAuraFrame)
     HUI_CDMCustomFrameCustomized:SetupBackdrop(self.realAuraFrame.iconBorder, self.parentName, self.realAuraFrame.color)
     if self.realAuraFrame.pandemicBorder then
@@ -928,7 +928,12 @@ function HUI_CDMCustomItemMixin:ConfigureAuraContainer(auraButton)
 
     local countFormatter = Addon:GetValue("AlwaysShowStacks", nil, self.parentName) and { formatter = Addon.defaultCountFormatter } or {}
     auraButton:SetIcon(self.realAuraFrame.icon)
-    auraButton:SetApplicationCount(self.realAuraFrame.overlayFrame.count, countFormatter)
+    if Addon:GetValue("CDMAuraShowStacks", nil, self.parentName) then
+        auraButton:SetApplicationCount(self.realAuraFrame.overlayFrame.count, countFormatter)
+    else
+        auraButton:ClearApplicationCount()
+        self.realAuraFrame.overlayFrame.count:Hide()
+    end
     auraButton:SetDurationCooldown(self.realAuraCooldownFrame)
     auraButton:SetSize(auraCooldown:GetSize())
 
@@ -1392,7 +1397,7 @@ function HUI_CDMCustomFrameMixin:OnShow()
     self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
     self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
     self:RegisterUnitEvent("UNIT_FACTION", "player")
-    self:RegisterUnitEvent("UNIT_FLAGS", "player")
+    --self:RegisterUnitEvent("UNIT_FLAGS", "player")
     self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player", "pet")
 end
 
