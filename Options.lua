@@ -436,8 +436,8 @@ function Addon.SetBackdropBorderSize(frame, borderSize)
     })
     if parent then
         frame:ClearAllPoints()
-        frame:SetPoint("TOPLEFT", parent, "TOPLEFT", (borderSize/2), -1 * (borderSize/2))
-        frame:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", -1 * (borderSize/2), (borderSize/2))
+        frame:SetPoint("TOPLEFT", parent, "TOPLEFT", 0, 0)
+        frame:SetPoint("BOTTOMRIGHT", parent, "BOTTOMRIGHT", 0, 0)
     end
 end
 
