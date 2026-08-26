@@ -468,6 +468,7 @@ function Addon.OnButtonRefreshIconColor(self)
     elseif Addon:GetValue("UseOORColor", nil, frameName) and OORCheck then
         color = {Addon:GetRGBA("OORColor", nil, frameName)}
         if outOfRangeTexture then
+            outOfRangeTexture:SetTexture("Interface/AddOns/HUI/assets/empty.png")
             outOfRangeTexture:SetShown(false)
         end
         self.__desaturated = Addon:GetValue("OORDesaturate", nil, frameName)

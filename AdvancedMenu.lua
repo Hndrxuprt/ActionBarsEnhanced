@@ -191,6 +191,9 @@ local function OnDeleteMenuFrame(self, frameLabel)
         HUI_BarsListMixin.label = nil
         HUI_BarsListMixin.bar = nil
         HUI_BarsListMixin.selected = nil
+        if HUI_BarsListMixin.pinnedLabel == frameLabel then
+            HUI_BarsListMixin.pinnedLabel = nil
+        end
         HUIMixin:InitData(nil)
     end
 
@@ -218,6 +221,11 @@ function HUI_BarsFrameMixin:OnHide()
                 HUI_BarsListMixin.bar:Hide()
             end
         end
+    end
+
+    if HUI_BarsListMixin.pinnedLabel then
+        Addon:CDMUnpinCustomFrame(HUI_BarsListMixin.pinnedLabel)
+        HUI_BarsListMixin.pinnedLabel = nil
     end
 end
 
@@ -259,8 +267,20 @@ local function ApplySelection(button, buttonData)
         HUI_BarsListMixin.selected = nil
     end
 
+    if HUI_BarsListMixin.pinnedLabel and HUI_BarsListMixin.pinnedLabel ~= buttonData.label then
+        Addon:CDMUnpinCustomFrame(HUI_BarsListMixin.pinnedLabel)
+        HUI_BarsListMixin.pinnedLabel = nil
+    end
+
     HUI_BarsListMixin.label = buttonData.label
     HUI_BarsListMixin.index = buttonData.index
+
+    local isCustomFrame = buttonData.label ~= "GlobalSettings" and not tContains(CDMFrames, buttonData.label)
+    if isCustomFrame then
+        Addon:CDMPinCustomFrame(buttonData.label)
+        HUI_BarsListMixin.pinnedLabel = buttonData.label
+    end
+
     if HUI_BarsListMixin.bar then
         if HUI_BarsListMixin.bar.ShouldHide then
             if not InCombatLockdown() then
@@ -321,7 +341,10 @@ function HUI_BarsButtonMixin:OnShow()
 end
 
 function HUI_BarsButtonMixin:OnHide()
-    self:SetSelected(false)
+    self.active = false
+    if self.Texture then
+        self.Texture:Hide()
+    end
 end
 
 function HUI_BarsButtonMixin:SetButtonName(name)
@@ -547,6 +570,13 @@ function HUI_BarsListMixin:InitButtons(buttons, frame)
                 GameTooltip:Hide()
             end)
         end
+
+        if HUI_BarsListMixin.label and buttonData.label == HUI_BarsListMixin.label then
+            HUI_BarsListMixin.selected = button
+            button.label = buttonData.label
+            button.layout = buttonData.layout
+            button:SetSelected(true)
+        end
     end
 end
 
@@ -596,6 +626,10 @@ function HUI_BarsListMixin:OnProfileChanged()
     self.label = nil
     self.bar = nil
     self.selected = nil
+    if self.pinnedLabel then
+        Addon:CDMUnpinCustomFrame(self.pinnedLabel)
+        self.pinnedLabel = nil
+    end
 
     self:RefreshMenu()
     HUIMixin:InitData(Addon.layoutPresets)
@@ -673,6 +707,7 @@ local function CreateCustomFrame(layout, template)
         template = template,
         point = {},
         trackedIDs = {},
+        visibleSpecs = {},
         index = index,
     })
 

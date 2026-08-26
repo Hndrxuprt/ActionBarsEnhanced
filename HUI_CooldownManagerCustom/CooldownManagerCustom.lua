@@ -2,6 +2,8 @@ local Addon = _G.HUI
 
 local profileTable
 
+local pinnedFrameLabel
+
 Addon.SPELLID_TO_AURASPELLID = {
     
 }
@@ -1031,31 +1033,6 @@ function HUI_CDMCustomItemMixin:AddAuraSlot()
     container:Show()
 end
 
-function HUI_CDMCustomItemMixin:ResetAuraContainerAfterMovie()
-    local container = self:GetAuraContainer()
-    if not container then return end
-
-    container:SetEnabled(false)
-
-    local spellIDsRaw = self:GetRealAura()
-    local spellIDs = {}
-    if spellIDsRaw then
-        for _, spellID in ipairs(spellIDsRaw) do
-            spellIDs[tonumber(spellID)] = true
-        end
-    end
-
-    local auraUnit = self:GetAuraUnit()
-    local filterString = auraUnit == "player" and "HELPFUL" or "HARMFUL|PLAYER"
-    local candidateFilters = {includeSpellIDs = self:IsElemHackNeeded() and elemEB or spellIDs}
-
-    container:SetAuraSlotFilterString("1", filterString)
-    container:SetAuraSlotCandidateFilters("1", candidateFilters)
-    container:SetUnit(auraUnit)
-    container:SetEnabled(true)
-    container:UpdateAllAuras()
-end
-
 function HUI_CDMCustomItemMixin:GetAuraUnit()
 
     if self.auraUnit then return self.auraUnit end
@@ -1127,13 +1104,12 @@ function HUI_CDMCustomFrameMixin:OnLoad()
     local frameIndex = self:GetFrameIndexByName(self.frameName)
     if profileTable["CDMCustomFrames"] then
         local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
-        self.itemList = frameTbl.trackedIDs
+        self.itemList = frameTbl.trackedIDs or {}
         self.displayName = frameTbl.name
     end
 
     self.hideInactive = false
 
-    --self.itemList = CopyTable(Addon.trackedIDs)
     local itemResetCallback = function(pool, itemFrame)
 		Pool_HideAndClearAnchors(pool, itemFrame)
         if itemFrame.rangeCheckSpellID then
@@ -1392,12 +1368,6 @@ function HUI_CDMCustomFrameMixin:OnShow()
     self:RegisterEvent("BAG_UPDATE_COOLDOWN")
     self:RegisterEvent("ENCOUNTER_END")
     self:RegisterEvent("SPELL_RANGE_CHECK_UPDATE")
-    --because icon bugged on AuraButton after STOP_MOVIE event
-    self:RegisterEvent("CINEMATIC_STOP")
-    self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
-    self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
-    self:RegisterUnitEvent("UNIT_FACTION", "player")
-    --self:RegisterUnitEvent("UNIT_FLAGS", "player")
     self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player", "pet")
 end
 
@@ -1644,21 +1614,6 @@ function HUI_CDMCustomFrameMixin:OnEvent(event, ...)
                 itemFrame:RefreshIconColor()
             end
         end
-    elseif event == "CINEMATIC_STOP"
-        or event == "UNIT_FACTION"
-        or event == "UNIT_FLAGS"
-        or event == "UNIT_ENTERED_VEHICLE"
-        or event == "UNIT_EXITED_VEHICLE" then
-            for _, itemFrame in ipairs(self.__allSpellItems) do
-                if not itemFrame.auraResetTimer then
-                    itemFrame:ResetAuraContainerAfterMovie()
-                end
-            end
-            for _, itemFrame in ipairs(self.__allItemItems) do
-                if not itemFrame.auraResetTimer then
-                    itemFrame:ResetAuraContainerAfterMovie()
-                end
-            end
     elseif event == "UNIT_SPELLCAST_SUCCEEDED" then
         local unitTarget, castGUID, spellID = ...
         local seen = self.__dispatchSeen
@@ -2290,6 +2245,10 @@ local function OnDeleteMenuFrame(self, frameLabel)
         _G[frameLabel] = nil
     end
 
+    if pinnedFrameLabel == frameLabel then
+        pinnedFrameLabel = nil
+    end
+
     local frameIndex = HUI_CDMCustomFrameMixin:GetFrameIndexByName(frameLabel)
     if profileTable["CDMCustomFrames"] then
         if frameLabel == profileTable["CDMCustomFrames"][frameIndex].label then
@@ -2302,33 +2261,75 @@ local function OnDeleteMenuFrame(self, frameLabel)
     end
 end
 
+local function CreateFrameForData(data)
+    local frame = HUI_CDMCustomFrameMixin:CreateFrame(data.label, nil, nil, nil, data.point and data.point.x or 0, data.point and data.point.y or 0, data.template)
+    frame:SetDisplayName(data.name)
+    return frame
+end
+
+local function DestroyFrameByLabel(label)
+    local frame = _G[label]
+    if frame then
+        if HUI_CDMCustomFrameSelectionManager.currentlySelected == frame then
+            HUI_CDMCustomFrameSelectionManager.currentlySelected = nil
+        end
+        if frame.itemPool then
+            frame.itemPool:ReleaseAll()
+        end
+        frame:UnregisterAllEvents()
+        frame.itemList = nil
+        frame:Hide()
+        _G[label] = nil
+    end
+end
+
+function Addon:CDMPinCustomFrame(label)
+    if not label then return end
+    if pinnedFrameLabel ~= label and pinnedFrameLabel then
+        self:CDMUnpinCustomFrame(pinnedFrameLabel)
+    end
+    pinnedFrameLabel = label
+    if _G[label] then return end
+
+    local frameIndex = HUI_CDMCustomFrameMixin:GetFrameIndexByName(label)
+    local data = profileTable["CDMCustomFrames"] and profileTable["CDMCustomFrames"][frameIndex]
+    if data then
+        CreateFrameForData(data)
+    end
+end
+
+function Addon:CDMUnpinCustomFrame(label)
+    if pinnedFrameLabel ~= label then return end
+    pinnedFrameLabel = nil
+
+    local _, specID = Addon:CDMGetPlayerClassSpec()
+    local frameIndex = HUI_CDMCustomFrameMixin:GetFrameIndexByName(label)
+    local data = profileTable["CDMCustomFrames"] and profileTable["CDMCustomFrames"][frameIndex]
+    if data and not Addon:CDMSpecMatches(data, _, specID) then
+        DestroyFrameByLabel(label)
+    end
+end
+
 local function CreateProfileCustomFrames()
     if not profileTable or not profileTable["CDMCustomFrames"] then return end
 
+    local _, specID = Addon:CDMGetPlayerClassSpec()
     for _, data in ipairs(profileTable["CDMCustomFrames"]) do
-        if data then
-            local frame = HUI_CDMCustomFrameMixin:CreateFrame(data.label, nil, nil, nil, data.point and data.point.x or 0, data.point and data.point.y or 0, data.template)
-            frame:SetDisplayName(data.name)
+        if data and Addon:CDMSpecMatches(data, _, specID) then
+            CreateFrameForData(data)
         end
     end
 end
 
 local function DestroyProfileCustomFrames()
     HUI_CDMCustomFrameSelectionManager.currentlySelected = nil
+    pinnedFrameLabel = nil
 
     if not profileTable or not profileTable["CDMCustomFrames"] then return end
 
     for _, data in ipairs(profileTable["CDMCustomFrames"]) do
         if data and data.label then
-            local frame = _G[data.label]
-            if frame then
-                if frame.itemPool then
-                    frame.itemPool:ReleaseAll()
-                end
-                frame:UnregisterAllEvents()
-                frame:Hide()
-                _G[data.label] = nil
-            end
+            DestroyFrameByLabel(data.label)
         end
     end
 end
@@ -2340,6 +2341,25 @@ local function OnProfileChanged(self)
 end
 
 local eventHandlerFrame = CreateFrame('Frame')
+
+local function OnPlayerSpecChanged()
+    if not profileTable or not profileTable["CDMCustomFrames"] then return end
+
+    local _, specID = Addon:CDMGetPlayerClassSpec()
+
+    for _, data in ipairs(profileTable["CDMCustomFrames"]) do
+        local label = data and data.label
+        if label then
+            local matches = Addon:CDMSpecMatches(data, _, specID)
+            local exists = _G[label] ~= nil
+            if matches and not exists then
+                CreateFrameForData(data)
+            elseif not matches and exists and label ~= pinnedFrameLabel then
+                DestroyFrameByLabel(label)
+            end
+        end
+    end
+end
 
 local function OnFramePickerEnter()
     if not profileTable or not profileTable["CDMCustomFrames"] then return end
@@ -2389,6 +2409,14 @@ Addon:RegisterEvent("PLAYER_LOGIN", function()
     EventRegistry:RegisterCallback("CDMCustomItemList.ProfileChanged", OnProfileChanged, eventHandlerFrame)
     EventRegistry:RegisterCallback("HUI.FramePicker.Enter", OnFramePickerEnter, eventHandlerFrame)
     EventRegistry:RegisterCallback("HUI.FramePicker.Exit", OnFramePickerExit, eventHandlerFrame)
+
+    eventHandlerFrame:RegisterEvent("PLAYER_SPECIALIZATION_CHANGED")
+    eventHandlerFrame:RegisterEvent("TRAIT_CONFIG_UPDATED")
+    eventHandlerFrame:SetScript("OnEvent", function(_, event)
+        if event == "PLAYER_SPECIALIZATION_CHANGED" or event == "TRAIT_CONFIG_UPDATED" then
+            OnPlayerSpecChanged()
+        end
+    end)
 
     CreateProfileCustomFrames()
 end, "CooldownManagerCustom")

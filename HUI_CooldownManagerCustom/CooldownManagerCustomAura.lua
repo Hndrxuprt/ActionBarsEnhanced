@@ -622,11 +622,6 @@ end
 
 function HUI_CDMCustomAuraMixin:OnShow()
 	self:RegisterEvent("FIRST_FRAME_RENDERED")
-	self:RegisterEvent("CINEMATIC_STOP")
-	self:RegisterUnitEvent("UNIT_ENTERED_VEHICLE", "player")
-	self:RegisterUnitEvent("UNIT_EXITED_VEHICLE", "player")
-	self:RegisterUnitEvent("UNIT_FACTION", "player")
-	--self:RegisterUnitEvent("UNIT_FLAGS", "player")
 end
 
 function HUI_CDMCustomAuraMixin:OnHide()
@@ -640,55 +635,7 @@ function HUI_CDMCustomAuraMixin:OnEvent(event, ...)
 		if self.AuraContainer and self.AuraContainer:GetUnit() == "target" then
 			self.AuraContainer:UpdateAllAuras()
 		end
-	elseif event == "CINEMATIC_STOP"
-        or event == "UNIT_FACTION"
-        or event == "UNIT_FLAGS"
-        or event == "UNIT_ENTERED_VEHICLE"
-        or event == "UNIT_EXITED_VEHICLE" then
-		if self.AuraContainer and not self.auraResetTimer then
-			self:ResetAuraContainerAfterMovie()
-		end
 	end
-end
-
-function HUI_CDMCustomAuraMixin:ResetAuraContainerAfterMovie()
-	local container = self.AuraContainer
-	if not container then return end
-
-	container:SetEnabled(false)
-
-	self.auraResetTimer = C_Timer.After(0.0, function()
-		if self.useFixedSlots then
-			for slotIndex = 1, self.auraSlotCount do
-				local includeSpellIDs = {}
-				if self.trackedSpellIDs[slotIndex] then
-					if ElemBlastSpellIDs[self.trackedSpellIDs[slotIndex]] then
-						includeSpellIDs = ElemBlastSpellIDs
-					else
-						includeSpellIDs[self.trackedSpellIDs[slotIndex]] = true
-					end
-				end
-				container:SetAuraSlotCandidateFilters("aura" .. slotIndex, { includeSpellIDs = includeSpellIDs })
-			end
-		else
-			for groupIndex = 1, self.auraGroupCount do
-				local includeSpellIDs = {}
-				if self.trackedSpellIDs[groupIndex] then
-					if ElemBlastSpellIDs[self.trackedSpellIDs[groupIndex]] then
-						includeSpellIDs = ElemBlastSpellIDs
-					else
-						includeSpellIDs[self.trackedSpellIDs[groupIndex]] = true
-					end
-				end
-				container:SetAuraGroupCandidateFilters("aura" .. groupIndex, { includeSpellIDs = includeSpellIDs })
-			end
-		end
-
-		container:SetEnabled(true)
-		container:UpdateAllAuras()
-
-		self.auraResetTimer = nil
-	end)
 end
 
 function HUI_CDMCustomAuraMixin:OnUpdate()

@@ -12,6 +12,10 @@
 
 CooldownManagerCustom.xml
 
+SpecVisibilityDialog.xml
+
+SpecVisibility.lua
+
 CooldownManagerCustomSettings.lua
 
 CooldownManagerCustom.lua
@@ -25,3 +29,5 @@ CooldownManagerCustomAura.lua
 CooldownManagerCustomAuraFrame.lua
 
 CooldownManagerCustomAuraBar.lua
+
+SpecVisibilityDialog.lua

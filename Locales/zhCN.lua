@@ -503,3 +503,9 @@ L.FakeAuraTypesTitle = "光环刷新行为"
 L.FakeAuraTypeNone = "无（不执行任何操作）"
 L.FakeAuraTypeAdd = "累加（将完整计时器添加到剩余持续时间）"
 L.FakeAuraTypeReset = "重置（重置为完整持续时间）"
+-- ==========================================
+-- Custom Frame Spec Visibility
+-- ==========================================
+L.SpecVisibilityDialogTitle = "显示于专精"
+L.SpecVisibilitySave = "保存"
+L.SpecVisibilityCancel = "取消"

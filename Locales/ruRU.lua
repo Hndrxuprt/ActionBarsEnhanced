@@ -535,3 +535,9 @@ L.FakeAuraTimer = "Таймер Фейк ауры:"
 L.RealAuraID = "SpellID Ауры"
 
 L.LockedInCombat = "Настройки заблокированы во время боя"
+-- ==========================================
+-- Custom Frame Spec Visibility
+-- ==========================================
+L.SpecVisibilityDialogTitle = "Отображать на специализациях"
+L.SpecVisibilitySave = "Сохранить"
+L.SpecVisibilityCancel = "Отмена"

@@ -836,6 +836,17 @@
 					</Frame>
 				</ScrollChild>
 			</ScrollFrame>
+			<Button parentKey="SettingsButton" frameLevel="2000">
+				<Size x="40" y="40"/>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeKey="$parent" x="-20" y="-4"/>
+				</Anchors>
+				<NormalTexture atlas="GM-icon-settings" alpha="0.8"/>
+				<HighlightTexture atlas="GM-icon-settings-hover" alphaMode="ADD" alpha="0.7"/>
+				<PushedTexture atlas="GM-icon-settings-pressed" alpha="0.8">
+					<Color r="0.5" g="0.5" b="0.5"/>
+				</PushedTexture>
+			</Button>
 			<Frame parentKey="ReorderMarker" mixin="OptionsCDMCustomItemListReorderMarkerMixin" hidden="true">
 				<Size x="8" y="40"/>
 				<Anchors>

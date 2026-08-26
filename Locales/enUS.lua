@@ -528,3 +528,10 @@ L.FakeAuraTimer = "Fake Aura Timer:"
 L.RealAuraID = "Aura SpellID"
 
 L.LockedInCombat = "Settings are locked in combat"
+
+-- ==========================================
+-- Custom Frame Spec Visibility
+-- ==========================================
+L.SpecVisibilityDialogTitle = "Show on Specializations"
+L.SpecVisibilitySave = "Save"
+L.SpecVisibilityCancel = "Cancel"

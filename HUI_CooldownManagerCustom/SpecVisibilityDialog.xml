@@ -1,0 +1,72 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/">
+    <Frame name="HUISpecVisibilityDialog" mixin="HUISpecVisibilityDialogMixin" virtual="true" frameStrata="DIALOG" frameLevel="120" enableMouse="true" hidden="true">
+		<Size x="700" y="600"/>
+		<Anchors>
+			<Anchor point="CENTER"/>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture parentKey="Texture" atlas="housing-wood-frame-basic-background" setAllPoints="true" alpha="1">
+
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Title" inherits="ObjectiveTrackerFont20" text="Show on specializations">
+					<Size x="360"/>
+					<Anchors>
+						<Anchor point="TOP" y="-20"/>
+					</Anchors>
+					<Color r="1" g="0.87" b="0.72" a="1"/>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame parentKey="ContentArea">
+				<Anchors>
+					<Anchor point="TOPLEFT" x="40" y="-50"/>
+					<Anchor point="BOTTOMRIGHT" x="-40" y="25"/>
+				</Anchors>
+			</Frame>
+			<Frame parentKey="EditorContainer">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeKey="$parent.ContentArea"/>
+					<Anchor point="BOTTOMRIGHT" relativeKey="$parent.ContentArea" relativePoint="BOTTOMRIGHT" y="35"/>
+				</Anchors>
+			</Frame>
+			<Button parentKey="SaveButton" inherits="UIPanelButtonTemplate" text="Save">
+				<Size x="120" y="25"/>
+				<Anchors>
+					<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOM" relativeKey="$parent.ContentArea" x="-5"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Save()
+					</OnClick>
+				</Scripts>
+			</Button>
+			<Button parentKey="CancelButton" inherits="UIPanelButtonTemplate" text="Cancel">
+				<Size x="120" y="25"/>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativePoint="BOTTOM" relativeKey="$parent.ContentArea" x="5"/>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						self:GetParent():Hide()
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+	</Frame>
+	<CheckButton name="HUISpecVisibilityCheckTemplate" inherits="UICheckButtonTemplate" virtual="true">
+		<Size x="24" y="24"/>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString parentKey="Name" inherits="GameFontNormal" justifyH="LEFT">
+					<Anchors>
+						<Anchor point="LEFT" relativeKey="$parent" relativePoint="RIGHT" x="4" y="0"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</CheckButton>
+</Ui>

@@ -400,13 +400,12 @@ function HUI_CDMCustomBarFrameMixin:OnLoad()
     local frameIndex = self:GetFrameIndexByName(self.frameName)
     if profileTable["CDMCustomFrames"] then
         local frameTbl = profileTable["CDMCustomFrames"][frameIndex]
-        self.itemList = frameTbl.trackedIDs
+        self.itemList = frameTbl.trackedIDs or {}
         self.displayName = frameTbl.name
     end
 
     self.hideInactive = false
 
-    --self.itemList = CopyTable(Addon.trackedIDs)
     local itemResetCallback = function(pool, itemFrame)
 		Pool_HideAndClearAnchors(pool, itemFrame)
 		itemFrame.layoutIndex = nil
@@ -483,4 +482,16 @@ function HUI_CDMCustomBarFrameMixin:OnStagesAdded(spellID, newStages)
             itemFrame:RefreshData()
         end
     end
+end
+
+function HUI_CDMCustomBarFrameMixin:OnCustomItemListReorderEnded(itemList, frameName)
+    if self:GetName() ~= frameName then return end
+    self.itemList = CopyTable(itemList)
+    self:RefreshLayout()
+end
+
+function HUI_CDMCustomBarFrameMixin:OnCustomItemListItemUpdate(itemList, frameName)
+    if self:GetName() ~= frameName then return end
+    self.itemList = CopyTable(itemList)
+    self:RefreshLayout()
 end

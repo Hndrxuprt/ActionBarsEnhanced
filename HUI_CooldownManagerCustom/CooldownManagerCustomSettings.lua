@@ -114,12 +114,19 @@ function OptionsCDMCustomItemListMixin:OnLoad()
     local profileName = HUIProfilesMixin:GetPlayerProfile()
     local profileTable = Addon.P.profilesList[profileName]
     if profileTable["CDMCustomFrames"] and profileTable["CDMCustomFrames"][index] then
-        self.itemList = profileTable["CDMCustomFrames"][index].trackedIDs
+        self.profileTable = profileTable
+        self.frameTbl = profileTable["CDMCustomFrames"][index]
+        self.itemList = self.frameTbl.trackedIDs or {}
     end
     self.itemPool = CreateFramePool("Frame", self.ItemListScroll.GridContainer, "OptionsCDMCustomItemTemplate")
     self.ItemListScroll.GridContainer:EnableMouse(true)
 
     self.ItemListScroll.GridContainer.DropText:SetText(L.DragNDropContainer)
+
+    self.SettingsButton:SetScript("OnClick", function()
+        HUISpecVisibilityDialogMixin.Open(self)
+    end)
+    self.SettingsButton:Show()
 
     self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.AddItemByID", self.OnAddItemByID)
     self:AddDynamicEventMethod(EventRegistry, "CDMCustomItemList.AddSpellByID", self.OnAddSpellByID)
