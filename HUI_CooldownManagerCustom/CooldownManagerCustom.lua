@@ -1312,6 +1312,34 @@ function HUI_CDMCustomFrameMixin:SaveDisplayName(name)
     end
 end
 
+function HUI_CDMCustomFrameMixin:UpdateSlotBaseID(data, itemID)
+    data.baseID = itemID
+    local frameIndex = self:GetFrameIndexByName(self.frameName)
+    if not frameIndex then return end
+    local frameTbl = profileTable["CDMCustomFrames"] and profileTable["CDMCustomFrames"][frameIndex]
+    if frameTbl and frameTbl.trackedIDs and frameTbl.trackedIDs ~= self.itemList then
+        for _, dbData in ipairs(frameTbl.trackedIDs) do
+            if dbData.type == "slot" and dbData.id == data.id then
+                dbData.baseID = itemID
+                break
+            end
+        end
+    end
+end
+
+function HUI_CDMCustomFrameMixin:RequestResolveRetry(id)
+    if self.__resolveRetryPending then return end
+    if not self.__resolveRetryAttempts then self.__resolveRetryAttempts = {} end
+    local attempts = (self.__resolveRetryAttempts[id] or 0) + 1
+    if attempts > 12 then return end
+    self.__resolveRetryAttempts[id] = attempts
+    self.__resolveRetryPending = true
+    C_Timer.After(math.min(0.5 * 2 ^ (attempts - 1), 4), function()
+        self.__resolveRetryPending = nil
+        self:RefreshLayout()
+    end)
+end
+
 function HUI_CDMCustomFrameMixin:OnEditModeEnter()
     self.HUISelection:Show()
 end
@@ -1577,14 +1605,20 @@ function HUI_CDMCustomFrameMixin:OnEvent(event, ...)
                 itemFrame:RefreshVisibility()
             end
         end
-    elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" or event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
+    elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_SHOW" then
         local spellID = ...
         local baseSpellID = C_Spell.GetBaseSpell(spellID)
-        local isSpellOverlayed = spellID and C_SpellActivationOverlay.IsSpellOverlayed(spellID) or false
         local seen = self.__dispatchSeen
         wipe(seen)
-        self:DispatchOverlay(self:GetSpellIndexed(spellID), seen, isSpellOverlayed)
-        self:DispatchOverlay(self:GetSpellIndexed(baseSpellID), seen, isSpellOverlayed)
+        self:DispatchOverlay(self:GetSpellIndexed(spellID), seen, true)
+        self:DispatchOverlay(self:GetSpellIndexed(baseSpellID), seen, true)
+    elseif event == "SPELL_ACTIVATION_OVERLAY_GLOW_HIDE" then
+        local spellID = ...
+        local baseSpellID = C_Spell.GetBaseSpell(spellID)
+        local seen = self.__dispatchSeen
+        wipe(seen)
+        self:DispatchOverlay(self:GetSpellIndexed(spellID), seen, false)
+        self:DispatchOverlay(self:GetSpellIndexed(baseSpellID), seen, false)
     elseif event == "ENCOUNTER_END" then
         local encounterID, encounterName, difficultyID, groupSize, success = ...
         if difficultyID > 13 and difficultyID < 18 then
@@ -1785,25 +1819,30 @@ function HUI_CDMCustomFrameMixin:GetVisibleChildren()
         local slotItemID
         if data.type == "slot" then
             local itemInfo = C_TooltipInfo.GetInventoryItem("player", data.id)
-            local itemID = itemInfo and itemInfo.id or GetInventoryItemID("player", data.id) or data.baseID
+            local itemID = itemInfo and itemInfo.id or GetInventoryItemID("player", data.id)
             slotItemID = itemID
-            if itemID and not C_Item.IsItemDataCachedByID(itemID) and C_Item.DoesItemExistByID(itemID) then
-                C_Item.RequestLoadItemDataByID(itemID)
-                if not self.__pendingItemLoads[itemID] then
-                    self.__pendingItemLoads[itemID] = true
-                    Item:CreateFromItemID(itemID):ContinueOnItemLoad(function()
-                        self.__pendingItemLoads[itemID] = nil
-                        self:RefreshLayout()
-                    end)
+            if not itemID then
+                self:RequestResolveRetry(data.id)
+            else
+                if self.__resolveRetryAttempts then self.__resolveRetryAttempts[data.id] = nil end
+                if data.baseID ~= itemID then
+                    self:UpdateSlotBaseID(data, itemID)
                 end
-                return
-            end
-            local spellName, spellID
-            if itemID then
-                spellName, spellID = C_Item.GetItemSpell(itemID)
-            end
+                if not C_Item.IsItemDataCachedByID(itemID) and C_Item.DoesItemExistByID(itemID) then
+                    C_Item.RequestLoadItemDataByID(itemID)
+                    if not self.__pendingItemLoads[itemID] then
+                        self.__pendingItemLoads[itemID] = true
+                        Item:CreateFromItemID(itemID):ContinueOnItemLoad(function()
+                            self.__pendingItemLoads[itemID] = nil
+                            self:RefreshLayout()
+                        end)
+                    end
+                    return
+                end
+                local spellName, spellID = C_Item.GetItemSpell(itemID)
 
-            isKnown = spellID and true or false
+                isKnown = spellID and true or false
+            end
         end
         if data.type == "item" then
             isKnown = true
@@ -1833,6 +1872,11 @@ function HUI_CDMCustomFrameMixin:GetVisibleChildren()
             local spellName, spellID = C_Item.GetItemSpell(data.id)
             local count = C_Item.GetItemCount(data.id, nil, true) or 0
             local isUsable = C_Item.IsUsableItem(data.id)
+            if spellID then
+                if self.__resolveRetryAttempts then self.__resolveRetryAttempts[data.id] = nil end
+            else
+                self:RequestResolveRetry(data.id)
+            end
             --[[ local hideEmpty = Addon:GetValue("CDMCustomHideEmpty", nil, self.frameName)
             if not spellID or ( count == 0 and hideEmpty ) then
                 isKnown = false
