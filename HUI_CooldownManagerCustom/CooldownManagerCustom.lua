@@ -617,7 +617,7 @@ function HUI_CDMCustomItemMixin:RefreshData()
 end
 
 function HUI_CDMCustomItemMixin:RefreshVisibility()
-    if not self.spellID then return end
+    if not self.spellID and not self.itemID then return end
     if not self.parentName then return end
     local parentFrame = _G[self.parentName]
 

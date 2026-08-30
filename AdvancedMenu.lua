@@ -223,7 +223,7 @@ function HUI_BarsFrameMixin:OnHide()
         end
     end
 
-    if HUI_BarsListMixin.pinnedLabel then
+    if HUI_BarsListMixin.pinnedLabel and Addon.CDMUnpinCustomFrame then
         Addon:CDMUnpinCustomFrame(HUI_BarsListMixin.pinnedLabel)
         HUI_BarsListMixin.pinnedLabel = nil
     end
@@ -267,7 +267,7 @@ local function ApplySelection(button, buttonData)
         HUI_BarsListMixin.selected = nil
     end
 
-    if HUI_BarsListMixin.pinnedLabel and HUI_BarsListMixin.pinnedLabel ~= buttonData.label then
+    if HUI_BarsListMixin.pinnedLabel and HUI_BarsListMixin.pinnedLabel ~= buttonData.label and Addon.CDMUnpinCustomFrame then
         Addon:CDMUnpinCustomFrame(HUI_BarsListMixin.pinnedLabel)
         HUI_BarsListMixin.pinnedLabel = nil
     end
@@ -275,8 +275,8 @@ local function ApplySelection(button, buttonData)
     HUI_BarsListMixin.label = buttonData.label
     HUI_BarsListMixin.index = buttonData.index
 
-    local isCustomFrame = buttonData.label ~= "GlobalSettings" and not tContains(CDMFrames, buttonData.label)
-    if isCustomFrame then
+    local isCustomFrame = buttonData.category == nil and buttonData.label ~= "GlobalSettings" and not tContains(CDMFrames, buttonData.label)
+    if isCustomFrame and Addon.CDMPinCustomFrame then
         Addon:CDMPinCustomFrame(buttonData.label)
         HUI_BarsListMixin.pinnedLabel = buttonData.label
     end
@@ -626,7 +626,7 @@ function HUI_BarsListMixin:OnProfileChanged()
     self.label = nil
     self.bar = nil
     self.selected = nil
-    if self.pinnedLabel then
+    if self.pinnedLabel and Addon.CDMUnpinCustomFrame then
         Addon:CDMUnpinCustomFrame(self.pinnedLabel)
         self.pinnedLabel = nil
     end

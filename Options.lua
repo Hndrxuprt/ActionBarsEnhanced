@@ -205,7 +205,7 @@ function Addon:GetNumberFormatter(mColor, sColor, tColor, formatType)
         },
         {
             threshold = 60,
-            format = "%d:%02d",
+            format = CreateColor(mColor.r, mColor.g, mColor.b, mColor.a):WrapTextInColorCode("%d:%02d"),
             components = {
                 {
                     div = 60,
@@ -219,7 +219,7 @@ function Addon:GetNumberFormatter(mColor, sColor, tColor, formatType)
         },
         {
             threshold = 600, -- 10 minutes
-            format = "%dm",
+            format = CreateColor(mColor.r, mColor.g, mColor.b, mColor.a):WrapTextInColorCode("%dm"),
             components = {
                 {
                     div = 60,
@@ -230,7 +230,7 @@ function Addon:GetNumberFormatter(mColor, sColor, tColor, formatType)
         },
         {
             threshold = 3600, -- 1 hour
-            format = "%dh",
+            format = CreateColor(mColor.r, mColor.g, mColor.b, mColor.a):WrapTextInColorCode("%dh"),
             components = {
                 {
                     div = 3600,
@@ -1734,6 +1734,9 @@ function HUIDropdownMixin:SetupColorSwatch(frame, name, value, checkboxValues, a
             frame[frameName]:SetScript("OnClick",
                 function()
                     Addon:SaveSetting(checkValue, not Addon:GetValue(checkValue, nil, true), true)
+                    if callback and type(callback) == "function" then
+                        callback()
+                    end
                 end
             )
         end
