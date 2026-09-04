@@ -15,6 +15,11 @@ Addon.config.containers["CDMAuraFrameContainer"] = {
     title = L.CDMCustomFrameTitle,
     desc = L.CDMCustomFrameDesc,
     childs = {
+        ["CDMCustomPing"] = {
+            type            = "checkbox",
+            name            = L.CDMCustomPingTitle,
+            value           = "CDMCustomPingEnabled",
+        },
         ["CDMCustomItemListFrame"] = {
             type        = "itemList",
             name        = "Item List",

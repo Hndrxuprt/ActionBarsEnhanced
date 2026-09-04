@@ -25,7 +25,7 @@ end
 
 HUI_CDMCustomAuraFrameMixin = CreateFromMixins(HUI_CDMCustomAuraMixin)
 
-function HUI_CDMCustomAuraFrameMixin:ConfigureAuraButton(auraButton)
+function HUI_CDMCustomAuraFrameMixin:ConfigureAuraButton(auraButton, spellID)
 	if not auraButton:CanBeAccessedInContext() then
 		return
 	end
@@ -66,6 +66,10 @@ function HUI_CDMCustomAuraFrameMixin:ConfigureAuraButton(auraButton)
 	auraButton:SetDurationCooldown(auraButton.cooldownFrame)
 
 	auraButton:SetMouseMotionEnabled(false)
+	if not auraButton.ApplyPingable then
+		Mixin(auraButton, HUI_CDMCustomPingAuraMixin)
+	end
+	auraButton:ApplyPingable(spellID, frameName)
 
 	CreatePandemicElements(auraButton, frameName)
 	if auraButton.pandemicBorder then
@@ -88,7 +92,11 @@ function HUI_CDMCustomAuraFrameMixin:CustomizeAuraButton(auraButton)
 		HUI_CDMCustomFrameCustomized:CustomizeStacksFont(auraButton.countText, frameName, auraButton)
 		if Addon:GetValue("UseCDMBackdrop", nil, frameName) then
 			self:RefreshBackdrop(auraButton.iconTexture.iconBorder, auraButton.color)
-			auraButton.iconTexture.iconBorder:Show()
+			if Addon:GetValue("UseCDMBackdropAuraColor", nil, frameName) then
+				auraButton.iconTexture.iconBorder:Show()
+			else
+				auraButton.iconTexture.iconBorder:Hide()
+			end
 		else
 			auraButton.iconTexture.iconBorder:Hide()
 		end
@@ -124,7 +132,7 @@ function HUI_CDMCustomAuraFrameMixin:UpdatePlaceholder(placeholder, spellID)
 	placeholder:SetSize(self.iconSize, self.iconSize)
 	placeholder.icon:SetTexture(C_Spell.GetSpellTexture(spellID))
 	self:RefreshBackdrop(placeholder.icon.iconBorder)
-    if Addon:GetValue("UseCDMBackdrop", nil, self:GetName()) then
+    if Addon:GetValue("UseCDMBackdrop", nil, self:GetName()) and Addon:GetValue("UseCDMBackdropColor", nil, self:GetName()) then
         placeholder.icon.iconBorder:Show()
     else
         placeholder.icon.iconBorder:Hide()

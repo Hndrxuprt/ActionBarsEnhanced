@@ -280,6 +280,9 @@ L.CDMAuraTimerColor = "Aura Timer Color"
 L.CDMCustomFrameTitle = "Custom CDM Frame"
 L.CDMCustomFrameDesc = "Configure a custom frame to track Spells or Items. You can set an aura timer via the context menu."
 
+L.CDMCustomPingTitle = "Pingable Frames"
+L.CDMCustomPingDesc = "Allow the Blizzard ping system to ping spell or item state from custom frames (hold the ping key and click the frame)."
+
 L.CDMCustomFrameName = "Frame Name"
 
 L.CDMCustomFrameDelete = "Delete Custom Frame"

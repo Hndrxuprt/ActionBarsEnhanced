@@ -1969,6 +1969,11 @@ Addon.config.containers = {
                 name            = L.Enable,
                 value           = "CDMEnable",
             },
+            ["CDMCustomPing"] = {
+                type            = "checkbox",
+                name            = L.CDMCustomPingTitle,
+                value           = "CDMCustomPingEnabled",
+            },
             ["CDMCustomItemListFrame"] = {
                 type        = "itemList",
                 name        = "Item List",

@@ -509,6 +509,8 @@ Addon.Defaults = {
 
     CDMRemoveAuraTypeBorder = false,
 
+    CDMCustomPingEnabled = true,
+
     CDMCustomTrackTrink1 = false,
     CDMCustomTrackTrink2 = false,
 

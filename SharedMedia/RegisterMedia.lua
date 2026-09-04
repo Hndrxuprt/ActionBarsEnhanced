@@ -28,6 +28,8 @@ LSM:Register("font", "WDXLLubrifont",	[[Interface\AddOns\HUI\SharedMedia\fonts\W
 LSM:Register("font", "Expressway",	    [[Interface\AddOns\HUI\SharedMedia\fonts\Expressway\Expressway.ttf]],LSM.LOCALE_BIT_ruRU + LSM.LOCALE_BIT_western)
 LSM:Register("font", "Expressway Free",	[[Interface\AddOns\HUI\SharedMedia\fonts\Expressway\expressway_free.ttf]],LSM.LOCALE_BIT_ruRU + LSM.LOCALE_BIT_western)
 LSM:Register("font", "bignoodletoo",    [[Interface\AddOns\HUI\SharedMedia\fonts\bignoodletoo\bignoodletoo.ttf]], LSM.LOCALE_BIT_ruRU + LSM.LOCALE_BIT_western) 
+LSM:Register("font", "AwantGardeGothic-Regular", [[Interface\AddOns\HUI\SharedMedia\fonts\AvantGardeGothic\AvantGardeGothicCTT_Regular.ttf]], LSM.LOCALE_BIT_ruRU + LSM.LOCALE_BIT_western) 
+LSM:Register("font", "AwantGardeGothic-Bold",    [[Interface\AddOns\HUI\SharedMedia\fonts\AvantGardeGothic\AvantGardeGothicCTT_Bold.ttf]], LSM.LOCALE_BIT_ruRU + LSM.LOCALE_BIT_western) 
 
 ------------------
 --- Sounds ---

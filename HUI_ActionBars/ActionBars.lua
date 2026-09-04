@@ -731,6 +731,8 @@ function Addon:UpdateHighlightTexture(button, isStanceBar, previewValue)
             end
             if highlightAtlas.size then
                 button.HighlightTexture:SetSize(highlightAtlas.size[1], highlightAtlas.size[2])
+            elseif button == ExtraActionButton1 then
+                button.HighlightTexture:SetSize(46, 45)
             end
             if highlightAtlas.coords then
                 button.HighlightTexture:SetTexCoord(highlightAtlas.coords[1], highlightAtlas.coords[2], highlightAtlas.coords[3], highlightAtlas.coords[4])

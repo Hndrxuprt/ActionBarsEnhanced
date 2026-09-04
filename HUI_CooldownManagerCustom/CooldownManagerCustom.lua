@@ -10,19 +10,17 @@ Addon.SPELLID_TO_AURASPELLID = {
 
 local function BuildSpellIDToAuraSpellID()
     for cdID, data in pairs(CooldownViewerSettings:GetDataProvider():GetDisplayData().cooldownInfoByID) do
-        if data.overrideTooltipSpellID or data.overrideSpellID or data.spellID then
-            local spellID = data.overrideTooltipSpellID or data.overrideSpellID or data.spellID
-            if spellID then
-                if not Addon.SPELLID_TO_AURASPELLID[spellID] then
-                    Addon.SPELLID_TO_AURASPELLID[spellID] = {}
-                end
-                if data.hasAura then
-                    Addon.SPELLID_TO_AURASPELLID[spellID].linkedSpellIDs = #data.linkedSpellIDs > 0 and data.linkedSpellIDs or {[1] = spellID}
-                elseif data.selfAura then
-                    Addon.SPELLID_TO_AURASPELLID[spellID].linkedSpellIDs = {[1] = spellID}
-                end
-                Addon.SPELLID_TO_AURASPELLID[spellID].auraUnit = C_Spell.IsSpellHelpful(spellID) and "player" or "target"
+        local spellID = data.overrideTooltipSpellID or data.overrideSpellID or data.spellID
+        if spellID and not issecretvalue(spellID) then
+            if not Addon.SPELLID_TO_AURASPELLID[spellID] then
+                Addon.SPELLID_TO_AURASPELLID[spellID] = {}
             end
+            if data.hasAura then
+                Addon.SPELLID_TO_AURASPELLID[spellID].linkedSpellIDs = #data.linkedSpellIDs > 0 and data.linkedSpellIDs or {[1] = spellID}
+            elseif data.selfAura then
+                Addon.SPELLID_TO_AURASPELLID[spellID].linkedSpellIDs = {[1] = spellID}
+            end
+            Addon.SPELLID_TO_AURASPELLID[spellID].auraUnit = C_Spell.IsSpellHelpful(spellID) and "player" or "target"
         end
     end
 end
@@ -61,6 +59,9 @@ function HUI_CDMCustomItemMixin:OnLoad()
     cooldownFrame:SetScript("OnCooldownDone", GenerateClosure(self.OnCooldownDone, self))
     auraCooldown:SetScript("OnCooldownDone", GenerateClosure(self.OnAuraDone, self))
     self:SetMouseClickEnabled(false)
+    if self.SetupPingable then
+        self:SetupPingable()
+    end
 end
 
 function HUI_CDMCustomItemMixin:OnShow()
@@ -73,6 +74,9 @@ function HUI_CDMCustomItemMixin:OnShow()
 end
 
 local function IsHealthstoneCreateCast(spellID)
+    if issecretvalue(spellID) then
+        return false
+    end
     if spellID == 6201 then
         return true
     end
@@ -548,8 +552,12 @@ function HUI_CDMCustomItemMixin:RefreshSpellCooldownInfo()
         end
 
         --cooldownFrame:SetAlphaFromBoolean((self.isOnAuraTimer == true) or (cooldownFrame.showGCDSwipe == false and (cooldownInfo.isOnGCD == true)), 0,1)
-        if not self.isOnAuraTimer and durationObj then
-            cooldownFrame:SetAlpha(durationObj:EvaluateRemainingDuration(Addon.alphaCurve, 0))
+        if not self.isOnAuraTimer then
+            if durationObj then
+                cooldownFrame:SetAlpha(durationObj:EvaluateRemainingDuration(Addon.alphaCurve, 0))
+            else
+                cooldownFrame:SetAlpha(1)
+            end
         end
     elseif cooldownInfo and cooldownInfo.startTime and cooldownInfo.duration then
         if not self.isOnChargeCooldown then
@@ -575,8 +583,12 @@ function HUI_CDMCustomItemMixin:RefreshSpellCooldownInfo()
             else
                 cooldownFrame:Resume()
             end
-            if not self.isOnAuraTimer and durationObj then
-                cooldownFrame:SetAlpha(durationObj:EvaluateRemainingDuration(Addon.alphaCurve, 0))
+            if not self.isOnAuraTimer then
+                if durationObj then
+                    cooldownFrame:SetAlpha(durationObj:EvaluateRemainingDuration(Addon.alphaCurve, 0))
+                else
+                    cooldownFrame:SetAlpha(1)
+                end
             end
             --[[ cooldownFrame:SetAlphaFromBoolean(self.isOnActualCooldown or cooldownInfo.isOnGCD == true,1,0)
             if self.spellID == 322101 then
@@ -1396,6 +1408,8 @@ function HUI_CDMCustomFrameMixin:OnShow()
     self:RegisterEvent("BAG_UPDATE_COOLDOWN")
     self:RegisterEvent("ENCOUNTER_END")
     self:RegisterEvent("SPELL_RANGE_CHECK_UPDATE")
+    self:RegisterEvent("COOLDOWN_VIEWER_SPELL_OVERRIDE_UPDATED")
+    self:RegisterEvent("PLAYER_REGEN_ENABLED")
     self:RegisterUnitEvent("UNIT_SPELLCAST_SUCCEEDED", "player", "pet")
 end
 
@@ -1527,12 +1541,53 @@ function HUI_CDMCustomFrameMixin:OnEvent(event, ...)
                 end
             end
         end
+    elseif event == "COOLDOWN_VIEWER_SPELL_OVERRIDE_UPDATED" then
+        local baseSpellID, overrideSpellID = ...
+        if baseSpellID ~= nil and not issecretvalue(baseSpellID) then
+            for itemFrame in self.itemPool:EnumerateActive() do
+                if (itemFrame.type == "spell" or itemFrame.type == "slot")
+                and (itemFrame.spellID == baseSpellID or itemFrame.baseSpellID == baseSpellID) then
+                    itemFrame.overrideID = overrideSpellID
+                    if overrideSpellID ~= nil and not issecretvalue(overrideSpellID) then
+                        self:AddToIndex(self.__spellIndex, overrideSpellID, itemFrame)
+                    end
+                    itemFrame:RefreshData()
+                end
+            end
+        end
+    elseif event == "PLAYER_REGEN_ENABLED" then
+        for itemFrame in self.itemPool:EnumerateActive() do
+            itemFrame:RefreshData()
+        end
     elseif event == "SPELL_UPDATE_COOLDOWN" then
         local spellID, baseSpellID, category, startRecoveryCategory = ...
         local seen = self.__dispatchSeen
         wipe(seen)
-        self:DispatchCooldown(self:GetSpellIndexed(spellID), seen)
-        self:DispatchCooldown(self:GetSpellIndexed(baseSpellID), seen)
+        local matched = false
+        if spellID ~= nil and not issecretvalue(spellID) then
+            local list = self:GetSpellIndexed(spellID)
+            if list then matched = true end
+            self:DispatchCooldown(list, seen)
+        end
+        if baseSpellID ~= nil and not issecretvalue(baseSpellID) then
+            local list = self:GetSpellIndexed(baseSpellID)
+            if list then matched = true end
+            self:DispatchCooldown(list, seen)
+        end
+        if not matched and (spellID == nil or issecretvalue(spellID)) then
+            for _, itemFrame in ipairs(self.__allSpellItems) do
+                if not seen[itemFrame] then
+                    seen[itemFrame] = true
+                    itemFrame:OnSpellUpdateCooldownEvent()
+                end
+            end
+            for _, itemFrame in ipairs(self.__allItemItems) do
+                if not seen[itemFrame] then
+                    seen[itemFrame] = true
+                    itemFrame:OnSpellUpdateCooldownEvent()
+                end
+            end
+        end
         if startRecoveryCategory == 133 then
             for _, itemFrame in ipairs(self.__allSpellItems) do
                 if not seen[itemFrame] then
@@ -1583,10 +1638,20 @@ function HUI_CDMCustomFrameMixin:OnEvent(event, ...)
         end
     elseif event == "ITEM_COUNT_CHANGED" then
         local itemID = ...
-        local list = self:GetItemIndexed(itemID)
+        local list
+        if itemID ~= nil and not issecretvalue(itemID) then
+            list = self:GetItemIndexed(itemID)
+        end
         if list then
             for i = 1, #list do
                 list[i]:RefreshCount()
+            end
+        else
+            for _, itemFrame in ipairs(self.__allItemItems) do
+                if itemFrame.type == "item" then
+                    itemFrame:RefreshCount()
+                    itemFrame:RefreshVisibility()
+                end
             end
         end
     elseif event == "BAG_UPDATE_DELAYED" then
@@ -1762,8 +1827,7 @@ end
 function HUI_CDMCustomFrameMixin:FindKnownInCDM(spellID)
     for cdID, data in pairs(CooldownViewerSettings:GetDataProvider():GetDisplayData().cooldownInfoByID) do
         local itemSpellID = data.spellID
-        if itemSpellID == spellID and data.isKnown then
-            local auraSpellID = data.hasAura and data.linkedSpellIDs[1] or data.selfAura and data.spellID
+        if not issecretvalue(itemSpellID) and itemSpellID == spellID and data.isKnown then
             return true
         end
     end

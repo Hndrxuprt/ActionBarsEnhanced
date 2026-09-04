@@ -51,6 +51,10 @@ function Addon:IsModuleEnabled(name)
     return true
 end
 
+function Addon:IsModuleLoaded(name)
+    return C_AddOns.IsAddOnLoaded("HUI_" .. name)
+end
+
 function Addon:SetModuleEnabled(name, enabled)
     local db = self.db
     if not db then return end

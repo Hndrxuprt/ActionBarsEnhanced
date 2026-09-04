@@ -30,4 +30,6 @@ CooldownManagerCustomAuraFrame.lua
 
 CooldownManagerCustomAuraBar.lua
 
+CooldownManagerCustomPing.lua
+
 SpecVisibilityDialog.lua

@@ -598,7 +598,7 @@ function HUI_BarsListMixin:RefreshMenu()
 
     local menu = BuildMenuList()
     for _, element in ipairs(menu) do
-        if not element.module or Addon:IsModuleEnabled(element.module) then
+        if not element.module or (Addon:IsModuleEnabled(element.module) and Addon:IsModuleLoaded(element.module)) then
             self.dataProvider:Insert({
                 name = element.name,
                 buttons = element.buttons,

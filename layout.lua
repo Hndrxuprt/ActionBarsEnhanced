@@ -652,6 +652,7 @@ Addon.CustomFrameCooldownViewer = {
     {
         name = "CDMCustomFrameContainer",
         childs = {
+            {name = "CDMCustomPing", template = "OptionsCheckboxTemplate"},
             {name = "CDMCustomFrameEditBox", template = "OptionsEditBoxTemplate"},
             {name = "CDMCustomItemListFrame", template = "OptionsCDMCustomItemListTemplate", height = 250},
             {name = "CDMCustomTrackTrink1", template = "OptionsCheckboxTemplate"},
@@ -1186,6 +1187,7 @@ Addon.CustomFrameAuraViewer = {
     {
         name = "CDMAuraFrameContainer",
         childs = {
+            {name = "CDMCustomPing", template = "OptionsCheckboxTemplate"},
             {name = "CDMCustomFrameEditBox", template = "OptionsEditBoxTemplate"},
             {name = "CDMCustomItemListFrame", template = "OptionsCDMCustomItemListTemplate", height = 250},
             {name = "CDMCustomFrameAddSpellByID", template = "OptionsEditBoxTemplate"},

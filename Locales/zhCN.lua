@@ -281,6 +281,9 @@ L.CDMAuraTimerColor = "光环计时器颜色"
 L.CDMCustomFrameTitle = "自定义 CDM 框架"
 L.CDMCustomFrameDesc = "配置一个自定义框架来追踪法术或物品。你可以通过右键菜单设置光环计时器。"
 
+L.CDMCustomPingTitle = "框架 Ping 标记"
+L.CDMCustomPingDesc = "允许暴雪 Ping 系统从自定义框架 Ping 法术或物品状态（按住 Ping 键并点击框架）。"
+
 L.CDMCustomFrameName = "框架名称"
 
 L.CDMCustomFrameDelete = "删除自定义框架"
