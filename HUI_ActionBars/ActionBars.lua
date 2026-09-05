@@ -34,6 +34,7 @@ local ActionBarButtonPrefixes = {
 }
 
 local CachedButtons = {}
+local pendingPassThrough = {}
 
 local function CacheButtons()
     for _, prefix in ipairs(ActionBarButtonPrefixes) do
@@ -53,7 +54,7 @@ function Addon:ProcessButtons(actionBar, updateFunc, value)
     end
 
     if actionBar then
-        local bar = CachedButtons[actionBar.."Button"]
+        local bar = CachedButtons[actionBar == "MainActionBar" and "ActionButton" or actionBar.."Button"]
         if bar then
             for i = 1, NUM_ACTIONBAR_BUTTONS do
                 UpdateSingleButton(bar[i], false, value)
@@ -126,7 +127,30 @@ function Addon:PreviewButtons(previewType, value)
     Addon:ProcessButtons(actionBar, updateFunc, value)
 end
 
+function Addon:UpdateButtonsPassThrough(button)
+    if not button then return end
+
+    if InCombatLockdown() then
+        pendingPassThrough[button] = true
+        return
+    end
+
+    local _, configName = Addon:GetConfig(button)
+    local passThrough = Addon:GetValue("RightClickPassThrough", nil, configName)
+
+    local frame = button
+    while frame and frame ~= UIParent do
+        if passThrough then
+            frame:SetPassThroughButtons("RightButton")
+        else
+            frame:SetPassThroughButtons()
+        end
+        frame = frame:GetParent()
+    end
+end
+
 local function UpdateAllButtonVisuals(button, isStanceBar)
+    Addon:UpdateButtonsPassThrough(button)
     Addon:UpdateNormalTexture(button, isStanceBar)
     Addon:UpdateBackdropTexture(button, isStanceBar)
     Addon:UpdatePushedTexture(button, isStanceBar)
@@ -908,15 +932,20 @@ function Addon:UpdateCooldown(button, isStanceBar, previewValue)
             needUpdateFormatter = true
             bar.__cooldownColor = color
         end
+        local formatOptions = Addon:GetCooldownFormatOptions(configName)
+        if not bar.__formatOptions or not tCompare(formatOptions, bar.__formatOptions) then
+            needUpdateFormatter = true
+            bar.__formatOptions = formatOptions
+        end
         if Addon:GetValue("ColorizedCooldownFont", nil, configName) then
             if not bar.__numberFormatterColored or needUpdateFormatter then
-                bar.__numberFormatterColored = Addon:GetNumberFormatter(bar.__cooldownColor,nil,nil, formatType)
+                bar.__numberFormatterColored = Addon:GetNumberFormatter(bar.__cooldownColor,nil,nil, formatType, formatOptions)
             end
             button.cooldown:SetCountdownFormatter(bar.__numberFormatterColored)
             button.chargeCooldown:SetCountdownFormatter(bar.__numberFormatterColored)
         else
             if not bar.__numberFormater or needUpdateFormatter then
-                bar.__numberFormater = Addon:GetNumberFormatter(bar.__cooldownColor, bar.__cooldownColor, bar.__cooldownColor, formatType)
+                bar.__numberFormater = Addon:GetNumberFormatter(bar.__cooldownColor, bar.__cooldownColor, bar.__cooldownColor, formatType, formatOptions)
             end
             button.cooldown:SetCountdownFormatter(bar.__numberFormater)
             button.chargeCooldown:SetCountdownFormatter(bar.__numberFormater)
@@ -949,7 +978,9 @@ end
 
 local function Hook_UpdateButton(button, isStanceBar)
     if button == ExtraActionButton1 then return end
-    
+
+    Addon:UpdateButtonsPassThrough(button)
+
     local config, configName = Addon:GetConfig(button)
 
     if not button.__hookedFade then
@@ -1472,6 +1503,13 @@ end
 local function OnFadeTrigger()
     C_Timer.After(0, function()
         Addon:BarsFadeAnim()
+
+        if not InCombatLockdown() then
+            for button in pairs(pendingPassThrough) do
+                pendingPassThrough[button] = nil
+                Addon:UpdateButtonsPassThrough(button)
+            end
+        end
     end)
 end
 

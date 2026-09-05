@@ -250,6 +250,7 @@ L.StatusBarBGTextures = "背景材质"
 -- 状态条布局设置
 -- ==========================================
 L.BarGrow = "扩展方向"
+L.RightClickPassThrough = "右键点击穿透按钮"
 L.NameFont = "名称字体"
 L.IconSize = "图标大小"
 L.BarHeight = "状态条高度"
@@ -315,6 +316,10 @@ L.VerticalGrowth = "垂直扩展"
 L.HorizontalGrowth = "水平扩展"
 
 L.GridDirection = "布局方向"
+
+L.FrameStrata = "框架层级"
+L.FrameLevel = "框架级别"
+L.Level = "级别"
 
 L.DragNDropContainer = "拖拽一个法术或物品到此。\n（左键 - 重新排序，右键 - 菜单，Shift+右键 - 快速移除）"
 
@@ -506,6 +511,17 @@ L.FakeAuraTypesTitle = "光环刷新行为"
 L.FakeAuraTypeNone = "无（不执行任何操作）"
 L.FakeAuraTypeAdd = "累加（将完整计时器添加到剩余持续时间）"
 L.FakeAuraTypeReset = "重置（重置为完整持续时间）"
+
+L.CooldownFormatType = "计时器取整"
+L.CDFormatFloor = "向下取整"
+L.CDFormatCeil = "向上取整"
+L.CooldownTimerFormat = "计时器格式"
+L.CDFormatAuto = "自动 (12m / 09:14 / 10 / 3.2)"
+L.CDFormatMmSs = "mm:ss (12:14 / 09:14 / 10 / 3.2)"
+L.CDFormatMinutesSeconds = "Xm Xs (9m 14s / 10s / 3.2)"
+L.CDFormatSecondsOnly = "仅秒数 (554 / 10 / 3.2)"
+L.CooldownMilliseconds = "显示毫秒"
+L.CooldownMillisecondsBelow = "低于（秒）"
 -- ==========================================
 -- Custom Frame Spec Visibility
 -- ==========================================

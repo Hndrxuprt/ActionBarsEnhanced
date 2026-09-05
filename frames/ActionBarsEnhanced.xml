@@ -564,15 +564,21 @@
 				<CheckedTexture atlas="checkmark-minimal" useAtlasSize="true"/>
 				<DisabledCheckedTexture atlas="checkmark-minimal-disabled" useAtlasSize="true"/>
 			</CheckButton>
-			<Frame parentKey="SliderWithSteppers" inherits="MinimalSliderWithSteppersTemplate">
-				<Size x="300" y="26"/>
-				<Anchors>
-					<Anchor point="LEFT" relativeKey="$parent.Checkbox" x="2" relativePoint="RIGHT" y="-5"/>
-				</Anchors>
-			</Frame>
-		</Frames>
-	</Frame>
-	<Frame name="OptionsDoubleCheckboxSliderTemplate" mixin="HUICheckboxSliderMixin" virtual="true">
+				<Frame parentKey="SliderWithSteppers" inherits="MinimalSliderWithSteppersTemplate">
+					<Size x="300" y="26"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeKey="$parent.Checkbox" x="2" relativePoint="RIGHT" y="-5"/>
+					</Anchors>
+				</Frame>
+				<Frame parentKey="NewFeature" inherits="NewFeatureLabelTemplate" frameStrata="HIGH" scale=".8" frameLevel="100" hidden="true">
+					<Size x="1" y="1"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="16" y="-10" relativeKey="$parent.Text" relativePoint="LEFT"/>
+					</Anchors>
+				</Frame>
+			</Frames>
+		</Frame>
+		<Frame name="OptionsDoubleCheckboxSliderTemplate" mixin="HUICheckboxSliderMixin" virtual="true">
 		<Size y="26"/>
 		<Anchors>
 			<Anchor point="TOPRIGHT"/>
@@ -602,15 +608,21 @@
 					<Anchor point="LEFT" relativeKey="$parent.Checkbox" x="2" relativePoint="RIGHT" y="-5"/>
 				</Anchors>
 			</Frame>
-			<Frame parentKey="SliderWithSteppers2" inherits="MinimalSliderWithSteppersTemplate">
-				<Size x="150" y="26"/>
-				<Anchors>
-					<Anchor point="LEFT" relativeKey="$parent.SliderWithSteppers1" x="0" relativePoint="RIGHT" y="0"/>
-				</Anchors>
-			</Frame>
-		</Frames>
-	</Frame>
-	<Frame name="OptionsColorOverrideTemplate" mixin="ActionBarColorMixin" virtual="true">
+				<Frame parentKey="SliderWithSteppers2" inherits="MinimalSliderWithSteppersTemplate">
+					<Size x="150" y="26"/>
+					<Anchors>
+						<Anchor point="LEFT" relativeKey="$parent.SliderWithSteppers1" x="0" relativePoint="RIGHT" y="0"/>
+					</Anchors>
+				</Frame>
+				<Frame parentKey="NewFeature" inherits="NewFeatureLabelTemplate" frameStrata="HIGH" scale=".8" frameLevel="100" hidden="true">
+					<Size x="1" y="1"/>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT" x="16" y="-10" relativeKey="$parent.Text" relativePoint="LEFT"/>
+					</Anchors>
+				</Frame>
+			</Frames>
+		</Frame>
+		<Frame name="OptionsColorOverrideTemplate" mixin="ActionBarColorMixin" virtual="true">
 		<Size y="26"/>
 		<Anchors>
 			<Anchor point="TOPRIGHT"/>

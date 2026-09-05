@@ -90,6 +90,11 @@ function HUI_CDMCustomAuraFrameMixin:CustomizeAuraButton(auraButton)
 		HUI_CDMCustomFrameCustomized:RefreshAuraTimer(auraButton.cooldownFrame, frameName)
 		HUI_CDMCustomFrameCustomized:CustomizeCooldownFont(auraButton.cooldownFrame, frameName)
 		HUI_CDMCustomFrameCustomized:CustomizeStacksFont(auraButton.countText, frameName, auraButton)
+
+		local auraDuration = auraButton.GetAuraDuration and auraButton:GetAuraDuration()
+		if auraDuration then
+			auraButton.cooldownFrame:SetCooldownFromDurationObject(auraDuration, false)
+		end
 		if Addon:GetValue("UseCDMBackdrop", nil, frameName) then
 			self:RefreshBackdrop(auraButton.iconTexture.iconBorder, auraButton.color)
 			if Addon:GetValue("UseCDMBackdropAuraColor", nil, frameName) then

@@ -131,6 +131,16 @@ Addon.BarTextJustifyV = {
     [2] = "MIDDLE",
     [3] = "BOTTOM",
 }
+Addon.FrameStratas = {
+    [1] = "BACKGROUND",
+    [2] = "LOW",
+    [3] = "MEDIUM",
+    [4] = "HIGH",
+    [5] = "DIALOG",
+    [6] = "FULLSCREEN",
+    [7] = "FULLSCREEN_DIALOG",
+    [8] = "TOOLTIP",
+}
 Addon.CustomBarType = {
     [1] = "CD Only",
     [2] = "Aura Only",
@@ -143,9 +153,13 @@ Addon.FakeAuraType = {
 }
 Addon.CooldownFormatType = {
     [1] = L.CDFormatFloor,
-    [2] = L.CDFormatFloorWithDecimals,
-    [3] = L.CDFormatCeil,
-    [4] = L.CDFormatCeilWithDecimals,
+    [2] = L.CDFormatCeil,
+}
+Addon.CooldownTimerFormat = {
+    [1] = L.CDFormatAuto,
+    [2] = L.CDFormatMmSs,
+    [3] = L.CDFormatMinutesSeconds,
+    [4] = L.CDFormatSecondsOnly,
 }
 Addon.CustomBarDisplayTypes = {
     [1] = L.BarDisplayOnCD,
@@ -218,6 +232,42 @@ do
         },
     })
     Addon.defaultCountFormatter = defaultCountFormatter
+
+    local numbersDurationFormatter = C_StringUtil.CreateNumericRuleFormatter()
+    numbersDurationFormatter:SetBreakpoints({
+        {
+            threshold = 0,
+            format = "%.1f",
+        },
+        {
+            threshold = 5,
+            format = "%d",
+            step = 1,
+            rounding = 1,
+        },
+        {
+            threshold = 60,
+            format = "%d:%02d",
+            components = {
+                { div = 60 },
+                { mod = 60 },
+            },
+            step = 1,
+            rounding = 1,
+        },
+        {
+            threshold = 3600,
+            format = "%d:%02d:%02d",
+            components = {
+                { div = 3600 },
+                { div = 60, mod = 60 },
+                { mod = 60 },
+            },
+            step = 1,
+            rounding = 1,
+        },
+    })
+    Addon.numbersDurationFormatter = numbersDurationFormatter
 end
 
 Addon.Defaults = {
@@ -249,6 +299,7 @@ Addon.Defaults = {
     FadeInOnTarget = false,
     FadeInOnCasting = false,
     FadeInOnHover = false,
+    RightClickPassThrough = false,
 
     CurrentNormalTexture = 1,
     DesaturateNormal = false,
@@ -540,6 +591,11 @@ Addon.Defaults = {
 
     CurrentHideWhenInactive = 1,
 
+    CDMCustomFrameStrata = 3,
+
+    UseCDMCustomFrameLevel = false,
+    CDMCustomFrameLevel = 2,
+
     AlwaysShowStacks = false,
 
     ColorizedCooldownFont = false,
@@ -728,8 +784,11 @@ Addon.Defaults = {
     
     AprilDayEnabled = true,
 
-    CooldownFormatType = 3,
-    CDMCooldownFormatType = 3,
+    CooldownFormatType = 2,
+    CDMCooldownFormatType = 2,
+    CooldownTimerFormat = 1,
+    UseCooldownMilliseconds = false,
+    CooldownMillisecondsThreshold = 5,
 
     CustomFrameBarNameEnable = true,
     CurrentCustomFrameBarNameFont = "Default",

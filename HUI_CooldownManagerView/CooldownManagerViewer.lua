@@ -21,13 +21,39 @@ function CooldownManagerEnhanced:ForceUpdate(frameName)
 
     CooldownManagerEnhanced.forced = frameName
     local frame = _G[frameName]
-    
+
     frame:Layout()
     --frame:RefreshData()
     --frame:UpdateShownState()
     CooldownManagerEnhanced.forced = nil
 end
 
+function CooldownManagerEnhanced:RefreshFormatters(frameName)
+    if not frameName then return end
+
+    local frame = _G[frameName]
+    if not frame then return end
+
+    local children = { frame:GetChildren() }
+    for _, child in ipairs(children) do
+        if child.Cooldown and child.__cooldownSet then
+            local barFrame = child:GetParent()
+            local cooldownFrame = child.Cooldown
+            local formatType = Addon:GetValue("CDMCooldownFormatType", nil, frameName)
+            local formatOptions = Addon:GetCooldownFormatOptions(frameName)
+            barFrame.__formatType = formatType
+            if not barFrame.__formatOptions or not tCompare(formatOptions, barFrame.__formatOptions) then
+                barFrame.__formatOptions = formatOptions
+            end
+            self:ApplyCooldownFormatter(cooldownFrame, child, barFrame, frameName, true)
+            if cooldownFrame.SetUseAuraDisplayTime then
+                local useAura = child.cooldownUseAuraDisplayTime and not child.__removeAura
+                cooldownFrame:SetUseAuraDisplayTime(not useAura)
+                cooldownFrame:SetUseAuraDisplayTime(useAura)
+            end
+        end
+    end
+end
 function Addon.SetBorderColor(button, color)
     if not button or not color then return end
     if button.__iconBorder then
@@ -113,6 +139,63 @@ local function CheckCooldownState(button)
     end
 end
 
+function CooldownManagerEnhanced:ApplyCooldownFormatter(cooldownFrame, button, barFrame, barName, forceUpdate)
+    local useAuraTimerColor = Addon:GetValue("UseCDMAuraTimerColor", nil, barName)
+    local auraColorized = Addon:GetValue("ColorizedAuraFont", nil, barName)
+
+    if not button.__removeAura and button.__isOnAura and (useAuraTimerColor or auraColorized) then
+        local color = { r=1, g=1, b=1, a=1 }
+        if not barFrame.__auraColor then
+            barFrame.__auraColor = { r=1, g=1, b=1, a=1 }
+        end
+        local needUpdAuraFormatter = false
+        if useAuraTimerColor then
+            color.r,color.g,color.b,color.a = Addon:GetRGBA("CDMAuraTimerColor", nil, barName)
+        end
+        if not tCompare(color, barFrame.__auraColor) then
+            barFrame.__auraColor = color
+            needUpdAuraFormatter = true
+        end
+        if auraColorized then
+            if not barFrame.__auraFormatterColored or needUpdAuraFormatter or forceUpdate then
+                barFrame.__auraFormatterColored = Addon:GetNumberFormatter(barFrame.__auraColor, nil, nil, barFrame.__formatType, barFrame.__formatOptions)
+            end
+            cooldownFrame:SetCountdownFormatter(barFrame.__auraFormatterColored)
+        else
+            if not barFrame.__auraFormatter or needUpdAuraFormatter or forceUpdate then
+                barFrame.__auraFormatter = Addon:GetNumberFormatter(barFrame.__auraColor, barFrame.__auraColor, barFrame.__auraColor, barFrame.__formatType, barFrame.__formatOptions)
+            end
+            cooldownFrame:SetCountdownFormatter(barFrame.__auraFormatter)
+        end
+        --timerString:SetVertexColor(Addon:GetRGBA("CDMAuraTimerColor", nil, barName))
+    else
+        local needUpdCooldownFormatter = false
+        if not barFrame.__cooldownColor then
+            barFrame.__cooldownColor = { r=1, g=1, b=1, a=1 }
+        end
+        local color = { r=1, g=1, b=1, a=1 }
+        if Addon:GetValue("UseCooldownFontColor", nil, barName) then
+            color.r,color.g,color.b,color.a = Addon:GetRGBA("CooldownFontColor", nil, barName)
+        end
+        if not tCompare(color, barFrame.__cooldownColor) then
+            barFrame.__cooldownColor = color
+            needUpdCooldownFormatter = true
+        end
+        if Addon:GetValue("ColorizedCooldownFont", nil, barName) then
+            if not barFrame.__numberFormatterColored or needUpdCooldownFormatter or forceUpdate then
+                barFrame.__numberFormatterColored = Addon:GetNumberFormatter(barFrame.__cooldownColor,nil,nil,barFrame.__formatType, barFrame.__formatOptions)
+            end
+            cooldownFrame:SetCountdownFormatter(barFrame.__numberFormatterColored)
+        else
+            if not barFrame.__numberFormater or needUpdCooldownFormatter or forceUpdate then
+                barFrame.__numberFormater = Addon:GetNumberFormatter(barFrame.__cooldownColor, barFrame.__cooldownColor, barFrame.__cooldownColor,barFrame.__formatType, barFrame.__formatOptions)
+            end
+            cooldownFrame:SetCountdownFormatter(barFrame.__numberFormater)
+        end
+        --timerString:SetVertexColor(color.r,color.g,color.b,color.a)
+    end
+end
+
 local function OnCooldownSet(cooldownFrame, button)
     if not cooldownFrame or not button then return end
 
@@ -127,6 +210,17 @@ local function OnCooldownSet(cooldownFrame, button)
             Addon.SetBorderColor(button, {Addon:GetRGBA("CDMBackdropColor", nil, barName)})
         end
         HUI_CDMCustomized:RefreshCooldownFrame(button, barName)
+
+        button.__removeAura = Addon:GetValue("CDMAuraRemoveSwipe", nil, barName)
+        local formatType = Addon:GetValue("CDMCooldownFormatType", nil, barName)
+        local forceUpdate = barFrame.__formatType ~= formatType
+        barFrame.__formatType = formatType
+        local formatOptions = Addon:GetCooldownFormatOptions(barName)
+        if not barFrame.__formatOptions or not tCompare(formatOptions, barFrame.__formatOptions) then
+            forceUpdate = true
+            barFrame.__formatOptions = formatOptions
+        end
+        CooldownManagerEnhanced:ApplyCooldownFormatter(cooldownFrame, button, barFrame, barName, forceUpdate)
         return
     end
 
@@ -145,6 +239,12 @@ local function OnCooldownSet(cooldownFrame, button)
         forceUpdate = true
     end
     barFrame.__formatType = formatType
+
+    local formatOptions = Addon:GetCooldownFormatOptions(barName)
+    if not barFrame.__formatOptions or not tCompare(formatOptions, barFrame.__formatOptions) then
+        forceUpdate = true
+        barFrame.__formatOptions = formatOptions
+    end
 
     local timerString = cooldownFrame:GetCountdownFontString()
 
@@ -188,60 +288,7 @@ local function OnCooldownSet(cooldownFrame, button)
     end
     --cooldownFrame:SetCountdownFormatter(Addon.numberFormatter)
 
-    local useAuraTimerColor = Addon:GetValue("UseCDMAuraTimerColor", nil, barName)
-    local auraColorized = Addon:GetValue("ColorizedAuraFont", nil, barName)
-
-    if not button.__removeAura and button.__isOnAura and (useAuraTimerColor or auraColorized) then
-        local color = { r=1, g=1, b=1, a=1 }
-        if not barFrame.__auraColor then
-            barFrame.__auraColor = { r=1, g=1, b=1, a=1 }
-        end
-        local needUpdAuraFormatter = false
-        if useAuraTimerColor then
-            color.r,color.g,color.b,color.a = Addon:GetRGBA("CDMAuraTimerColor", nil, barName)
-        end
-        if not tCompare(color, barFrame.__auraColor) then
-            barFrame.__auraColor = color
-            needUpdAuraFormatter = true
-        end
-        if auraColorized then
-            if not barFrame.__auraFormatterColored or needUpdAuraFormatter or forceUpdate then
-                barFrame.__auraFormatterColored = Addon:GetNumberFormatter(barFrame.__auraColor, nil, nil, barFrame.__formatType)
-            end
-            cooldownFrame:SetCountdownFormatter(barFrame.__auraFormatterColored)
-        else
-            if not barFrame.__auraFormatter or needUpdAuraFormatter or forceUpdate then
-                barFrame.__auraFormatter = Addon:GetNumberFormatter(barFrame.__auraColor, barFrame.__auraColor, barFrame.__auraColor, barFrame.__formatType)
-            end
-            cooldownFrame:SetCountdownFormatter(barFrame.__auraFormatter)
-        end
-        --timerString:SetVertexColor(Addon:GetRGBA("CDMAuraTimerColor", nil, barName))
-    else
-        local needUpdCooldownFormatter = false
-        if not barFrame.__cooldownColor then
-            barFrame.__cooldownColor = { r=1, g=1, b=1, a=1 }
-        end
-        local color = { r=1, g=1, b=1, a=1 }
-        if Addon:GetValue("UseCooldownFontColor", nil, barName) then
-            color.r,color.g,color.b,color.a = Addon:GetRGBA("CooldownFontColor", nil, barName)
-        end
-        if not tCompare(color, barFrame.__cooldownColor) then
-            barFrame.__cooldownColor = color
-            needUpdCooldownFormatter = true
-        end
-        if Addon:GetValue("ColorizedCooldownFont", nil, barName) then
-            if not barFrame.__numberFormatterColored or needUpdCooldownFormatter or forceUpdate then
-                barFrame.__numberFormatterColored = Addon:GetNumberFormatter(barFrame.__cooldownColor,nil,nil,barFrame.__formatType)
-            end
-            cooldownFrame:SetCountdownFormatter(barFrame.__numberFormatterColored)
-        else
-            if not barFrame.__numberFormater or needUpdCooldownFormatter or forceUpdate then
-                barFrame.__numberFormater = Addon:GetNumberFormatter(barFrame.__cooldownColor, barFrame.__cooldownColor, barFrame.__cooldownColor,barFrame.__formatType)
-            end
-            cooldownFrame:SetCountdownFormatter(barFrame.__numberFormater)
-        end
-        --timerString:SetVertexColor(color.r,color.g,color.b,color.a)
-    end
+    CooldownManagerEnhanced:ApplyCooldownFormatter(cooldownFrame, button, barFrame, barName, forceUpdate)
 
     HUI_CDMCustomized:RefreshCooldownFrame(button, barName)
 end

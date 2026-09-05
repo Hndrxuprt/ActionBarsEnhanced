@@ -250,6 +250,7 @@ L.StatusBarBGTextures = "Текстура фона"
 -- Bar Layout Settings
 -- ==========================================
 L.BarGrow = "Направление роста"
+L.RightClickPassThrough = "Правый клик проходит сквозь кнопки"
 L.NameFont = "Шрифт названия"
 L.IconSize = "Размер иконки"
 L.BarHeight = "Высота полоски"
@@ -320,6 +321,10 @@ L.VerticalGrowth = "Вертикальный рост"
 L.HorizontalGrowth = "Горизонтальный рост"
 
 L.GridDirection = "Расположение"
+
+L.FrameStrata = "Слой фрейма"
+L.FrameLevel = "Уровень фрейма"
+L.Level = "Уровень"
 
 L.DragNDropContainer = "Перетащить Предмет или Заклинание.\n(ЛКМ - перестановка, ПКМ - меню, шифт-ПКМ - быстрое удаление)"
 
@@ -513,11 +518,16 @@ L.FakeAuraTypeNone = "Ничего (Ничего не делать)"
 L.FakeAuraTypeAdd = "Добавление (Добавить полный таймер к текущему)"
 L.FakeAuraTypeReset = "Сброс (Заускает таймер заново)"
 
-L.CooldownFormatType = "Формат отображения кулдауна"
+L.CooldownFormatType = "Округление таймера"
 L.CDFormatFloor = "Округлять вниз"
-L.CDFormatFloorWithDecimals = "Округлять вниз, показывать десятичные <1 сек"
 L.CDFormatCeil = "Округлять вверх"
-L.CDFormatCeilWithDecimals = "Округлять вверх, показывать десятичные <1 сек"
+L.CooldownTimerFormat = "Формат таймера"
+L.CDFormatAuto = "Авто (12m / 09:14 / 10 / 3.2)"
+L.CDFormatMmSs = "mm:ss (12:14 / 09:14 / 10 / 3.2)"
+L.CDFormatMinutesSeconds = "Xm Xs (9m 14s / 10s / 3.2)"
+L.CDFormatSecondsOnly = "Только секунды (554 / 10 / 3.2)"
+L.CooldownMilliseconds = "Показывать миллисекунды"
+L.CooldownMillisecondsBelow = "Ниже (сек)"
 
 L.BarDisplayTitle = "Тип отображения"
 L.BarDisplayDesc = "Эта полоска будет отображать:"

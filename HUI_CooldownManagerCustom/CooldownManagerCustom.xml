@@ -8,7 +8,7 @@
 			<OnEvent method="OnEvent"/>
 		</Scripts>
 	</Frame>
-	<Frame name="HUI_CDMCustomItemPandemicGlow" frameStrata="MEDIUM" virtual="true">
+	<Frame name="HUI_CDMCustomItemPandemicGlow" virtual="true">
 		<Size x="40" y="40"/>
 		<Anchors>
 			<Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="-6" y="6" />
@@ -56,7 +56,7 @@
 			</Frame>
 		</Frames>
 	</Frame>
-	<Frame name="HUI_CDMCustomBarPandemicGlow" frameStrata="MEDIUM" virtual="true">
+	<Frame name="HUI_CDMCustomBarPandemicGlow" virtual="true">
 		<Frames>
 			<Frame parentKey="Border" setAllPoints="true">
 				<Layers>
@@ -268,7 +268,7 @@
 					</Layer>
 				</Layers>
 			</StatusBar>
-			<Frame parentKey="PandemicGlow" inherits="AnimateWhileShownTemplate" hidden="true" frameStrata="MEDIUM">
+			<Frame parentKey="PandemicGlow" inherits="AnimateWhileShownTemplate" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeKey="$parent" relativePoint="TOPLEFT" x="-9" y="10" />
 					<Anchor point="BOTTOMRIGHT" relativeKey="$parent" relativePoint="BOTTOMRIGHT" x="9" y="-10" />

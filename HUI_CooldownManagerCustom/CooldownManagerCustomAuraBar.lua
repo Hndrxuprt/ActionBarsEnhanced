@@ -242,7 +242,11 @@ function HUI_CDMCustomAuraBarMixin:GetElementSize()
 end
 
 function HUI_CDMCustomAuraBarMixin:GetDurationFormatter()
-    local secondsFormatter = self.bindingTextFormatter or Addon.defaultDurationFormatter
+    local secondsFormatter = Addon.numbersDurationFormatter
+    if self.__configName then
+        local formatOptions = Addon:GetCooldownFormatOptions(self.__configName)
+        secondsFormatter = Addon:GetDurationNumbersFormatter(formatOptions.secondsOnly, formatOptions.minutesFormat, formatOptions.msThreshold)
+    end
 
     local properties = {}
     if self.timerFormat == 4 then

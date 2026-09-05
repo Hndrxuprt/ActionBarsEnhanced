@@ -13,8 +13,8 @@ function HUI_CDMCustomAuraMixin:GetProfileTable()
 end
 
 function HUI_CDMCustomAuraMixin:OnLoad()
-	self:SetFrameLevel(2)
 	self.frameName = self:GetName()
+	HUI_CDMCustomFrameCustomized:ApplyFrameStrataAndLevel(self)
 
 	--[[
 	self.auraSoundIDs = {}

@@ -9,6 +9,17 @@ local function RefreshAuraFrameSettings()
     if frame and frame.RefreshSettings then
         frame:RefreshSettings()
     end
+    if frame and frame.itemPool then
+        HUI_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, true)
+    end
+end
+
+local function RefreshAuraFrameSkin()
+    local frameName = HUI_BarsListMixin:GetFrameLebel()
+    local frame = frameName and _G[frameName]
+    if frame then
+        HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
+    end
 end
 
 Addon.config.containers["CDMAuraFrameContainer"] = {
@@ -164,6 +175,27 @@ Addon.config.containers["CDMAuraFrameGridContainer"] = {
             showNew     = false,
             OnEnter     = false,
             OnClose     = RefreshAuraFrameSettings,
+        },
+        ["CDMCustomFrameStrata"] = {
+            type        = "dropdown",
+            setting     = Addon.FrameStratas,
+            name        = L.FrameStrata,
+            IsSelected  = function(id) return id == Addon:GetValue("CDMCustomFrameStrata", nil, true) end,
+            OnSelect    = function(id) Addon:SaveSetting("CDMCustomFrameStrata", id, true) end,
+            showNew     = false,
+            OnEnter     = false,
+            OnClose     = RefreshAuraFrameSkin,
+        },
+        ["CDMCustomFrameLevel"] = {
+            type            = "checkboxSlider",
+            name            = L.FrameLevel,
+            checkboxValue   = "UseCDMCustomFrameLevel",
+            sliderValue     = "CDMCustomFrameLevel",
+            min             = 0,
+            max             = 100,
+            step            = 1,
+            sliderName      = {top = L.Level},
+            callback        = RefreshAuraFrameSkin,
         },
     }
 }
@@ -436,6 +468,28 @@ Addon.config.containers["CDMAuraFrameFontContainer"] = {
             value           = "ColorizedAuraFont",
             callback        = RefreshAuraFrameSettings,
         },
+        ["CDMAuraFrameCooldownTimerFormat"] = {
+            type        = "dropdown",
+            setting     = Addon.CooldownTimerFormat,
+            name        = L.CooldownTimerFormat,
+            IsSelected  = function(id) return id == Addon:GetValue("CooldownTimerFormat", nil, true) end,
+            OnSelect    = function(id) Addon:SaveSetting("CooldownTimerFormat", id, true) end,
+            showNew     = true,
+            OnEnter     = false,
+            OnClose     = RefreshAuraFrameSettings,
+        },
+        ["CDMAuraFrameCooldownMilliseconds"] = {
+            type            = "checkboxSlider",
+            name            = L.CooldownMilliseconds,
+            showNew         = true,
+            checkboxValue   = "UseCooldownMilliseconds",
+            sliderValue     = "CooldownMillisecondsThreshold",
+            min             = 1,
+            max             = 60,
+            step            = 1,
+            sliderName      = {top = L.CooldownMillisecondsBelow},
+            callback        = RefreshAuraFrameSettings,
+        },
         ["CDMAuraFrameShowStacks"] = {
             type            = "checkbox",
             name            = L.CDMAuraShowStacks,
@@ -590,6 +644,27 @@ Addon.config.containers["CDMAuraBarGridContainer"] = {
             showNew     = false,
             OnEnter     = false,
             OnClose     = RefreshAuraFrameSettings,
+        },
+        ["CDMCustomFrameStrata"] = {
+            type        = "dropdown",
+            setting     = Addon.FrameStratas,
+            name        = L.FrameStrata,
+            IsSelected  = function(id) return id == Addon:GetValue("CDMCustomFrameStrata", nil, true) end,
+            OnSelect    = function(id) Addon:SaveSetting("CDMCustomFrameStrata", id, true) end,
+            showNew     = false,
+            OnEnter     = false,
+            OnClose     = RefreshAuraFrameSkin,
+        },
+        ["CDMCustomFrameLevel"] = {
+            type            = "checkboxSlider",
+            name            = L.FrameLevel,
+            checkboxValue   = "UseCDMCustomFrameLevel",
+            sliderValue     = "CDMCustomFrameLevel",
+            min             = 0,
+            max             = 100,
+            step            = 1,
+            sliderName      = {top = L.Level},
+            callback        = RefreshAuraFrameSkin,
         },
         ["CDMCustomFrameBarWidth"] = {
             type            = "checkboxSlider",
@@ -923,6 +998,28 @@ Addon.config.containers["CDMAuraBarFontContainer"] = {
             showNew     = false,
             OnEnter     = false,
             OnClose     = RefreshAuraFrameSettings,
+        },
+        ["CDMCustomFrameBarTimerFormat"] = {
+            type        = "dropdown",
+            setting     = Addon.CooldownTimerFormat,
+            name        = L.CooldownTimerFormat,
+            IsSelected  = function(id) return id == Addon:GetValue("CooldownTimerFormat", nil, true) end,
+            OnSelect    = function(id) Addon:SaveSetting("CooldownTimerFormat", id, true) end,
+            showNew     = true,
+            OnEnter     = false,
+            OnClose     = RefreshAuraFrameSettings,
+        },
+        ["CDMCustomFrameBarTimeMilliseconds"] = {
+            type            = "checkboxSlider",
+            name            = L.CooldownMilliseconds,
+            showNew         = true,
+            checkboxValue   = "UseCooldownMilliseconds",
+            sliderValue     = "CooldownMillisecondsThreshold",
+            min             = 1,
+            max             = 60,
+            step            = 1,
+            sliderName      = {top = L.CooldownMillisecondsBelow},
+            callback        = RefreshAuraFrameSettings,
         },
         ["CDMCustomFrameBarTimeFont"] = {
             type        = "dropdown",

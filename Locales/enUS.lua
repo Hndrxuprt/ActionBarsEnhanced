@@ -248,6 +248,7 @@ L.StatusBarBGTextures = "Background Texture"
 -- Bar Layout Settings
 -- ==========================================
 L.BarGrow = "Growth Direction"
+L.RightClickPassThrough = "Right click passes through buttons"
 L.NameFont = "Name Font"
 L.IconSize = "Icon Size"
 L.BarHeight = "Bar Height"
@@ -314,6 +315,10 @@ L.VerticalGrowth = "Vertical Growth"
 L.HorizontalGrowth = "Horizontal Growth"
 
 L.GridDirection = "Layout Direction"
+
+L.FrameStrata = "Frame Strata"
+L.FrameLevel = "Frame Level"
+L.Level = "Level"
 
 L.DragNDropContainer = "Drag and drop a Spell or Item here.\n(LMB - reorder, RMB - menu, sRMB - quick remove)"
 
@@ -506,11 +511,16 @@ L.FakeAuraTypeNone = "None (Do nothing)"
 L.FakeAuraTypeAdd = "Add (Adds full timer to remaining duration)"
 L.FakeAuraTypeReset = "Reset (Reset to full duration)"
 
-L.CooldownFormatType = "Cooldown Format Type"
+L.CooldownFormatType = "Timer Rounding"
 L.CDFormatFloor = "Round down"
-L.CDFormatFloorWithDecimals = "Round down, show decimals <1s"
 L.CDFormatCeil = "Round up"
-L.CDFormatCeilWithDecimals = "Round up, show decimals <1s"
+L.CooldownTimerFormat = "Timer Format"
+L.CDFormatAuto = "Auto (12m / 09:14 / 10 / 3.2)"
+L.CDFormatMmSs = "mm:ss (12:14 / 09:14 / 10 / 3.2)"
+L.CDFormatMinutesSeconds = "Xm Xs (9m 14s / 10s / 3.2)"
+L.CDFormatSecondsOnly = "Seconds only (554 / 10 / 3.2)"
+L.CooldownMilliseconds = "Show milliseconds"
+L.CooldownMillisecondsBelow = "Below (sec)"
 
 L.BarDisplayTitle = "Bar Display Type"
 L.BarDisplayDesc = "This bar will display:"

@@ -161,97 +161,241 @@ function Addon:GetStatusBarTextures()
     return tbl
 end
 
-function Addon:GetNumberFormatter(mColor, sColor, tColor, formatType)
+function Addon:GetNumberFormatter(mColor, sColor, tColor, formatType, formatOptions)
     mColor = mColor or {r=1,g=1,b=1,a=1}
     sColor = sColor or {r=1,g=0.85,b=0.25,a=1}
     tColor = tColor or {r=1,g=0.35,b=0.35,a=1}
 
     formatType = formatType or 3
-    
-    local showDecimals = (formatType == 2 or formatType == 4)
-    local roundUp = (formatType > 2)
-    local rounding = roundUp and 1 or 2
+    formatOptions = formatOptions or {}
 
+    local roundUp = (formatType > 1)
     local rounding = roundUp and 1 or 2
     local comp = roundUp and 0 or 0.99
-    local step = not showDecimals and 1 or nil
-    local format = showDecimals and "%.1f" or "%d"
+
+    local secondsOnly = formatOptions.secondsOnly or false
+    local minutesFormat = formatOptions.minutesFormat or 1
+    local msThreshold = formatOptions.msThreshold
+
+    local decLimit = 0
+    if msThreshold then
+        decLimit = math.min(msThreshold, 60)
+    end
+
+    local function wrapColor(color, fmt)
+        return CreateColor(color.r, color.g, color.b, color.a):WrapTextInColorCode(fmt)
+    end
+
+    local function segColor(value)
+        if value < 3 + comp then
+            return tColor
+        elseif value < 10 + comp then
+            return sColor
+        end
+        return mColor
+    end
+
+    local secondsBounds = { 0, 3 + comp, 10 + comp }
+    if decLimit > 0 and decLimit < 60 and decLimit ~= 3 + comp and decLimit ~= 10 + comp then
+        tinsert(secondsBounds, decLimit)
+    end
+    table.sort(secondsBounds)
+
+    local secFmt = "%d"
+    if minutesFormat == 3 and not secondsOnly then
+        secFmt = "%ds"
+    end
+
+    local breakpoints = {}
+    for _, bound in ipairs(secondsBounds) do
+        local isDecimals = bound < decLimit
+        tinsert(breakpoints, {
+            threshold = bound,
+            format = wrapColor(segColor(bound), isDecimals and "%.1f" or secFmt),
+            step = not isDecimals and 1 or nil,
+            rounding = rounding,
+        })
+    end
+
+    if not secondsOnly then
+        if minutesFormat == 3 then
+            tinsert(breakpoints, {
+                threshold = 60,
+                format = wrapColor(mColor, "%dm %ds"),
+                components = {
+                    {
+                        div = 60,
+                    },
+                    {
+                        mod = 60,
+                    },
+                },
+                step = 1,
+                rounding = rounding,
+            })
+        else
+            tinsert(breakpoints, {
+                threshold = 60,
+                format = wrapColor(mColor, "%d:%02d"),
+                components = {
+                    {
+                        div = 60,
+                    },
+                    {
+                        mod = 60,
+                    },
+                },
+                step = 1,
+                rounding = rounding,
+            })
+            if minutesFormat ~= 2 then
+                tinsert(breakpoints, {
+                    threshold = 600,
+                    format = wrapColor(mColor, "%dm"),
+                    components = {
+                        {
+                            div = 60,
+                        },
+                    },
+                    step = 1,
+                    rounding = rounding,
+                })
+            end
+        end
+    end
+
+    tinsert(breakpoints, {
+        threshold = 3600,
+        format = wrapColor(mColor, "%dh"),
+        components = {
+            {
+                div = 3600,
+            },
+        },
+        step = 1,
+        rounding = rounding,
+    })
+    tinsert(breakpoints, {
+        threshold = 86400,
+        format = CreateColor(0.8, 0.8, 0.8, 1):WrapTextInColorCode("%dd"),
+        components = {
+            {
+                div = 86400,
+            },
+        },
+        step = 1,
+        rounding = rounding,
+    })
 
     local numberFormatter = C_StringUtil.CreateNumericRuleFormatter()
-    numberFormatter:SetBreakpoints({
-        {
-            threshold = 0,
-            format = CreateColor(tColor.r, tColor.g, tColor.b, tColor.a):WrapTextInColorCode(format),
-            step = step,
-            rounding = rounding,
-        },
-        {
-            threshold = 0.99,
-            format = CreateColor(tColor.r, tColor.g, tColor.b, tColor.a):WrapTextInColorCode("%d"),
-            step = 1,
-            rounding = rounding,
-        },
-        {
-            threshold = 3 + comp,
-            format = CreateColor(sColor.r, sColor.g, sColor.b, sColor.a):WrapTextInColorCode("%d"),
-            step = 1,
-            rounding = rounding,
-        },
-        {
-            threshold = 10 + comp,
-            format = CreateColor(mColor.r, mColor.g, mColor.b, mColor.a):WrapTextInColorCode("%d"),
-            step = 1,
-            rounding = rounding,
-        },
-        {
-            threshold = 60,
-            format = CreateColor(mColor.r, mColor.g, mColor.b, mColor.a):WrapTextInColorCode("%d:%02d"),
-            components = {
-                {
-                    div = 60,
-                },
-                {
-                    mod = 60,
-                },
-            },
-            step = 1,
-            rounding = rounding,
-        },
-        {
-            threshold = 600, -- 10 minutes
-            format = CreateColor(mColor.r, mColor.g, mColor.b, mColor.a):WrapTextInColorCode("%dm"),
-            components = {
-                {
-                    div = 60,
-                },
-            },
-            step = 1,
-            rounding = rounding,
-        },
-        {
-            threshold = 3600, -- 1 hour
-            format = CreateColor(mColor.r, mColor.g, mColor.b, mColor.a):WrapTextInColorCode("%dh"),
-            components = {
-                {
-                    div = 3600,
-                },
-            },
-            step = 1,
-            rounding = rounding,
-        },
-        {
-            threshold = 86400, -- 1 day
-            format = CreateColor(0.8, 0.8, 0.8, 1):WrapTextInColorCode("%dd"),
-            components = {
-                {
-                    div = 86400,
-                },
-            },
-            step = 1,
-            rounding = rounding,
-        },
-    })
+    numberFormatter:SetBreakpoints(breakpoints)
     return numberFormatter
+end
+
+function Addon:GetCooldownFormatOptions(configName)
+    local timerFormat = Addon:GetValue("CooldownTimerFormat", nil, configName) or 1
+    local options = {
+        secondsOnly = timerFormat == 4,
+        minutesFormat = timerFormat == 4 and 1 or timerFormat,
+    }
+    if Addon:GetValue("UseCooldownMilliseconds", nil, configName) then
+        local threshold = Addon:GetValue("CooldownMillisecondsThreshold", nil, configName) or 5
+        options.msThreshold = math.max(1, math.min(60, threshold))
+    end
+    return options
+end
+
+function Addon:GetDurationNumbersFormatter(secondsOnly, minutesFormat, msThreshold)
+    self.__durationNumbersFormatters = self.__durationNumbersFormatters or {}
+
+    local key = tostring(secondsOnly) .. "|" .. tostring(minutesFormat) .. "|" .. tostring(msThreshold)
+    if self.__durationNumbersFormatters[key] then
+        return self.__durationNumbersFormatters[key]
+    end
+
+    local secFmt = "%d"
+    if minutesFormat == 3 and not secondsOnly then
+        secFmt = "%ds"
+    end
+
+    local breakpoints = {}
+    if msThreshold then
+        tinsert(breakpoints, {
+            threshold = 0,
+            format = "%.1f",
+        })
+        tinsert(breakpoints, {
+            threshold = math.min(msThreshold, 60),
+            format = secFmt,
+            step = 1,
+            rounding = 1,
+        })
+    else
+        tinsert(breakpoints, {
+            threshold = 0,
+            format = secFmt,
+            step = 1,
+            rounding = 1,
+        })
+    end
+
+    if not secondsOnly then
+        if minutesFormat == 3 then
+            tinsert(breakpoints, {
+                threshold = 60,
+                format = "%dm %ds",
+                components = {
+                    {
+                        div = 60,
+                    },
+                    {
+                        mod = 60,
+                    },
+                },
+                step = 1,
+                rounding = 1,
+            })
+        else
+            tinsert(breakpoints, {
+                threshold = 60,
+                format = "%d:%02d",
+                components = {
+                    {
+                        div = 60,
+                    },
+                    {
+                        mod = 60,
+                    },
+                },
+                step = 1,
+                rounding = 1,
+            })
+        end
+    end
+
+    tinsert(breakpoints, {
+        threshold = 3600,
+        format = "%d:%02d:%02d",
+        components = {
+            {
+                div = 3600,
+            },
+            {
+                div = 60,
+                mod = 60,
+            },
+            {
+                mod = 60,
+            },
+        },
+        step = 1,
+        rounding = 1,
+    })
+
+    local formatter = C_StringUtil.CreateNumericRuleFormatter()
+    formatter:SetBreakpoints(breakpoints)
+    self.__durationNumbersFormatters[key] = formatter
+    return formatter
 end
 
 function Addon:GetStatusBarTextureByName(name)
@@ -654,6 +798,7 @@ local liveRefresh = {
     ["UsePixelPerfect"] = true,
 
     ["FadeBars"] = true,
+    ["RightClickPassThrough"] = true,
     ["CurrentNormalTexture"] = true,
     ["DesaturateNormal"] = true,
     ["UseNormalTextureColor"] = true,
@@ -732,6 +877,11 @@ local liveRefresh = {
     ["CurrentCooldownFont"] = true,
     ["UseCooldownFontSize"] = true,
     ["CooldownFontSize"] = true,
+
+    ["CooldownFormatType"] = true,
+    ["CooldownTimerFormat"] = true,
+    ["UseCooldownMilliseconds"] = true,
+    ["CooldownMillisecondsThreshold"] = true,
 
     ["CurrentBarPadding"] = true,
 
@@ -1460,6 +1610,15 @@ function HUIDropdownMixin:RefreshCooldownFont(button, value, profileName, barNam
     else
         timerString:SetPointsOffset(0, 0)
     end
+
+    local isCDM = barName and (tContains(Addon.CDMFrames, barName) or string.find(barName, "CDMCustomFrame"))
+    local formatType = Addon:GetValue(isCDM and "CDMCooldownFormatType" or "CooldownFormatType", nil, barName)
+    local formatOptions = Addon:GetCooldownFormatOptions(barName)
+    if Addon:GetValue("ColorizedCooldownFont", nil, barName) then
+        button.cooldown:SetCountdownFormatter(Addon:GetNumberFormatter(color, nil, nil, formatType, formatOptions))
+    else
+        button.cooldown:SetCountdownFormatter(Addon:GetNumberFormatter(color, color, color, formatType, formatOptions))
+    end
 end
 
 function HUIDropdownMixin:RefreshPreview(button, profileName, barName)
@@ -1667,6 +1826,11 @@ function HUIDropdownMixin:SetupMinimapCheckbox(checkboxFrame, name)
 end
 
 function HUICheckboxSliderMixin:SetupCheckboxSlider(checkboxFrame, name, checkboxValue, sliderValue, min, max, step, sliderName, callback, frames)
+    if checkboxFrame.new then
+        checkboxFrame.NewFeature:Show()
+    else
+        checkboxFrame.NewFeature:Hide()
+    end
     checkboxFrame.Text:SetText(name)
 
     local function SetupSingleSlider(slider, name, checkboxValue, sliderValue, min, max, step, sliderName, callback, frames)
@@ -1706,6 +1870,15 @@ function HUICheckboxSliderMixin:SetupCheckboxSlider(checkboxFrame, name, checkbo
                     checkboxFrame.SliderWithSteppers2:SetEnabled(Addon:GetValue(checkboxValue, nil, true))
                 end
 
+                if not checkboxFrame._debounce then
+                    checkboxFrame._debounce = true
+                    C_Timer.After(0.1, function()
+                        checkboxFrame._debounce = nil
+                        if callback and type(callback) == "function" then
+                            callback(_, frames)
+                        end
+                    end)
+                end
             end
         )
     end
@@ -2158,6 +2331,9 @@ function Addon:InitChildElement(child, config, frames)
             config.alpha,
             config.callback)
     elseif config.type == "checkboxSlider" then
+        if config.showNew then
+            child.new = true
+        end
         HUICheckboxSliderMixin:SetupCheckboxSlider(
             child,
             config.name,

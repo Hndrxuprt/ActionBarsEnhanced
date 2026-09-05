@@ -552,6 +552,34 @@ Addon.config.containers = {
                     Addon:RefreshButtons()
                 end,
             },
+            ["CooldownTimerFormat"] = {
+                type            = "dropdown",
+                name            = L.CooldownTimerFormat,
+                setting         = Addon.CooldownTimerFormat,
+                showNew         = true,
+                IsSelected  = function(id) return id == Addon:GetValue("CooldownTimerFormat", nil, true) end,
+                OnSelect    = function(id) Addon:SaveSetting("CooldownTimerFormat", id, true) end,
+                OnEnter     = false,
+                OnClose     = function()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    Addon:RefreshButtons()
+                end,
+            },
+            ["CooldownMilliseconds"] = {
+                type            = "checkboxSlider",
+                name            = L.CooldownMilliseconds,
+                showNew         = true,
+                checkboxValue   = "UseCooldownMilliseconds",
+                sliderValue     = "CooldownMillisecondsThreshold",
+                min             = 1,
+                max             = 60,
+                step            = 1,
+                sliderName      = {top = L.CooldownMillisecondsBelow},
+                callback        = function()
+                    HUIDropdownMixin:RefreshCooldownPreview()
+                    Addon:RefreshButtons()
+                end,
+            },
             ["CooldownFontOffset"] = {
                 type            = "checkboxSlider",
                 name            = L.Offset,
@@ -1150,6 +1178,12 @@ Addon.config.containers = {
                     end
                 end,
             },
+            ["RightClickPassThrough"] = {
+                type            = "checkbox",
+                name            = L.RightClickPassThrough,
+                value           = "RightClickPassThrough",
+                callback        = false,
+            },
         }
     },
 
@@ -1562,6 +1596,7 @@ Addon.config.containers = {
                 callback        = function()
                     local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
+                    CooldownManagerEnhanced:RefreshFormatters(frameName)
                 end,
             },
             ["CDMColorizedAuraFont"] = {
@@ -1571,6 +1606,7 @@ Addon.config.containers = {
                 callback        = function()
                     local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
+                    CooldownManagerEnhanced:RefreshFormatters(frameName)
                 end,
             },
             ["CDMCooldownFormatType"] = {
@@ -1583,6 +1619,37 @@ Addon.config.containers = {
                 OnClose     = function()
                     local frameName = HUI_BarsListMixin:GetFrameLebel()
                     CooldownManagerEnhanced:ForceUpdate(frameName)
+                    CooldownManagerEnhanced:RefreshFormatters(frameName)
+                end,
+            },
+            ["CDMCooldownTimerFormat"] = {
+                type            = "dropdown",
+                name            = L.CooldownTimerFormat,
+                setting         = Addon.CooldownTimerFormat,
+                showNew         = true,
+                IsSelected  = function(id) return id == Addon:GetValue("CooldownTimerFormat", nil, true) end,
+                OnSelect    = function(id) Addon:SaveSetting("CooldownTimerFormat", id, true) end,
+                OnEnter     = false,
+                OnClose     = function()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
+                    CooldownManagerEnhanced:ForceUpdate(frameName)
+                    CooldownManagerEnhanced:RefreshFormatters(frameName)
+                end,
+            },
+            ["CDMCooldownMilliseconds"] = {
+                type            = "checkboxSlider",
+                name            = L.CooldownMilliseconds,
+                showNew         = true,
+                checkboxValue   = "UseCooldownMilliseconds",
+                sliderValue     = "CooldownMillisecondsThreshold",
+                min             = 1,
+                max             = 60,
+                step            = 1,
+                sliderName      = {top = L.CooldownMillisecondsBelow},
+                callback        = function()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
+                    CooldownManagerEnhanced:ForceUpdate(frameName)
+                    CooldownManagerEnhanced:RefreshFormatters(frameName)
                 end,
             },
             ["PreviewCooldownFont"] = {
@@ -2266,6 +2333,35 @@ Addon.config.containers = {
                     local frame = _G[frameLabel]
                     frame:SetGridDirection()
                     frame:RefreshLayout()
+                end,
+            },
+            ["CDMCustomFrameStrata"] = {
+                type        = "dropdown",
+                setting     = Addon.FrameStratas,
+                name        = L.FrameStrata,
+                IsSelected  = function(id) return id == Addon:GetValue("CDMCustomFrameStrata", nil, true) end,
+                OnSelect    = function(id) Addon:SaveSetting("CDMCustomFrameStrata", id, true) end,
+                showNew     = false,
+                OnEnter     = false,
+                OnClose        = function()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameLabel]
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameLabel)
+                end,
+            },
+            ["CDMCustomFrameLevel"] = {
+                type            = "checkboxSlider",
+                name            = L.FrameLevel,
+                checkboxValue   = "UseCDMCustomFrameLevel",
+                sliderValue     = "CDMCustomFrameLevel",
+                min             = 0,
+                max             = 100,
+                step            = 1,
+                sliderName      = {top = L.Level},
+                callback        = function()
+                    local frameLabel = HUI_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameLabel]
+                    HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameLabel)
                 end,
             },
 
@@ -3021,6 +3117,36 @@ Addon.config.containers = {
                 OnSelect    = function(id) Addon:SaveSetting("CDMCooldownFormatType", id, true) end,
                 OnEnter     = false,
                 OnClose     = function()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, true)
+                end,
+            },
+            ["CDMCustomCooldownTimerFormat"] = {
+                type            = "dropdown",
+                name            = L.CooldownTimerFormat,
+                setting         = Addon.CooldownTimerFormat,
+                showNew         = true,
+                IsSelected  = function(id) return id == Addon:GetValue("CooldownTimerFormat", nil, true) end,
+                OnSelect    = function(id) Addon:SaveSetting("CooldownTimerFormat", id, true) end,
+                OnEnter     = false,
+                OnClose     = function()
+                    local frameName = HUI_BarsListMixin:GetFrameLebel()
+                    local frame = _G[frameName]
+                    HUI_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, true)
+                end,
+            },
+            ["CDMCustomCooldownMilliseconds"] = {
+                type            = "checkboxSlider",
+                name            = L.CooldownMilliseconds,
+                showNew         = true,
+                checkboxValue   = "UseCooldownMilliseconds",
+                sliderValue     = "CooldownMillisecondsThreshold",
+                min             = 1,
+                max             = 60,
+                step            = 1,
+                sliderName      = {top = L.CooldownMillisecondsBelow},
+                callback        = function()
                     local frameName = HUI_BarsListMixin:GetFrameLebel()
                     local frame = _G[frameName]
                     HUI_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, true)

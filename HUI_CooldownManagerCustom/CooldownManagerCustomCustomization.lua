@@ -5,8 +5,21 @@ local T = Addon.Templates
 
 HUI_CDMCustomFrameCustomized = {}
 
+function HUI_CDMCustomFrameCustomized:ApplyFrameStrataAndLevel(frame, frameName)
+    frameName = frameName or frame.frameName
+
+    frame:SetFrameStrata(Addon.FrameStratas[Addon:GetValue("CDMCustomFrameStrata", nil, frameName)] or "MEDIUM")
+    local frameLevel = 2
+    if Addon:GetValue("UseCDMCustomFrameLevel", nil, frameName) then
+        frameLevel = Addon:GetValue("CDMCustomFrameLevel", nil, frameName) or 2
+    end
+    frame:SetFrameLevel(frameLevel)
+end
+
 function HUI_CDMCustomFrameCustomized:RefreshSkin(frame, frameName)
     frameName = frameName or frame.frameName
+
+    self:ApplyFrameStrataAndLevel(frame, frameName)
 
     if frame.RefreshSettings then
         frame:RefreshSettings()
@@ -275,19 +288,24 @@ function HUI_CDMCustomFrameCustomized:RefreshAuraTimer(cooldownFrame, frameName,
     end
     timerString:SetVertexColor(color.r, color.g, color.b, color.a)
 
+    local formatType = Addon:GetValue("CDMCooldownFormatType", nil, frameName)
+    local formatOptions = Addon:GetCooldownFormatOptions(frameName)
+    local needUpdate = cooldownFrame.__auraFormatType ~= formatType or forceUpdate or not tCompare(color, cooldownFrame.__auraColor) or not cooldownFrame.__auraFormatOptions or not tCompare(formatOptions, cooldownFrame.__auraFormatOptions)
+
     if Addon:GetValue("ColorizedAuraFont", nil, frameName) then
-        local formatType = Addon:GetValue("CDMCooldownFormatType", nil, frameName)
-        if not cooldownFrame.__auraFormatterColored or cooldownFrame.__auraFormatType ~= formatType or forceUpdate or not tCompare(color, cooldownFrame.__auraColor) then
+        if not cooldownFrame.__auraFormatterColored or needUpdate then
             cooldownFrame.__auraColor = color
             cooldownFrame.__auraFormatType = formatType
-            cooldownFrame.__auraFormatterColored = Addon:GetNumberFormatter(color, nil, nil, formatType)
+            cooldownFrame.__auraFormatOptions = formatOptions
+            cooldownFrame.__auraFormatterColored = Addon:GetNumberFormatter(color, nil, nil, formatType, formatOptions)
         end
         cooldownFrame:SetCountdownFormatter(cooldownFrame.__auraFormatterColored)
     else
-        if not cooldownFrame.__auraFormatter or cooldownFrame.__auraFormatType ~= formatType or forceUpdate or not tCompare(color, cooldownFrame.__auraColor) then
+        if not cooldownFrame.__auraFormatter or needUpdate then
             cooldownFrame.__auraColor = color
             cooldownFrame.__auraFormatType = formatType
-            cooldownFrame.__auraFormatter = Addon:GetNumberFormatter(color, color, color, formatType)
+            cooldownFrame.__auraFormatOptions = formatOptions
+            cooldownFrame.__auraFormatter = Addon:GetNumberFormatter(color, color, color, formatType, formatOptions)
         end
         cooldownFrame:SetCountdownFormatter(cooldownFrame.__auraFormatter)
     end
@@ -307,16 +325,22 @@ function HUI_CDMCustomFrameCustomized:ColorizeCooldownFont(cooldownFrame, color,
         forceUpdate = true
     end
 
+    local formatOptions = Addon:GetCooldownFormatOptions(frameName)
+    if not frame.__formatOptions or not tCompare(formatOptions, frame.__formatOptions) then
+        frame.__formatOptions = formatOptions
+        forceUpdate = true
+    end
+
     if Addon:GetValue("ColorizedCooldownFont", nil, frameName) then
         if not frame.__numberFormatterColored or forceUpdate then
             local formatType = Addon:GetValue("CDMCooldownFormatType", nil, frameName)
-            frame.__numberFormatterColored = Addon:GetNumberFormatter(color,nil,nil,formatType)
+            frame.__numberFormatterColored = Addon:GetNumberFormatter(color,nil,nil,formatType, formatOptions)
         end
         cooldownFrame:SetCountdownFormatter(frame.__numberFormatterColored)
     else
         if not frame.__numberFormater or forceUpdate then
             local formatType = Addon:GetValue("CDMCooldownFormatType", nil, frameName)
-            frame.__numberFormater = Addon:GetNumberFormatter(color, color, color,formatType)
+            frame.__numberFormater = Addon:GetNumberFormatter(color, color, color,formatType, formatOptions)
         end
         cooldownFrame:SetCountdownFormatter(frame.__numberFormater)
     end
@@ -341,6 +365,10 @@ function HUI_CDMCustomFrameCustomized:RefreshCooldownFrame(frame, frameName, for
         self:CustomizeCooldownFrame(auraFrame, frameName, nil, true)
         self:RefreshAuraColor(auraFrame, frameName)
         self:RefreshAuraTimer(auraFrame, frameName, forceUpdate)
+
+        if forceUpdate and auraFrame and itemFrame.isOnAuraTimer and itemFrame.auraDurationObj then
+            auraFrame:SetCooldown(GetTime(), itemFrame.auraDurationObj:GetRemainingDuration())
+        end
 
         if itemFrame.realAuraCooldownFrame and itemFrame.realAuraCooldownFrame:CanBeAccessedInContext() then
             self:RefreshAuraTimer(itemFrame.realAuraCooldownFrame, frameName, forceUpdate)
@@ -859,6 +887,7 @@ function HUI_CDMCustomFrameCustomized:ApplyBarDuration(itemFrame, frameName, par
     if Addon:GetValue("CustomFrameBarTimeEnable", nil, frameName) then
         durationString:Show()
 
+        parent.__configName = frameName
         parent.timerFormat = Addon:GetValue("CurrentCustomFrameBarTimeFormat", nil, frameName)
 
         if Addon:GetValue("UseCustomFrameBarTimeColor", nil, frameName) then
