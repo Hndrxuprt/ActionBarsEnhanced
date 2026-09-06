@@ -82,7 +82,7 @@ L.BackdropTitle = "Фон кнопок"
 L.BackdropDesc = "Выбрать тип, цвет и прозрачность фона кнопок."
 L.BackdropTextureType = "Тип фона кнопок"
 
-L.IconTitle = "Маска иконок кнопок"
+L.IconTitle = "Маска иконок"
 L.IconDesc = "Выбрать тип маски, настроить масштаб маски и иконок."
 L.IconMaskTextureType = "Тип маски"
 L.IconMaskScale = "Масштаб маски"
@@ -413,6 +413,9 @@ L.LeftAndRight = "Слева и справа"
 
 L.CastBarsIconOptionsTitle = "Иконка кастбара"
 L.CastBarsIconOptionsDesc = "Кастомизация иконки кастбара"
+
+L.BarIconOptionsTitle = "Иконка баров"
+L.BarIconOptionsDesc = "Кастомизация иконки бара"
 
 L.CastBarIconPos = "Отображать иконку каста"
 

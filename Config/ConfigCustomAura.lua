@@ -305,6 +305,57 @@ Addon.config.containers["CDMAuraFrameAttachContainer"] = {
     }
 }
 
+Addon.config.containers["CDMAuraFrameIconContainer"] = {
+    title = L.IconTitle,
+    desc = L.IconDesc,
+    childs = {
+        ["CDMCustomFrameIconMaskTexture"] = {
+            type        = "dropdown",
+            setting     = T.IconMaskTextures,
+            name        = L.IconMaskTextureType,
+            IsSelected  = function(id) return id == Addon:GetValue("CurrentIconMaskTexture", nil, true) end,
+            OnSelect    = function(id) Addon:SaveSetting("CurrentIconMaskTexture", id, true) end,
+            showNew     = false,
+            OnEnter     = false,
+            OnClose     = function()
+                HUIDropdownMixin:RefreshAllPreview()
+                RefreshAuraFrameSettings()
+            end,
+        },
+        ["CDMCustomFrameMaskScale"] = {
+            type            = "checkboxSlider",
+            name            = L.IconMaskScale,
+            checkboxValue   = "UseIconMaskScale",
+            sliderValue     = "IconMaskScale",
+            min             = 0.5,
+            max             = 1.5,
+            step            = 0.01,
+            sliderName      = {top = L.Scale},
+            callback        = function()
+                HUIDropdownMixin:RefreshAllPreview()
+                RefreshAuraFrameSettings()
+            end,
+        },
+        ["CDMCustomFrameIconScale"] = {
+            type            = "checkboxSlider",
+            name            = L.IconScale,
+            checkboxValue   = "UseIconScale",
+            sliderValue     = "IconScale",
+            min             = 0.5,
+            max             = 1.5,
+            step            = 0.01,
+            sliderName      = {top = L.Scale},
+            callback        = function()
+                HUIDropdownMixin:RefreshAllPreview()
+                RefreshAuraFrameSettings()
+            end,
+        },
+        ["PreviewIcon"] = {
+            type = "preview",
+        },
+    }
+}
+
 Addon.config.containers["CDMAuraFrameCDContainer"] = {
     title = L.CDMCooldownTitle,
     desc = L.CDMCooldownDesc,
@@ -743,8 +794,8 @@ Addon.config.containers["CDMAuraBarGridContainer"] = {
 }
 
 Addon.config.containers["CDMAuraBarIconOptionsContainer"] = {
-    title = L.CastBarsIconOptionsTitle,
-    desc = L.CastBarsIconOptionsDesc,
+    title = L.BarIconOptionsTitle,
+    desc = L.BarIconOptionsDesc,
     childs = {
         ["CDMCustomFrameBarIconSize"] = {
             type            = "checkboxSlider",

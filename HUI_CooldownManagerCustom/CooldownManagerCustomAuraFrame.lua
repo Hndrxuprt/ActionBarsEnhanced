@@ -35,7 +35,6 @@ function HUI_CDMCustomAuraFrameMixin:ConfigureAuraButton(auraButton, spellID)
 	if not auraButton.iconTexture then
 		auraButton.iconTexture = auraButton:CreateTexture(nil, "OVERLAY")
 		auraButton.iconTexture:SetAllPoints(auraButton)
-		auraButton.iconTexture:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 
 		local color = {}
 		color.r, color.g, color.b, color.a = Addon:GetRGBA("CDMBackdropAuraColor", nil, frameName)
@@ -110,6 +109,8 @@ function HUI_CDMCustomAuraFrameMixin:CustomizeAuraButton(auraButton)
 			self:RefreshBackdrop(auraButton.pandemicBorder, auraButton.pColor)
 		end
         auraButton:SetSize(self.iconSize, self.iconSize)
+		HUI_CDMCustomFrameCustomized:ApplyIconMask(auraButton.iconTexture, frameName, self.iconSize)
+		HUI_CDMCustomFrameCustomized:ApplyIconBorder(auraButton.iconTexture.iconBorder, auraButton.iconTexture, self.iconSize)
 	end
 end
 
@@ -121,7 +122,6 @@ function HUI_CDMCustomAuraFrameMixin:GetPlaceholder(index)
 		placeholder:SetSize(self.iconSize, self.iconSize)
 		placeholder.icon = placeholder:CreateTexture(nil, "BACKGROUND")
 		placeholder.icon:SetAllPoints(placeholder)
-		placeholder.icon:SetTexCoord(0.08, 0.92, 0.08, 0.92)
 		--placeholder.icon:SetDesaturated(true)
 		--placeholder.icon:SetVertexColor(0.6, 0.6, 0.6, 0.5)
 		self.placeholders[index] = placeholder
@@ -136,6 +136,8 @@ end
 function HUI_CDMCustomAuraFrameMixin:UpdatePlaceholder(placeholder, spellID)
 	placeholder:SetSize(self.iconSize, self.iconSize)
 	placeholder.icon:SetTexture(C_Spell.GetSpellTexture(spellID))
+	HUI_CDMCustomFrameCustomized:ApplyIconMask(placeholder.icon, self:GetName(), self.iconSize)
+	HUI_CDMCustomFrameCustomized:ApplyIconBorder(placeholder.icon.iconBorder, placeholder.icon, self.iconSize)
 	self:RefreshBackdrop(placeholder.icon.iconBorder)
     if Addon:GetValue("UseCDMBackdrop", nil, self:GetName()) and Addon:GetValue("UseCDMBackdropColor", nil, self:GetName()) then
         placeholder.icon.iconBorder:Show()

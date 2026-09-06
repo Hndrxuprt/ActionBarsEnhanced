@@ -1241,6 +1241,15 @@ Addon.CustomFrameAuraViewer = {
         }
     },
     {
+        name = "CDMAuraFrameIconContainer",
+        childs = {
+            {name = "CDMCustomFrameIconMaskTexture", template = "OptionsDropdownTemplate"},
+            {name = "CDMCustomFrameMaskScale", template = "OptionsCheckboxSliderTemplate"},
+            {name = "CDMCustomFrameIconScale", template = "OptionsCheckboxSliderTemplate"},
+            {name = "PreviewIcon", template = "OptionsButtonPreviewTemplate", point = {"TOP", "desc", "BOTTOM", 180, -10}, scale="1.8"},
+        }
+    },
+    {
         name = "CDMAuraFrameCDContainer",
         childs = {
             {name = "CDMAuraFrameShowSwipe", template = "OptionsCheckboxTemplate"},
@@ -1359,11 +1368,11 @@ Addon.CustomFrameBarsAuraViewer = {
             {name = "CDMCustomFrameBarIconSize", template = "OptionsCheckboxSliderTemplate"},
             {name = "CDMCustomFrameBarIconOffset", template = "OptionsDoubleCheckboxSliderTemplate"},
 
-            --[[ {name = "Divider", template = "OptionsDividerTemplate"},
+            {name = "Divider", template = "OptionsDividerTemplate"},
 
             {name = "IconMaskTextureOptions", template = "OptionsDropdownTemplate"},
             {name = "MaskScale", template = "OptionsCheckboxSliderTemplate"},
-            {name = "IconScale", template = "OptionsCheckboxSliderTemplate"}, ]]
+            {name = "IconScale", template = "OptionsCheckboxSliderTemplate"},
         }
     },
     {

@@ -80,7 +80,7 @@ L.BackdropTitle = "Backdrop Texture Style"
 L.BackdropDesc = "Backdrop texture for button."
 L.BackdropTextureType = "Backdrop Texture Type"
 
-L.IconTitle = "Spell Icon Mask Style"
+L.IconTitle = "Icon Mask Style"
 L.IconDesc = "Choose mask texture and adjust mask and icon scale"
 L.IconMaskTextureType = "Icon Mask Texture Type"
 L.IconMaskScale = "Modify Icon Mask Scale"
@@ -407,6 +407,9 @@ L.LeftAndRight = "On Left and Right"
 
 L.CastBarsIconOptionsTitle = "Cast Bar Icon Options"
 L.CastBarsIconOptionsDesc = "Customize spell Icon appearance."
+
+L.BarIconOptionsTitle = "Bar Icon Options"
+L.BarIconOptionsDesc = "Customize bar icon appearance."
 
 L.CastBarIconPos = "Show Icon"
 

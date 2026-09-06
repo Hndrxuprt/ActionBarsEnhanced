@@ -379,7 +379,17 @@ function HUI_CDMCustomAuraBarMixin:CustomizeAuraButton(auraButton, spellID)
     HUI_CDMCustomFrameCustomized:ApplyPipTexture(self, frameName)
 
 	if auraButton:CanBeAccessedInContext() then
-        HUI_CDMCustomFrameCustomized:ApplyBarIconSize(auraButton, frameName)
+        local iconScale = Addon:GetValue("UseIconScale", nil, frameName) and Addon:GetValue("IconScale", nil, frameName) or 1
+        HUI_CDMCustomFrameCustomized:ApplyBarIconSize(auraButton, frameName, iconScale)
+        HUI_CDMCustomFrameCustomized:ApplyBarIconMask(auraButton.Icon, frameName)
+        if auraButton.IconRight then
+            HUI_CDMCustomFrameCustomized:ApplyBarIconMask(auraButton.IconRight, frameName)
+        end
+        local borderSize = HUI_CDMCustomFrameCustomized:GetBarIconSize(frameName)
+        HUI_CDMCustomFrameCustomized:ApplyIconBorder(auraButton.Icon.iconBorder, auraButton.Icon, borderSize)
+        if auraButton.IconRight then
+            HUI_CDMCustomFrameCustomized:ApplyIconBorder(auraButton.IconRight.iconBorder, auraButton.IconRight, borderSize)
+        end
         HUI_CDMCustomFrameCustomized:ApplyBarName(auraButton, frameName)
         HUI_CDMCustomFrameCustomized:ApplyBarDuration(auraButton, frameName, self)
         HUI_CDMCustomFrameCustomized:ApplyStacks(auraButton, frameName)
@@ -471,7 +481,8 @@ function HUI_CDMCustomAuraBarMixin:GetPlaceholder(index)
         Addon:SetTexture(placeholder.BarBG, background)
 
 		placeholder.Icon = placeholder:CreateTexture(nil, "BACKGROUND")
-        HUI_CDMCustomFrameCustomized:ApplyBarIconSize(placeholder, frameName)
+        local iconScale = Addon:GetValue("UseIconScale", nil, frameName) and Addon:GetValue("IconScale", nil, frameName) or 1
+        HUI_CDMCustomFrameCustomized:ApplyBarIconSize(placeholder, frameName, iconScale)
 
         placeholder.borderFrame = CreateFrame("Frame", nil, placeholder)
         placeholder.borderFrame:SetAllPoints(placeholder)
@@ -501,7 +512,7 @@ function HUI_CDMCustomAuraBarMixin:GetPlaceholder(index)
         iconRightBorder:ClearAllPoints()
         iconRightBorder:SetPoint("TOPLEFT", placeholder.IconRight, "TOPLEFT", 0, 0)
         iconRightBorder:SetPoint("BOTTOMRIGHT", placeholder.IconRight, "BOTTOMRIGHT", 0, 0)
-        HUI_CDMCustomFrameCustomized:ApplyBarIconSize(placeholder, frameName)
+        HUI_CDMCustomFrameCustomized:ApplyBarIconSize(placeholder, frameName, iconScale)
 
         self.placeholders[index] = placeholder
 	end
@@ -515,7 +526,17 @@ function HUI_CDMCustomAuraBarMixin:UpdatePlaceholder(placeholder, spellID)
     if placeholder.IconRight then
         placeholder.IconRight:SetTexture(C_Spell.GetSpellTexture(spellID))
     end
-    HUI_CDMCustomFrameCustomized:ApplyBarIconSize(placeholder, frameName)
+    local iconScale = Addon:GetValue("UseIconScale", nil, frameName) and Addon:GetValue("IconScale", nil, frameName) or 1
+    HUI_CDMCustomFrameCustomized:ApplyBarIconSize(placeholder, frameName, iconScale)
+    HUI_CDMCustomFrameCustomized:ApplyBarIconMask(placeholder.Icon, frameName)
+    if placeholder.IconRight then
+        HUI_CDMCustomFrameCustomized:ApplyBarIconMask(placeholder.IconRight, frameName)
+    end
+    local borderSize = HUI_CDMCustomFrameCustomized:GetBarIconSize(frameName)
+    HUI_CDMCustomFrameCustomized:ApplyIconBorder(placeholder.iconBorder, placeholder.Icon, borderSize)
+    if placeholder.iconRightBorder then
+        HUI_CDMCustomFrameCustomized:ApplyIconBorder(placeholder.iconRightBorder, placeholder.IconRight, borderSize)
+    end
 
     placeholder.BarBG:SetVertexColor(Addon:GetColor("CDMCustomFrameBackgroundColor", "UseCDMCustomFrameBackgroundColor", nil, frameName))
     local background = Addon:GetStatusBarTextureByName(Addon:GetValue("CurrentCDMCustomFrameBackgroundTexture", nil, frameName))

@@ -90,6 +90,88 @@ function HUI_CDMCustomFrameCustomized:RefreshIconMask(frame, frameName)
     end
 end
 
+function HUI_CDMCustomFrameCustomized:ApplyIconMask(icon, frameName, size)
+    local parent = icon:GetParent()
+
+    if not icon.__iconMask then
+        icon.__iconMask = parent:CreateMaskTexture(nil, "OVERLAY")
+        icon.__iconMask:SetHorizTile(false)
+        icon.__iconMask:SetVertTile(false)
+        icon:AddMaskTexture(icon.__iconMask)
+    end
+    local mask = icon.__iconMask
+
+    local iconMaskAtlas = T.IconMaskTextures[Addon:GetValue("CurrentIconMaskTexture", nil, frameName)]
+    if not iconMaskAtlas then
+        return
+    end
+
+    size = size or parent:GetSize()
+
+    Addon:SetTexture(mask, iconMaskAtlas.texture)
+
+    if iconMaskAtlas.point then
+        mask:ClearAllPoints()
+        mask:SetPoint(iconMaskAtlas.point, parent, iconMaskAtlas.point)
+    end
+
+    if Addon:GetValue("UseIconMaskScale", nil, frameName) then
+        mask:SetSize(size, size)
+        mask:SetScale(Addon:GetValue("IconMaskScale", nil, frameName))
+    else
+        mask:ClearAllPoints()
+        mask:SetAllPoints()
+    end
+
+    if Addon:GetValue("UseIconScale", nil, frameName) then
+        icon:ClearAllPoints()
+        icon:SetPoint("CENTER", parent, "CENTER")
+        icon:SetSize(size, size)
+        icon:SetScale(Addon:GetValue("IconScale", nil, frameName))
+    else
+        icon:ClearAllPoints()
+        icon:SetAllPoints()
+    end
+end
+
+function HUI_CDMCustomFrameCustomized:ApplyBarIconMask(icon, frameName)
+    if not icon.__iconMask then
+        icon.__iconMask = icon:GetParent():CreateMaskTexture(nil, "OVERLAY")
+        icon.__iconMask:SetHorizTile(false)
+        icon.__iconMask:SetVertTile(false)
+        icon:AddMaskTexture(icon.__iconMask)
+    end
+    local mask = icon.__iconMask
+
+    local iconMaskAtlas = T.IconMaskTextures[Addon:GetValue("CurrentIconMaskTexture", nil, frameName)]
+    if not iconMaskAtlas then
+        return
+    end
+
+    Addon:SetTexture(mask, iconMaskAtlas.texture)
+
+    if Addon:GetValue("UseIconMaskScale", nil, frameName) then
+        local size = self:GetBarIconSize(frameName)
+        mask:ClearAllPoints()
+        mask:SetPoint("CENTER", icon, "CENTER")
+        mask:SetSize(size, size)
+        mask:SetScale(Addon:GetValue("IconMaskScale", nil, frameName))
+    else
+        local size = self:GetBarIconSize(frameName)
+        mask:ClearAllPoints()
+        mask:SetPoint("CENTER", icon, "CENTER")
+        mask:SetSize(size, size)
+    end
+
+    icon:SetScale(Addon:GetValue("UseIconScale", nil, frameName) and Addon:GetValue("IconScale", nil, frameName) or 1)
+end
+
+function HUI_CDMCustomFrameCustomized:ApplyIconBorder(border, icon, size)
+    border:ClearAllPoints()
+    border:SetPoint("CENTER", icon, "CENTER")
+    border:SetSize(size, size)
+end
+
 function HUI_CDMCustomFrameCustomized:RefreshItemSize(frame, frameName)
     frameName = frameName or frame.frameName
 
@@ -104,15 +186,21 @@ function HUI_CDMCustomFrameCustomized:RefreshItemSize(frame, frameName)
     end
 end
 
-function HUI_CDMCustomFrameCustomized:ApplyBarIconSize(itemFrame, frameName)
-    local iconPos = Addon:GetValue("CurrentCDMCustomFrametBarIconPosition", nil, frameName)
+function HUI_CDMCustomFrameCustomized:GetBarIconSize(frameName)
     local size = Addon:GetValue("UseCDMCustomFrameBarIconSize", nil, frameName) and Addon:GetValue("CDMCustomFrameBarIconSize", nil, frameName)
     if not size then
         size = Addon:GetValue("UseCDMCustomFrameBarHeight", nil, frameName) and Addon:GetValue("CDMCustomFrameBarHeight", nil, frameName) or 10
     end
+    return size
+end
+
+function HUI_CDMCustomFrameCustomized:ApplyBarIconSize(itemFrame, frameName, ownScale)
+    local iconPos = Addon:GetValue("CurrentCDMCustomFrametBarIconPosition", nil, frameName)
+    local size = self:GetBarIconSize(frameName)
     local useOffset = Addon:GetValue("UseCDMCustomFrameBarIconOffset", nil, frameName)
     local offsetX = useOffset and Addon:GetValue("CDMCustomFrameBarIconOffsetX", nil, frameName) or 0
     local offsetY = useOffset and Addon:GetValue("CDMCustomFrameBarIconOffsetY", nil, frameName) or 0
+    ownScale = ownScale or 1
 
     local icon = itemFrame.Icon
     local iconRight = itemFrame.IconRight
@@ -121,21 +209,21 @@ function HUI_CDMCustomFrameCustomized:ApplyBarIconSize(itemFrame, frameName)
         Addon.PP.Size(icon, size)
         icon:SetAlpha(1)
         icon:ClearAllPoints()
-        Addon.PP.Point(icon, "RIGHT", itemFrame, "LEFT", offsetX, offsetY)
+        Addon.PP.Point(icon, "CENTER", itemFrame, "LEFT", (offsetX - size / 2) / ownScale, offsetY / ownScale)
 
         Addon.PP.Size(iconRight, size)
         iconRight:SetAlpha(1)
         iconRight:Show()
         iconRight:ClearAllPoints()
-        Addon.PP.Point(iconRight, "LEFT", itemFrame, "RIGHT", offsetX * -1, offsetY)
+        Addon.PP.Point(iconRight, "CENTER", itemFrame, "RIGHT", (size / 2 - offsetX) / ownScale, offsetY / ownScale)
     else
         Addon.PP.Size(icon, size)
         icon:SetAlpha(1)
 
-        local point = iconPos ~= 3 and "RIGHT" or "LEFT"
         local relPoint = iconPos ~= 3 and "LEFT" or "RIGHT"
+        local centerOffset = iconPos ~= 3 and offsetX - size / 2 or size / 2 - offsetX
         icon:ClearAllPoints()
-        Addon.PP.Point(icon, point, itemFrame, relPoint, iconPos ~= 3 and offsetX or offsetX * -1, offsetY)
+        Addon.PP.Point(icon, "CENTER", itemFrame, relPoint, centerOffset / ownScale, offsetY / ownScale)
 
         if iconRight then
             iconRight:Hide()

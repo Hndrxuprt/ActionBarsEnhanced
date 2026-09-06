@@ -71,5 +71,5 @@ function HUI_CDMCustomPingAuraMixin:ApplyPingable(spellID, frameName)
     self.huiPingFrameName = frameName
 
     self:SetupPingable()
-    self:SetMouseMotionEnabled(self:IsPingEnabled())
+    self:SetMouseMotionEnabled(false)
 end

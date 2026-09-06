@@ -82,7 +82,7 @@ L.BackdropTitle = "背景材质样式"
 L.BackdropDesc = "按钮的背景材质。"
 L.BackdropTextureType = "背景材质类型"
 
-L.IconTitle = "法术图标遮罩样式"
+L.IconTitle = "图标遮罩样式"
 L.IconDesc = "选择遮罩材质并调整遮罩和图标缩放"
 L.IconMaskTextureType = "图标遮罩材质类型"
 L.IconMaskScale = "修改图标遮罩缩放"
@@ -408,6 +408,9 @@ L.LeftAndRight = "在左右两侧"
 
 L.CastBarsIconOptionsTitle = "施法条图标选项"
 L.CastBarsIconOptionsDesc = "自定义法术图标外观。"
+
+L.BarIconOptionsTitle = "条图标选项"
+L.BarIconOptionsDesc = "自定义条图标外观。"
 
 L.CastBarIconPos = "显示图标"
 
